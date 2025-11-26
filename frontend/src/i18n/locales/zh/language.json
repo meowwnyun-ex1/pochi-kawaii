@@ -1,0 +1,22 @@
+{
+  "selectLanguage": "选择语言",
+  "active": "活跃",
+  "aiNote": "AI用问题语言回答",
+  "changedTo": "已更改为{{language}}",
+  "changeLanguage": "更改语言",
+  "currentLanguage": "当前语言",
+  "switchTo": "切换到{{language}}",
+  "languages": {
+    "th": "泰语",
+    "en": "英语",
+    "jp": "日语",
+    "id": "印尼语",
+    "zh": "中文",
+    "ko": "韩语",
+    "vi": "越南语",
+    "es": "西班牙语",
+    "fil": "菲律宾语",
+    "hi": "印地语"
+  }
+}
+

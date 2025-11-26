@@ -1,0 +1,10 @@
+{
+  "title": "Something went wrong",
+  "description": "Sorry, an unexpected error occurred",
+  "details": "Error details",
+  "reset": "Try again",
+  "reload": "Reload page",
+  "goHome": "Go home",
+  "report": "If the problem persists, please contact support"
+}
+

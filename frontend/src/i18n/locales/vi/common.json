@@ -1,0 +1,21 @@
+{
+  "appName": "Maemi-Chan",
+  "loading": "Đang tải...",
+  "error": "Đã xảy ra lỗi",
+  "success": "Thành công",
+  "confirm": "Xác nhận",
+  "cancel": "Hủy",
+  "close": "Đóng",
+  "save": "Lưu",
+  "delete": "Xóa",
+  "edit": "Chỉnh sửa",
+  "search": "Tìm kiếm",
+  "back": "Quay lại",
+  "next": "Tiếp theo",
+  "previous": "Trước",
+  "copyright": "© 2025 Maemi-Chan Medical AI. Bảo lưu mọi quyền",
+  "items": "mục",
+  "recommended": "được khuyến nghị",
+  "optional": "tùy chọn",
+  "contextualSuggestions": "Câu hỏi có thể hữu ích"
+}

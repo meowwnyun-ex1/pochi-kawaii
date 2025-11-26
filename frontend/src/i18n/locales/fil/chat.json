@@ -1,0 +1,28 @@
+{
+  "greeting": "Kamusta! Ako si Maemi-Chan AI Assistant, handang tumulong sa pagsagot sa inyong mga tanong tungkol sa kalusugan at medikal 😊\n\nMaaari kayong magtanong ng anuman, o pumili mula sa mga iminungkahing tanong sa ibaba.",
+  "type_message": "I-type ang inyong mensahe...",
+  "send": "Ipadala",
+  "sending": "Nagpapadala...",
+  "normal_send_tooltip": "Ipadala ang mensahe",
+  "deep_think_tooltip": "I-toggle ang Deep Think mode (malalim na pag-iisip)",
+  "deep_think_enabled": "🧠 Naka-enable ang Deep Think",
+  "deep_think_disabled": "⚡ Normal mode",
+  "deep_think_processing": "🧠 Malalim na pag-iisip...",
+  "quick_questions": "Mabilis na Tanong",
+  "emergency_detected": "⚠️ Natuklasan ang emergency. Pakikipag-ugnayan sa doktor o ospital kaagad.",
+  "connection_error": "❌ Hindi makakonekta\n\nPakitingnan ang inyong koneksyon sa internet",
+  "error": {
+    "http_error": "May naganap na error",
+    "network_error": "Hindi makakonekta",
+    "timeout": "⏱️ Timeout - Matagal na tumagal ang AI\n\nPakisubukan ulit o gumamit ng Deep Think para sa kumplikadong tanong",
+    "please_try_again": "Pakisubukan ulit"
+  },
+  "disclaimer": "AI Medical Assistant - Ang sagot na ito ay para sa layuning impormasyon lamang at hindi medikal na diagnosis",
+  "stage_analyzing": "Sinusuri ang inyong tanong",
+  "stage_thinking": "Pinoproseso at nag-iisip",
+  "stage_researching": "Naghahanap ng kaugnay na impormasyon",
+  "stage_generating": "Gumagawa ng inyong sagot",
+  "queue": "Pila",
+  "time_sec": "seg"
+}
+

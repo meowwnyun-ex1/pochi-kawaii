@@ -1,0 +1,10 @@
+{
+  "copy": "Copiar código",
+  "copied": "¡Copiado!",
+  "download": "Descargar código",
+  "downloadFilename": "codigo",
+  "copySuccess": "¡Copiado al portapapeles!",
+  "copyError": "Error al copiar",
+  "downloadSuccess": "¡Código descargado con éxito!",
+  "downloadError": "Error al descargar código"
+}

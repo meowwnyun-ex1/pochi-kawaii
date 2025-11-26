@@ -1,0 +1,21 @@
+{
+  "appName": "Maemi-Chan",
+  "loading": "Memuat...",
+  "error": "Terjadi kesalahan",
+  "success": "Berhasil",
+  "confirm": "Konfirmasi",
+  "cancel": "Batal",
+  "close": "Tutup",
+  "save": "Simpan",
+  "delete": "Hapus",
+  "edit": "Edit",
+  "search": "Cari",
+  "back": "Kembali",
+  "next": "Selanjutnya",
+  "previous": "Sebelumnya",
+  "copyright": "© 2025 Maemi-Chan Medical AI. Hak cipta dilindungi",
+  "items": "item",
+  "recommended": "disarankan",
+  "optional": "opsional",
+  "contextualSuggestions": "Pertanyaan yang mungkin membantu"
+}

@@ -1,0 +1,13 @@
+{
+  "stage_analyzing": "Đang phân tích câu hỏi",
+  "stage_thinking": "Đang suy nghĩ sâu",
+  "stage_researching": "Đang tìm kiếm thông tin",
+  "stage_coding": "Đang viết mã",
+  "stage_calculating": "Đang tính toán",
+  "stage_generating": "Đang tạo phản hồi",
+  "stage_complete": "Hoàn thành",
+  "deep_think_mode": "Chế độ suy nghĩ sâu - Phân tích kỹ lưỡng",
+  "processing_steps": "Các bước xử lý",
+  "processing": "Đang xử lý..."
+}
+

@@ -1,0 +1,22 @@
+{
+  "selectLanguage": "Select Language",
+  "active": "Active",
+  "aiNote": "AI responds in question language",
+  "changedTo": "Changed to {{language}}",
+  "changeLanguage": "Change language",
+  "currentLanguage": "Current language",
+  "switchTo": "Switch to {{language}}",
+  "languages": {
+    "th": "Thai",
+    "en": "English",
+    "jp": "Japanese",
+    "id": "Indonesian",
+    "zh": "Chinese",
+    "ko": "Korean",
+    "vi": "Vietnamese",
+    "es": "Spanish",
+    "fil": "Filipino",
+    "hi": "Hindi"
+  }
+}
+

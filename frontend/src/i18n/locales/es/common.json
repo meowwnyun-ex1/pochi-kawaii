@@ -1,0 +1,21 @@
+{
+  "appName": "Maemi-Chan",
+  "loading": "Cargando...",
+  "error": "Ha ocurrido un error",
+  "success": "Éxito",
+  "confirm": "Confirmar",
+  "cancel": "Cancelar",
+  "close": "Cerrar",
+  "save": "Guardar",
+  "delete": "Eliminar",
+  "edit": "Editar",
+  "search": "Buscar",
+  "back": "Volver",
+  "next": "Siguiente",
+  "previous": "Anterior",
+  "copyright": "© 2025 Maemi-Chan Medical AI. Todos los derechos reservados",
+  "items": "elementos",
+  "recommended": "recomendado",
+  "optional": "opcional",
+  "contextualSuggestions": "Preguntas que podrían ayudar"
+}

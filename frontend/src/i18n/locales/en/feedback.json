@@ -1,0 +1,18 @@
+{
+  "title": "Feedback",
+  "subtitle": "Share your thoughts",
+  "nameLabel": "Name",
+  "namePlaceholder": "Your name (optional)",
+  "ratingLabel": "Rating",
+  "commentLabel": "Comment",
+  "commentPlaceholder": "Enter your feedback...",
+  "submit": "Submit",
+  "submitting": "Sending...",
+  "backToChat": "Back to Chat",
+  "ratingRequired": "Please select a rating",
+  "commentRequired": "Please enter a comment",
+  "successTitle": "Thank you!",
+  "successMessage": "Your feedback has been submitted successfully",
+  "errorMessage": "Failed to submit feedback"
+}
+

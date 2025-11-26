@@ -1,0 +1,21 @@
+{
+  "appName": "Maemi-Chan",
+  "loading": "Naglo-load...",
+  "error": "May nangyaring error",
+  "success": "Tagumpay",
+  "confirm": "Kumpirmahin",
+  "cancel": "Kanselahin",
+  "close": "Isara",
+  "save": "I-save",
+  "delete": "Tanggalin",
+  "edit": "I-edit",
+  "search": "Maghanap",
+  "back": "Bumalik",
+  "next": "Susunod",
+  "previous": "Nakaraan",
+  "copyright": "© 2025 Maemi-Chan Medical AI. Lahat ng karapatan ay nakalaan",
+  "items": "mga item",
+  "recommended": "inirerekomenda",
+  "optional": "opsyonal",
+  "contextualSuggestions": "Mga tanong na maaaring makatulong"
+}

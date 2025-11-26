@@ -1,0 +1,22 @@
+{
+  "selectLanguage": "Seleccionar idioma",
+  "active": "Activo",
+  "aiNote": "AI responde en el idioma de la pregunta",
+  "changedTo": "Cambiado a {{language}}",
+  "changeLanguage": "Cambiar idioma",
+  "currentLanguage": "Idioma actual",
+  "switchTo": "Cambiar a {{language}}",
+  "languages": {
+    "th": "Tailandés",
+    "en": "Inglés",
+    "jp": "Japonés",
+    "id": "Indonesio",
+    "zh": "Chino",
+    "ko": "Coreano",
+    "vi": "Vietnamita",
+    "es": "Español",
+    "fil": "Filipino",
+    "hi": "Hindi"
+  }
+}
+

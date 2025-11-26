@@ -1,0 +1,28 @@
+{
+  "greeting": "¡Hola! Soy Maemi-Chan AI Assistant, listo para ayudar a responder sus preguntas de salud y médicas 😊\n\nPuede preguntarme cualquier cosa, o elegir entre las preguntas sugeridas a continuación.",
+  "type_message": "Escriba su mensaje...",
+  "send": "Enviar",
+  "sending": "Enviando...",
+  "normal_send_tooltip": "Enviar mensaje",
+  "deep_think_tooltip": "Alternar modo Deep Think (pensamiento profundo)",
+  "deep_think_enabled": "🧠 Deep Think habilitado",
+  "deep_think_disabled": "⚡ Modo normal",
+  "deep_think_processing": "🧠 Pensando profundamente...",
+  "quick_questions": "Preguntas rápidas",
+  "emergency_detected": "⚠️ Emergencia detectada. Por favor contacte a un médico u hospital inmediatamente.",
+  "connection_error": "❌ No se puede conectar\n\nPor favor verifique su conexión a internet",
+  "error": {
+    "http_error": "Ocurrió un error",
+    "network_error": "No se puede conectar",
+    "timeout": "⏱️ Tiempo agotado - AI tardó demasiado\n\nPor favor intente de nuevo o use Deep Think para preguntas complejas",
+    "please_try_again": "Por favor intente de nuevo"
+  },
+  "disclaimer": "Asistente Médico AI - Esta respuesta es solo para fines informativos y no es un diagnóstico médico",
+  "stage_analyzing": "Analizando su pregunta",
+  "stage_thinking": "Procesando y pensando",
+  "stage_researching": "Buscando información relevante",
+  "stage_generating": "Generando su respuesta",
+  "queue": "Cola",
+  "time_sec": "seg"
+}
+

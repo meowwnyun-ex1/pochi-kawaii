@@ -1,0 +1,21 @@
+{
+  "appName": "Maemi-Chan",
+  "loading": "लोड हो रहा है...",
+  "error": "एक त्रुटि हुई",
+  "success": "सफलता",
+  "confirm": "पुष्टि करें",
+  "cancel": "रद्द करें",
+  "close": "बंद करें",
+  "save": "सहेजें",
+  "delete": "हटाएं",
+  "edit": "संपादित करें",
+  "search": "खोजें",
+  "back": "वापस",
+  "next": "अगला",
+  "previous": "पिछला",
+  "copyright": "© 2025 Maemi-Chan Medical AI. सभी अधिकार सुरक्षित",
+  "items": "आइटम",
+  "recommended": "अनुशंसित",
+  "optional": "वैकल्पिक",
+  "contextualSuggestions": "मददगार हो सकने वाले प्रश्न"
+}

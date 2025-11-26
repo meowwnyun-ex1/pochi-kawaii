@@ -1,0 +1,14 @@
+{
+  "appName": "Maemi-Chan",
+  "appSubtitle": "Asistente Médico AI",
+  "home": "Inicio",
+  "newChat": "Nuevo Chat",
+  "promptCare": "Cuidado de Avisos",
+  "bmi": "Calculadora BMI",
+  "doctor": "Cita Médica",
+  "medication": "Solicitar Medicamento",
+  "firstAid": "Descanso en Primeros Auxilios",
+  "healthyTips": "Consejos de Salud",
+  "userAnonymous": "Anónimo",
+  "userPlan": "Plan DENSO"
+}

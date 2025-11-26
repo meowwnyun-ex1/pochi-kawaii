@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir:*)",
+      "Bash(powershell -Command \"cd ''\\\\10.73.148.75\\maemi-chan-project\\frontend''; npm run build\")",
+      "Bash(python:*)",
+      "Bash(git -C \"\\10.73.148.75\\maemi-chan-project\" status --short)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(powershell -Command \"cd ''\\10.73.148.75\\maemi-chan-project''; python setup.py\")",
+      "Bash(copy:*)",
+      "Bash(copy \"\\10.73.148.75\\maemi-chan-project\\run.py\" \"\\10.73.148.75\\maemi-chan-project\\run.py.old\")",
+      "Bash(net use)",
+      "Bash(cmd /c \"cd \\\\10.73.148.75\\d\\GitHub\\Project\\maemi-chan-project && dir\")",
+      "Bash(cmd.exe /c dir \"\\\\10.73.148.75\\d\\GitHub\\Project\\maemi-chan-project\")",
+      "Bash(type \"\\\\10.73.148.75\\D\\GitHub\\Project\\maemi-chan-project\\.env\")",
+      "Bash(powershell -Command \"Get-Content ''\\\\10.73.148.75\\D\\GitHub\\Project\\maemi-chan-project\\.env''\")",
+      "Bash(powershell.exe -NoProfile -ExecutionPolicy Bypass -Command \"cd ''\\\\10.73.148.75\\D\\GitHub\\Project\\maemi-chan-project''; Get-Content .env -Raw | Out-String\")",
+      "Bash(powershell -Command \"cd ''\\10.73.148.75\\maemi-chan-project''; Copy-Item ''.env'' ''.env.backup.fix'' -Force\")",
+      "Bash(powershell.exe -Command \"Get-Content ''\\\\10.73.148.75\\D\\GitHub\\Project\\maemi-chan-project\\FIX-DATABASE-URL.bat'' -TotalCount 5 2>&1\")",
+      "Bash(echo:*)",
+      "Bash(env)",
+      "Bash(cmd.exe /c \"type nul > test.txt && echo success\")",
+      "Bash(cmd /c \"type \\\\10.73.148.75\\d\\GitHub\\Project\\maemi-chan-project\\START.bat\")",
+      "Bash(powershell -Command \"New-Item -ItemType Directory -Force -Path ''\\\\10.73.148.75\\d\\GitHub\\Project\\maemi-chan-project\\.cache\\python''; New-Item -ItemType Directory -Force -Path ''\\\\10.73.148.75\\d\\GitHub\\Project\\maemi-chan-project\\.cache\\logs''; New-Item -ItemType Directory -Force -Path ''\\\\10.73.148.75\\d\\GitHub\\Project\\maemi-chan-project\\.cache\\temp''; Write-Host ''Cache directories created''\")",
+      "Bash(powershell -Command \"Get-Location; Get-ChildItem ''\\10.73.148.75\\d\\GitHub\\Project\\maemi-chan-project'' | Select-Object -First 5\")"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

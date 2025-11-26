@@ -1,0 +1,18 @@
+{
+  "title": "แสดงความคิดเห็น",
+  "subtitle": "แบ่งปันความคิดเห็นของคุณ",
+  "nameLabel": "ชื่อ",
+  "namePlaceholder": "ชื่อของคุณ (ไม่บังคับ)",
+  "ratingLabel": "คะแนน",
+  "commentLabel": "ความคิดเห็น",
+  "commentPlaceholder": "กรอกความคิดเห็นของคุณ...",
+  "submit": "ส่ง",
+  "submitting": "กำลังส่ง...",
+  "backToChat": "กลับไปแชท",
+  "ratingRequired": "กรุณาเลือกคะแนน",
+  "commentRequired": "กรุณากรอกความคิดเห็น",
+  "successTitle": "ขอบคุณค่ะ!",
+  "successMessage": "ความคิดเห็นของคุณถูกส่งเรียบร้อยแล้ว",
+  "errorMessage": "ไม่สามารถส่งความคิดเห็นได้"
+}
+

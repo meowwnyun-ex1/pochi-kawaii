@@ -1,0 +1,22 @@
+{
+  "selectLanguage": "Pilih Bahasa",
+  "active": "Aktif",
+  "aiNote": "AI merespons dalam bahasa pertanyaan",
+  "changedTo": "Berubah ke {{language}}",
+  "changeLanguage": "Ubah bahasa",
+  "currentLanguage": "Bahasa saat ini",
+  "switchTo": "Beralih ke {{language}}",
+  "languages": {
+    "th": "Bahasa Thailand",
+    "en": "Bahasa Inggris",
+    "jp": "Bahasa Jepang",
+    "id": "Bahasa Indonesia",
+    "zh": "Bahasa Cina",
+    "ko": "Bahasa Korea",
+    "vi": "Bahasa Vietnam",
+    "es": "Bahasa Spanyol",
+    "fil": "Bahasa Filipina",
+    "hi": "Bahasa Hindi"
+  }
+}
+

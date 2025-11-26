@@ -1,0 +1,10 @@
+{
+  "copy": "Salin kode",
+  "copied": "Tersalin!",
+  "download": "Unduh kode",
+  "downloadFilename": "kode",
+  "copySuccess": "Berhasil disalin ke clipboard!",
+  "copyError": "Gagal menyalin",
+  "downloadSuccess": "Kode berhasil diunduh!",
+  "downloadError": "Gagal mengunduh kode"
+}

@@ -1,0 +1,22 @@
+{
+  "selectLanguage": "เลือกภาษา",
+  "active": "ใช้งาน",
+  "aiNote": "AI ตอบตามภาษาคำถาม",
+  "changedTo": "เปลี่ยนเป็น{{language}}แล้วค่ะ",
+  "changeLanguage": "เปลี่ยนภาษา",
+  "currentLanguage": "ภาษาปัจจุบัน",
+  "switchTo": "เปลี่ยนเป็น{{language}}",
+  "languages": {
+    "th": "ภาษาไทย",
+    "en": "English",
+    "jp": "日本語",
+    "id": "Bahasa Indonesia",
+    "zh": "中文",
+    "ko": "한국어",
+    "vi": "Tiếng Việt",
+    "es": "Español",
+    "fil": "Filipino",
+    "hi": "हिन्दी"
+  }
+}
+

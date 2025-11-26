@@ -1,0 +1,21 @@
+{
+  "appName": "Maemi-Chan",
+  "loading": "กำลังโหลด...",
+  "error": "เกิดข้อผิดพลาด",
+  "success": "สำเร็จ",
+  "confirm": "ยืนยัน",
+  "cancel": "ยกเลิก",
+  "close": "ปิด",
+  "save": "บันทึก",
+  "delete": "ลบ",
+  "edit": "แก้ไข",
+  "search": "ค้นหา",
+  "back": "กลับ",
+  "next": "ถัดไป",
+  "previous": "ก่อนหน้า",
+  "copyright": "© 2025 Maemi-Chan Medical AI. สงวนลิขสิทธิ์",
+  "items": "รายการ",
+  "recommended": "แนะนำ",
+  "optional": "ไม่บังคับ",
+  "contextualSuggestions": "คำถามที่อาจช่วยได้"
+}

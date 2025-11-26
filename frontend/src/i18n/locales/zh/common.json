@@ -1,0 +1,21 @@
+{
+  "appName": "Maemi-Chan",
+  "loading": "加载中...",
+  "error": "发生错误",
+  "success": "成功",
+  "confirm": "确认",
+  "cancel": "取消",
+  "close": "关闭",
+  "save": "保存",
+  "delete": "删除",
+  "edit": "编辑",
+  "search": "搜索",
+  "back": "返回",
+  "next": "下一步",
+  "previous": "上一步",
+  "copyright": "© 2025 Maemi-Chan Medical AI. 保留所有权利",
+  "items": "项",
+  "recommended": "推荐",
+  "optional": "可选",
+  "contextualSuggestions": "可能有帮助的问题"
+}

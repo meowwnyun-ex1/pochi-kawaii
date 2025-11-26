@@ -1,0 +1,22 @@
+{
+  "selectLanguage": "Pumili ng Wika",
+  "active": "Aktibo",
+  "aiNote": "Ang AI ay tumutugon sa wika ng tanong",
+  "changedTo": "Binago sa {{language}}",
+  "changeLanguage": "Palitan ang wika",
+  "currentLanguage": "Kasalukuyang wika",
+  "switchTo": "Lumipat sa {{language}}",
+  "languages": {
+    "th": "Thai",
+    "en": "Ingles",
+    "jp": "Hapones",
+    "id": "Indones",
+    "zh": "Intsik",
+    "ko": "Koreano",
+    "vi": "Biyetnames",
+    "es": "Espanyol",
+    "fil": "Filipino",
+    "hi": "Hindi"
+  }
+}
+

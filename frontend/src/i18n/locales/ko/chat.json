@@ -1,0 +1,28 @@
+{
+  "greeting": "안녕하세요! 저는 Maemi-Chan AI 어시스턴트입니다. 건강 및 의료 질문에 답변할 준비가 되어 있습니다 😊\n\n무엇이든 물어보실 수 있으며, 아래 제안된 질문 중에서 선택할 수도 있습니다.",
+  "type_message": "메시지를 입력하세요...",
+  "send": "보내기",
+  "sending": "전송 중...",
+  "normal_send_tooltip": "메시지 보내기",
+  "deep_think_tooltip": "딥 씽크 모드 토글 (깊은 사고)",
+  "deep_think_enabled": "🧠 딥 씽크 활성화됨",
+  "deep_think_disabled": "⚡ 일반 모드",
+  "deep_think_processing": "🧠 깊이 생각 중...",
+  "quick_questions": "빠른 질문",
+  "emergency_detected": "⚠️ 응급 상황이 감지되었습니다. 즉시 의사나 병원에 연락하세요.",
+  "connection_error": "❌ 연결할 수 없습니다\n\n인터넷 연결을 확인하세요",
+  "error": {
+    "http_error": "오류가 발생했습니다",
+    "network_error": "연결할 수 없습니다",
+    "timeout": "⏱️ 시간 초과 - AI가 너무 오래 걸렸습니다\n\n다시 시도하거나 복잡한 질문에는 딥 씽크를 사용하세요",
+    "please_try_again": "다시 시도하세요"
+  },
+  "disclaimer": "AI 의료 어시스턴트 - 이 답변은 정보 제공 목적으로만 제공되며 의학적 진단이 아닙니다",
+  "stage_analyzing": "질문을 분석 중입니다",
+  "stage_thinking": "처리 및 사고 중",
+  "stage_researching": "관련 정보 검색 중",
+  "stage_generating": "응답 생성 중",
+  "queue": "대기열",
+  "time_sec": "초"
+}
+

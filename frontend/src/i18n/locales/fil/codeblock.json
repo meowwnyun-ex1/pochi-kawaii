@@ -1,0 +1,10 @@
+{
+  "copy": "Kopyahin ang code",
+  "copied": "Nakopya na!",
+  "download": "I-download ang code",
+  "downloadFilename": "code",
+  "copySuccess": "Nakopya sa clipboard!",
+  "copyError": "Hindi makopya",
+  "downloadSuccess": "Matagumpay na na-download ang code!",
+  "downloadError": "Hindi ma-download ang code"
+}

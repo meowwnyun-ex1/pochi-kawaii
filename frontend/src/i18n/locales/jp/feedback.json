@@ -1,0 +1,18 @@
+{
+  "title": "フィードバック",
+  "subtitle": "ご意見をお聞かせください",
+  "nameLabel": "名前",
+  "namePlaceholder": "お名前（任意）",
+  "ratingLabel": "評価",
+  "commentLabel": "コメント",
+  "commentPlaceholder": "フィードバックを入力...",
+  "submit": "送信",
+  "submitting": "送信中...",
+  "backToChat": "チャットに戻る",
+  "ratingRequired": "評価を選択してください",
+  "commentRequired": "コメントを入力してください",
+  "successTitle": "ありがとうございます！",
+  "successMessage": "フィードバックが正常に送信されました",
+  "errorMessage": "フィードバックの送信に失敗しました"
+}
+

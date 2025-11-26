@@ -1,0 +1,22 @@
+{
+  "selectLanguage": "Chọn ngôn ngữ",
+  "active": "Hoạt động",
+  "aiNote": "AI trả lời bằng ngôn ngữ câu hỏi",
+  "changedTo": "Đã đổi sang {{language}}",
+  "changeLanguage": "Thay đổi ngôn ngữ",
+  "currentLanguage": "Ngôn ngữ hiện tại",
+  "switchTo": "Chuyển sang {{language}}",
+  "languages": {
+    "th": "Tiếng Thái",
+    "en": "Tiếng Anh",
+    "jp": "Tiếng Nhật",
+    "id": "Tiếng Indonesia",
+    "zh": "Tiếng Trung",
+    "ko": "Tiếng Hàn",
+    "vi": "Tiếng Việt",
+    "es": "Tiếng Tây Ban Nha",
+    "fil": "Tiếng Philippines",
+    "hi": "Tiếng Hindi"
+  }
+}
+

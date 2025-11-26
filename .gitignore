@@ -1,0 +1,560 @@
+# ════════════════════════════════════════════════════════════════════════════
+# 🔒 SECURITY: Environment Variables & Credentials
+# ════════════════════════════════════════════════════════════════════════════
+.env
+.env.local
+.env.*.local
+.env.backup
+.env.bak
+.env.old
+.env.orig
+.env.production
+.env.development
+.env.test
+.env.staging
+**/backend/.env
+**/frontend/.env
+**/.env
+
+# Backup files (may contain sensitive data)
+*.backup
+*.bak
+*.old
+*.orig
+*~
+*.swp
+*.swo
+*.swn
+
+# ════════════════════════════════════════════════════════════════════════════
+# 🔑 CREDENTIALS & KEYS (CRITICAL - NEVER COMMIT!)
+# ════════════════════════════════════════════════════════════════════════════
+# SSL/TLS Certificates
+*.key
+*.pem
+*.crt
+*.cer
+*.p12
+*.pfx
+*.jks
+*.keystore
+
+# SSH Keys
+id_rsa
+id_rsa.pub
+id_dsa
+id_dsa.pub
+id_ecdsa
+id_ecdsa.pub
+id_ed25519
+id_ed25519.pub
+*.ppk
+
+# GPG Keys
+*.gpg
+*.pgp
+secring.*
+
+# API Keys & Tokens
+credentials.json
+secrets.json
+auth.json
+token.json
+api_keys.txt
+api_keys.json
+passwords.txt
+passwords.json
+service-account*.json
+firebase-adminsdk*.json
+gcloud-service-key.json
+
+# OAuth & JWT
+*.jwt
+oauth-token.json
+access_token.txt
+refresh_token.txt
+
+# Database Credentials
+database.yml
+database_credentials.*
+db_password.*
+
+# AWS Credentials
+.aws/
+aws-credentials
+*.pem
+
+# Azure Credentials
+azure-credentials.json
+
+# Google Cloud
+gcp-credentials.json
+application_default_credentials.json
+
+# ════════════════════════════════════════════════════════════════════════════
+# 🗑️ CACHE & TEMPORARY FILES
+# ════════════════════════════════════════════════════════════════════════════
+# Python Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.pyc
+*.pyo
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.ruff_cache/
+.pytest_cache/
+.hypothesis/
+*.cover
+*.py,cover
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+
+# pip cache
+pip-log.txt
+pip-delete-this-directory.txt
+.pip_cache/
+
+# Python build
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.spec
+*.manifest
+*.exe.manifest
+
+# Python Virtual Environment
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+virtualenv/
+
+# Node.js Cache
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+.pnpm-store/
+npm-cache/
+npm-global/
+.npm-cache/
+.npm-global/
+.npm/
+.yarn/
+.yarn-integrity
+
+# TypeScript Cache
+*.tsbuildinfo
+.tscache/
+
+# ESLint Cache
+.eslintcache
+
+# Prettier Cache
+.prettiercache
+
+# Next.js Cache
+.next/
+out/
+
+# Nuxt.js Cache
+.nuxt/
+.output/
+
+# Gatsby Cache
+.cache/
+public/
+
+# Vite Cache
+.vite/
+vite.config.*.timestamp-*
+
+# Webpack Cache
+.webpack/
+
+# Parcel Cache
+.parcel-cache/
+
+# Turbo Cache
+.turbo/
+
+# Wireit Cache
+.wireit/
+
+# SvelteKit
+.svelte-kit/
+
+# ════════════════════════════════════════════════════════════════════════════
+# 📦 BUILD OUTPUTS
+# ════════════════════════════════════════════════════════════════════════════
+dist/
+dist-ssr/
+build/
+out/
+.build/
+*.min.js
+*.min.css
+
+# ════════════════════════════════════════════════════════════════════════════
+# 📋 LOGS
+# ════════════════════════════════════════════════════════════════════════════
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+combined.log
+error.log
+access.log
+server.log
+debug.log
+*.log.*
+
+# ════════════════════════════════════════════════════════════════════════════
+# 🖥️ OS FILES
+# ════════════════════════════════════════════════════════════════════════════
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ════════════════════════════════════════════════════════════════════════════
+# 💻 IDE & EDITOR FILES
+# ════════════════════════════════════════════════════════════════════════════
+# VSCode
+.vscode/
+*.code-workspace
+
+# JetBrains (IntelliJ, PyCharm, WebStorm, etc.)
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*.swn
+*.un~
+Session.vim
+.netrwhist
+*~
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# Visual Studio
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.userprefs
+.vs/
+
+# Eclipse
+.metadata
+.classpath
+.project
+.settings/
+
+# NetBeans
+nbproject/private/
+nbbuild/
+nbdist/
+.nb-gradle/
+
+# ════════════════════════════════════════════════════════════════════════════
+# 🗄️ DATABASE FILES
+# ════════════════════════════════════════════════════════════════════════════
+*.db
+*.sqlite
+*.sqlite3
+*.db-shm
+*.db-wal
+*.mdb
+*.accdb
+*.sql
+*.dump
+*.bak.sql
+database_backup_*
+
+# MongoDB
+*.bson
+
+# Redis
+dump.rdb
+appendonly.aof
+
+# ════════════════════════════════════════════════════════════════════════════
+# 📦 PACKAGE MANAGER LOCK FILES
+# ════════════════════════════════════════════════════════════════════════════
+# Uncomment to ignore lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+# Pipfile.lock
+# poetry.lock
+
+# ════════════════════════════════════════════════════════════════════════════
+# 🧪 TESTING
+# ════════════════════════════════════════════════════════════════════════════
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage/
+*.lcov
+.nyc_output
+test-results/
+junit.xml
+coverage.xml
+*.cover
+.hypothesis/
+nosetests.xml
+test_connection.py
+test_db.py
+validate_env.py
+*_test_credentials.py
+
+# ════════════════════════════════════════════════════════════════════════════
+# 🔄 RUNTIME & PROCESS FILES
+# ════════════════════════════════════════════════════════════════════════════
+pids/
+*.pid
+*.seed
+*.pid.lock
+*.sock
+
+# PM2
+.pm2/
+pm2.log
+pm2-error.log
+ecosystem.*.config.js
+pm2-serve.js
+.appdata/
+.localappdata/
+
+# ════════════════════════════════════════════════════════════════════════════
+# 🏥 MEDICAL DATA (HIPAA Compliance)
+# ════════════════════════════════════════════════════════════════════════════
+medical_conversations/
+conversation_logs/
+patient_data/
+patient_records/
+phi_data/
+health_records/
+*.medical
+*.hipaa
+*.phi
+
+# ════════════════════════════════════════════════════════════════════════════
+# 📁 SESSION & CACHE
+# ════════════════════════════════════════════════════════════════════════════
+sessions/
+*.session
+.session/
+.cache/*
+!.cache/.gitkeep
+!.cache/*/.gitkeep
+
+# ════════════════════════════════════════════════════════════════════════════
+# 📝 TEMPORARY FILES
+# ════════════════════════════════════════════════════════════════════════════
+tmp/
+temp/
+.tmp/
+*.tmp
+*.temp
+*.tmp.py
+*.test.json
+*.backup.*
+*_backup
+*_old
+scratch/
+sandbox/
+
+# Core dumps
+core
+core.*
+*.core
+*.dump
+
+# ════════════════════════════════════════════════════════════════════════════
+# 🌐 WEB SERVER
+# ════════════════════════════════════════════════════════════════════════════
+# Nginx
+*.conf.backup
+nginx.conf.backup*
+nginx_backup_*
+
+# Apache
+.htaccess.bak
+httpd.conf.backup
+
+# ════════════════════════════════════════════════════════════════════════════
+# 🔐 GIT SECURITY
+# ════════════════════════════════════════════════════════════════════════════
+.git-credentials
+.git/credentials
+.gitconfig.local
+
+# ════════════════════════════════════════════════════════════════════════════
+# 📸 MEDIA & UPLOADS (Large files)
+# ════════════════════════════════════════════════════════════════════════════
+uploads/
+upload/
+media/
+static/uploads/
+public/uploads/
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.flv
+*.wmv
+# Uncomment if you want to ignore images
+# *.jpg
+# *.jpeg
+# *.png
+# *.gif
+# *.bmp
+# *.svg
+# *.webp
+
+# ════════════════════════════════════════════════════════════════════════════
+# 🎨 DESIGN FILES (Large files)
+# ════════════════════════════════════════════════════════════════════════════
+*.psd
+*.ai
+*.sketch
+*.fig
+*.xd
+
+# ════════════════════════════════════════════════════════════════════════════
+# 📊 DATA FILES
+# ════════════════════════════════════════════════════════════════════════════
+*.csv
+*.xlsx
+*.xls
+*.tsv
+data/
+datasets/
+*.parquet
+*.feather
+
+# ════════════════════════════════════════════════════════════════════════════
+# 🚀 DEPLOYMENT
+# ════════════════════════════════════════════════════════════════════════════
+.serverless/
+.terraform/
+*.tfstate
+*.tfstate.backup
+.terraform.lock.hcl
+.pulumi/
+*.zip
+*.tar.gz
+*.tgz
+*.rar
+*.7z
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+
+# Kubernetes
+*.kubeconfig
+
+# ════════════════════════════════════════════════════════════════════════════
+# 🔧 DEVELOPMENT SCRIPTS
+# ════════════════════════════════════════════════════════════════════════════
+start_*.bat
+start_*.sh
+run_*.bat
+run_*.sh
+test_*.sh
+test_*.bat
+
+# ════════════════════════════════════════════════════════════════════════════
+# 🎯 PROJECT-SPECIFIC
+# ════════════════════════════════════════════════════════════════════════════
+# Add your project-specific ignores below
+# Example:
+# my_secret_config.json
+# local_settings.py

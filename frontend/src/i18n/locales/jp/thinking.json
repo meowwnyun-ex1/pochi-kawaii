@@ -1,0 +1,13 @@
+{
+  "stage_analyzing": "質問を分析中",
+  "stage_thinking": "深く考え中",
+  "stage_researching": "情報を検索中",
+  "stage_coding": "コードを書き中",
+  "stage_calculating": "計算中",
+  "stage_generating": "応答を生成中",
+  "stage_complete": "完了",
+  "deep_think_mode": "ディープシンクモード - 詳細に分析中",
+  "processing_steps": "処理ステップ",
+  "processing": "処理中..."
+}
+

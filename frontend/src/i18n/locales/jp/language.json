@@ -1,0 +1,22 @@
+{
+  "selectLanguage": "言語を選択",
+  "active": "使用中",
+  "aiNote": "AIは質問の言語で回答",
+  "changedTo": "{{language}}に変更しました",
+  "changeLanguage": "言語を変更",
+  "currentLanguage": "現在の言語",
+  "switchTo": "{{language}}に切り替え",
+  "languages": {
+    "th": "タイ語",
+    "en": "英語",
+    "jp": "日本語",
+    "id": "インドネシア語",
+    "zh": "中国語",
+    "ko": "韓国語",
+    "vi": "ベトナム語",
+    "es": "スペイン語",
+    "fil": "フィリピン語",
+    "hi": "ヒンディー語"
+  }
+}
+

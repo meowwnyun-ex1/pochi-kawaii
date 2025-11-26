@@ -1,0 +1,13 @@
+{
+  "stage_analyzing": "प्रश्न का विश्लेषण कर रहे हैं",
+  "stage_thinking": "गहराई से सोच रहे हैं",
+  "stage_researching": "जानकारी खोज रहे हैं",
+  "stage_coding": "कोड लिख रहे हैं",
+  "stage_calculating": "गणना कर रहे हैं",
+  "stage_generating": "उत्तर उत्पन्न कर रहे हैं",
+  "stage_complete": "पूर्ण",
+  "deep_think_mode": "गहरी सोच मोड - पूरी तरह से विश्लेषण",
+  "processing_steps": "प्रसंस्करण चरण",
+  "processing": "प्रसंस्करण हो रहा है..."
+}
+

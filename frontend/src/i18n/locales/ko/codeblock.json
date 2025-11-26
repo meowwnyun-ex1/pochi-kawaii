@@ -1,0 +1,10 @@
+{
+  "copy": "코드 복사",
+  "copied": "복사됨!",
+  "download": "코드 다운로드",
+  "downloadFilename": "코드",
+  "copySuccess": "클립보드에 복사되었습니다!",
+  "copyError": "복사 실패",
+  "downloadSuccess": "코드가 다운로드되었습니다!",
+  "downloadError": "코드 다운로드 실패"
+}

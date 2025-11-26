@@ -1,0 +1,13 @@
+{
+  "stage_analyzing": "分析问题",
+  "stage_thinking": "深度思考",
+  "stage_researching": "搜索信息",
+  "stage_coding": "编写代码",
+  "stage_calculating": "计算中",
+  "stage_generating": "生成回答",
+  "stage_complete": "完成",
+  "deep_think_mode": "深度思考模式 - 彻底分析",
+  "processing_steps": "处理步骤",
+  "processing": "处理中..."
+}
+
