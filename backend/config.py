@@ -148,16 +148,16 @@ class Config:
         if cors_allow_all == "true" and environment == "production":
             warnings.append("⚠️  CORS_ALLOW_ALL=true in production is a security risk!")
 
-        # Validate DATABASE_URL format - แก้ไขการตรวจสอบ
-        database_url = os.getenv("DATABASE_URL", "")
+        # Validate DATABASE_URL format - improved validation
+        database_url = os.getenv("DATABASE_URL", "").strip().strip('"').strip("'")
         if not database_url:
             warnings.append("⚠️  DATABASE_URL is missing")
-        elif len(database_url) < 50:
+        elif len(database_url) < 30:  # Relaxed minimum from 50 to 30 for shorter valid connections
             warnings.append(f"⚠️  DATABASE_URL seems too short ({len(database_url)} chars) - check .env file encoding")
-        elif "DRIVER=" not in database_url.upper():
-            warnings.append(f"⚠️  DATABASE_URL missing DRIVER parameter")
-        elif "YOUR_" in database_url or "your_" in database_url:
-            warnings.append("⚠️  DATABASE_URL contains placeholder values")
+        elif "DRIVER=" not in database_url.upper() and "mssql://" not in database_url.lower():
+            warnings.append(f"⚠️  DATABASE_URL missing DRIVER parameter or invalid format")
+        elif "YOUR_" in database_url or "your_" in database_url or "PLACEHOLDER" in database_url.upper():
+            warnings.append("⚠️  DATABASE_URL contains placeholder values - update with actual credentials")
 
         # Validate server port is a valid number
         try:
@@ -218,23 +218,25 @@ class Config:
         Get DATABASE_URL from environment with validation
         Note: ConnectionPool will auto-fix special characters (@ - in UID, DATABASE, PWD)
         """
-        url = os.getenv("DATABASE_URL", "")
-        
+        url = os.getenv("DATABASE_URL", "").strip().strip('"').strip("'")
+
         # Debug logging เพื่อช่วย troubleshoot
         if not url:
             logger.error("DATABASE_URL is empty!")
             raise ValueError("DATABASE_URL is not set in environment")
-        
-        if len(url) < 50:
+
+        # Relaxed validation - allow shorter valid connection strings
+        if len(url) < 30:
             logger.error(f"DATABASE_URL seems too short: {len(url)} chars")
-            logger.error(f"Content: '{url}'")
+            logger.error(f"Content (first 50 chars): '{url[:50]}'")
             logger.error("This usually means .env file has encoding issues or line breaks")
             logger.error("Try recreating .env file with proper UTF-8 encoding")
-            raise ValueError(f"DATABASE_URL is too short ({len(url)} chars)")
-        
-        # Remove quotes ถ้ามี (บาง env parser เก็บ quotes ไว้)
-        url = url.strip().strip('"').strip("'")
-        
+            raise ValueError(f"DATABASE_URL is too short ({len(url)} chars - minimum 30)")
+
+        # Validate connection string format
+        if "DRIVER=" not in url.upper() and "mssql://" not in url.lower():
+            logger.warning("DATABASE_URL doesn't contain DRIVER parameter - might be invalid format")
+
         logger.debug(f"DATABASE_URL loaded successfully ({len(url)} chars)")
         return url
 

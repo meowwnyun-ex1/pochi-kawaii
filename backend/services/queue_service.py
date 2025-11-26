@@ -206,7 +206,7 @@ class AIQueueService:
                         del self.processing[task_id]
                         logger.debug(f"Cleaned up expired task: {task_id}")
                     except KeyError:
-                        pass
+                        logger.debug(f"Task {task_id} already removed during cleanup")
                 
                 if expired:
                     logger.info(f"Cleaned up {len(expired)} expired results")
@@ -333,9 +333,9 @@ class AIQueueService:
             try:
                 await asyncio.wait_for(self.cleanup_task, timeout=2.0)
             except (asyncio.CancelledError, asyncio.TimeoutError):
-                pass
+                logger.debug("Cleanup task cancelled or timed out during shutdown")
             except Exception as e:
-                logger.error(f"Error cancelling cleanup task: {e}")
+                logger.error(f"Error cancelling cleanup task: {e}", exc_info=True)
 
         # Cancel all workers
         for worker in self.workers:

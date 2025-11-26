@@ -7,10 +7,18 @@ import json
 
 from services.language_service import LanguageService
 from services.learning_service import LearningService
-from services.medical_knowledge_service import MedicalKnowledgeService
-from services.medical_analytics_service import MedicalAnalyticsService
 from services.hf_client_service import HuggingFaceClientService
 from services.file_processing_service import FileProcessingService
+
+# Optional medical services - not required for chibi image generation
+try:
+    from services.medical_knowledge_service import MedicalKnowledgeService
+    from services.medical_analytics_service import MedicalAnalyticsService
+    MEDICAL_SERVICES_AVAILABLE = True
+except ImportError:
+    MEDICAL_SERVICES_AVAILABLE = False
+    MedicalKnowledgeService = None
+    MedicalAnalyticsService = None
 
 logger = logging.getLogger(__name__)
 
@@ -80,8 +88,16 @@ class AIService:
 
         self.lang_service = LanguageService(str(ai_config_path) if ai_config_path else None)
         self.learning_service = LearningService(database_manager, str(ai_config_path) if ai_config_path else None)
-        self.medical_knowledge = MedicalKnowledgeService(database_manager)
-        self.medical_analytics = MedicalAnalyticsService(database_manager)
+
+        # Initialize medical services only if available
+        if MEDICAL_SERVICES_AVAILABLE:
+            self.medical_knowledge = MedicalKnowledgeService(database_manager)
+            self.medical_analytics = MedicalAnalyticsService(database_manager)
+            logger.info("Medical knowledge services initialized")
+        else:
+            self.medical_knowledge = None
+            self.medical_analytics = None
+            logger.info("Medical services not available - using basic chibi generation only")
 
         self.hf_client = HuggingFaceClientService(
             hf_api_token,
@@ -289,6 +305,10 @@ class AIService:
         return result
 
     def enrich_with_medical_knowledge(self, prompt: str, symptoms, lang: str = "th") -> str:
+        # Skip if medical services not available
+        if not MEDICAL_SERVICES_AVAILABLE or not self.medical_knowledge:
+            return ""
+
         enrichment_parts = []
 
         try:
@@ -374,6 +394,10 @@ class AIService:
         }
 
     def enrich_with_analytics(self, prompt: str, lang: str = "th", analytics_info: Optional[dict] = None) -> str:
+        # Skip if medical analytics not available
+        if not MEDICAL_SERVICES_AVAILABLE or not self.medical_analytics:
+            return ""
+
         if not analytics_info or not analytics_info.get("is_analytics"):
             return ""
 

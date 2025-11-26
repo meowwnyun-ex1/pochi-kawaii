@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import i18n from '@/i18n';
+import logger from '@/utils/logger';
 
 interface LanguageContextType {
   language: string;
@@ -34,9 +35,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   const setLanguage = useCallback((lang: string) => {
     if (!SUPPORTED_LANGUAGES.includes(lang)) {
-      if (import.meta.env.DEV) {
-        console.warn(`Language ${lang} is not supported`);
-      }
+      logger.warn(`Language ${lang} is not supported`, 'LanguageContext');
       return;
     }
 
@@ -65,9 +64,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       }
       return key;
     } catch (error) {
-      if (import.meta.env.DEV) {
-        console.warn(`Translation error for key "${key}":`, error);
-      }
+      logger.warn(`Translation error for key "${key}"`, 'LanguageContext', error);
       return key;
     }
   }, [i18nT, ready]);

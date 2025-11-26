@@ -6,18 +6,22 @@ export default defineConfig(({ mode }) => {
   const envDir = path.resolve(__dirname, '..');
   const env = loadEnv(mode, envDir, '');
 
+  // Sanitize environment variables to prevent path injection
   let viteApiUrl = env.VITE_API_URL || '';
   let viteBasePath = env.VITE_BASE_PATH || '/pochi-kawaii';
 
-  if (viteApiUrl && viteApiUrl.includes('Program Files')) {
+  // Remove any invalid path values that contain Windows paths
+  if (viteApiUrl && (viteApiUrl.includes('Program Files') || viteApiUrl.includes('\\'))) {
+    console.warn('⚠️  Invalid VITE_API_URL detected, using default empty string');
     viteApiUrl = '';
   }
-  if (viteBasePath && viteBasePath.includes('Program Files')) {
+  if (viteBasePath && (viteBasePath.includes('Program Files') || viteBasePath.includes('\\'))) {
+    console.warn('⚠️  Invalid VITE_BASE_PATH detected, using default /pochi-kawaii');
     viteBasePath = '/pochi-kawaii';
   }
 
   const serverHost = env.SERVER_HOST || '127.0.0.1';
-  const serverPort = env.SERVER_PORT || '4004';
+  const serverPort = parseInt(env.SERVER_PORT || '4004', 10);
 
   console.log('🔧 Pochi! Kawaii ne~ Frontend Build Configuration:');
   console.log('   Mode:', mode);

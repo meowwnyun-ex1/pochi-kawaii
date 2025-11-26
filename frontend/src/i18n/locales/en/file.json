@@ -1,0 +1,8 @@
+{
+  "limit_reached": "Sorry, maximum 10 files can be attached",
+  "size_error": "Sorry, file is too large (maximum 10MB)",
+  "type_error": "Sorry, this file type is not supported",
+  "added": "File added",
+  "remove": "Remove file",
+  "attach_tooltip": "Attach file"
+}

@@ -42,8 +42,9 @@ const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(
       return;
     }
 
+    const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB per file
     const validFiles = files.filter((file) => {
-      const isValidSize = file.size <= 10 * 1024 * 1024; // 10MB
+      const isValidSize = file.size <= MAX_FILE_SIZE;
 
       // Support multiple file types: images, documents, spreadsheets, code files
       const isValidType =
@@ -70,8 +71,9 @@ const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(
         /\.(csv|txt|json|xml|py|js|ts|tsx|jsx|java|cpp|c|h|cs|php|rb|go|rs|swift|kt|sql|html|css|scss|md|yaml|yml|sh|bat)$/i.test(file.name);
 
       if (!isValidSize) {
+        const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
         const sizeErrorMsg = t('file:size_error') || t('file.size_error') || 'File too large (max 10MB)';
-        showToast.error(`❌ ${file.name}\n${sizeErrorMsg}`, { duration: 4000, whiteSpace: 'pre-line' });
+        showToast.error(`❌ ${file.name}\n${sizeErrorMsg}\nSize: ${fileSizeMB} MB`, { duration: 4000, whiteSpace: 'pre-line' });
         return false;
       }
       if (!isValidType) {

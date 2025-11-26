@@ -6,8 +6,9 @@ import Feedback from '@/pages/Feedback';
 import Developing from '@/pages/Developing';
 
 const App = () => {
-  const BASE_PATH = import.meta.env.VITE_BASE_PATH;
-  const ADMIN_PATH = import.meta.env.VITE_ADMIN_PATH;
+  // Provide safe defaults for environment variables
+  const BASE_PATH = import.meta.env.VITE_BASE_PATH || '/pochi-kawaii';
+  const ADMIN_PATH = import.meta.env.VITE_ADMIN_PATH || '/admin';
 
   return (
     <>

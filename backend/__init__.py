@@ -9,5 +9,5 @@ if env_file.exists():
 __version__ = os.getenv("APP_VERSION", "beta")
 __author__ = os.getenv("APP_DEVELOPER", "Thammaphon Chittasuwanna (SDM)")
 __company__ = os.getenv("APP_COMPANY", "SIAM DENSO MANUFACTURING CO., LTD.")
-__description__ = os.getenv("APP_NAME", "Medical AI consultation backend with OLLAMA")
+__description__ = os.getenv("APP_NAME", "Pochi! Kawaii ne~ - Chibi AI Image Generator with DeepSeek Chat")
 __copyright__ = f"© {__company__}"
