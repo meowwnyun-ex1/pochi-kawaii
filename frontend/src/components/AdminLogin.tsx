@@ -7,7 +7,7 @@ interface AdminLoginProps {
   onLoginSuccess: (token: string) => void;
 }
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || '';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const AdminLogin = ({ onLoginSuccess }: AdminLoginProps) => {
   const { t } = useLanguage();
@@ -54,7 +54,7 @@ const AdminLogin = ({ onLoginSuccess }: AdminLoginProps) => {
             <div className="relative flex items-center gap-3">
               <div className="p-2 bg-white rounded-xl shadow-sm">
                 <img
-                  src={`${import.meta.env.VITE_BASE_PATH || '/pochi-kawaii'}/logo.svg`}
+                  src={`${import.meta.env.VITE_BASE_PATH}/logo.svg`}
                   alt="Logo"
                   className="h-7 w-7"
                   onError={(e) => {

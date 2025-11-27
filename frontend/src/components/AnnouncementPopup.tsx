@@ -16,9 +16,9 @@ const AnnouncementPopup = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    const apiBaseUrl = import.meta.env.VITE_API_URL || '';
+    const apiBaseUrl = import.meta.env.VITE_API_URL;
     const controller = new AbortController();
-    
+
     const fetchAnnouncements = async () => {
       try {
         const response = await fetch(`${apiBaseUrl}/api/announcements/active`, {

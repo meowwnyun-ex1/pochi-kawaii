@@ -63,7 +63,7 @@ if PRODUCTION_FEATURES_AVAILABLE:
         setup_logging(
             log_level=config.log_level,
             json_format=json_logging,
-            log_file=config.logs_dir / "app.log" if hasattr(config, 'logs_dir') else None
+            log_file=str(config.logs_dir / "app.log") if hasattr(config, 'logs_dir') and config.logs_dir else None
         )
         logger.info("✅ Structured logging initialized")
     except Exception as e:
@@ -259,7 +259,7 @@ async def request_middleware(request: Request, call_next):
         "default-src 'self'; "
         "script-src 'self' 'unsafe-inline' 'unsafe-eval'; "
         "style-src 'self' 'unsafe-inline'; "
-        "img-src 'self' data: https:; "
+        "img-src 'self' data: https: blob:; "
         "font-src 'self' data:; "
         "connect-src 'self' https://api-inference.huggingface.co; "
         "frame-ancestors 'self'; "

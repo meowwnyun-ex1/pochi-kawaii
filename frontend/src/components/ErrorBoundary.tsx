@@ -59,7 +59,7 @@ class ErrorBoundaryClass extends Component<Props, State> {
   };
 
   handleGoHome = () => {
-    window.location.href = import.meta.env.VITE_BASE_PATH || '/';
+    window.location.href = import.meta.env.VITE_BASE_PATH;
   };
 
   render() {

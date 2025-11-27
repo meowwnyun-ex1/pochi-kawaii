@@ -41,7 +41,7 @@ const AnnouncementManager = ({ token }: AnnouncementManagerProps) => {
 
   const fetchAnnouncements = async () => {
     try {
-      const apiBaseUrl = import.meta.env.VITE_API_URL || '';
+      const apiBaseUrl = import.meta.env.VITE_API_URL;
       const res = await fetch(`${apiBaseUrl}/api/announcements/admin/all`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -124,10 +124,9 @@ const AnnouncementManager = ({ token }: AnnouncementManagerProps) => {
         formDataToSend.append('image', selectedImage);
       }
 
-      const apiBaseUrl = import.meta.env.VITE_API_URL || '';
-      
+      const apiBaseUrl = import.meta.env.VITE_API_URL;
+
       if (editingId) {
-        // Update existing announcement
         const res = await fetch(`${apiBaseUrl}/api/announcements/admin/${editingId}`, {
           method: 'PUT',
           headers: {
@@ -208,7 +207,7 @@ const AnnouncementManager = ({ token }: AnnouncementManagerProps) => {
     }
 
     try {
-      const apiBaseUrl = import.meta.env.VITE_API_URL || '';
+      const apiBaseUrl = import.meta.env.VITE_API_URL;
       const res = await fetch(`${apiBaseUrl}/api/announcements/admin/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
@@ -228,7 +227,7 @@ const AnnouncementManager = ({ token }: AnnouncementManagerProps) => {
 
   const handleToggleActive = async (id: number, currentStatus: boolean) => {
     try {
-      const apiBaseUrl = import.meta.env.VITE_API_URL || '';
+      const apiBaseUrl = import.meta.env.VITE_API_URL;
       const res = await fetch(`${apiBaseUrl}/api/announcements/admin/${id}`, {
         method: 'PUT',
         headers: {

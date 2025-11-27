@@ -100,7 +100,7 @@ const FeedbackForm = () => {
 
           <div className="p-5 space-y-4">
             <div>
-              <label className="block text-sm font-semibold text-pink-700 mb-2 flex items-center gap-2">
+              <label className="flex items-center gap-2 text-sm font-semibold text-pink-700 mb-2">
                 <User className="h-4 w-4" />
                 {getFeedbackText('nameLabel', 'Name')}
               </label>
@@ -143,7 +143,7 @@ const FeedbackForm = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-pink-700 mb-2 flex items-center gap-2">
+              <label className="flex items-center gap-2 text-sm font-semibold text-pink-700 mb-2">
                 <MessageSquare className="h-4 w-4" />
                 {getFeedbackText('commentLabel', 'Comment')}
               </label>
