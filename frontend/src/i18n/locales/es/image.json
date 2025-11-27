@@ -1,0 +1,27 @@
+{
+  "greeting": "¡Hola! 🌸 Soy Pochi, listo para transformar tu foto en un adorable dibujo chibi! ✨\n\n¡Solo sube tu imagen y haz clic en Generate - tu foto se convertirá en un personaje chibi lindo al instante! 💕",
+  "upload_image": "Subir imagen",
+  "generate": "Generate",
+  "generating": "Generando...",
+  "upload_prompt": "Arrastra y suelta tu archivo aquí, o haz clic para seleccionar",
+  "supported_formats": "Soportado: JPG, PNG, WEBP (máx 10MB)",
+  "connection_error": "❌ No se puede conectar\n\nPor favor verifique su conexión a internet",
+  "error": {
+    "http_error": "Ocurrió un error",
+    "network_error": "No se puede conectar",
+    "timeout": "⏱️ Tiempo agotado - AI tardó demasiado\n\nPor favor intente de nuevo",
+    "please_try_again": "Por favor intente de nuevo",
+    "no_image": "Por favor suba una imagen primero",
+    "invalid_format": "Formato de archivo inválido. Por favor use JPG, PNG o WEBP"
+  },
+  "stage_analyzing": "Analizando su imagen",
+  "stage_thinking": "Procesando imagen",
+  "stage_researching": "Creando características chibi",
+  "stage_generating": "Generando su dibujo",
+  "queue": "Cola",
+  "time_sec": "seg",
+  "download": "Descargar imagen",
+  "generate_again": "Generar de nuevo",
+  "warning_delete_on_close": "⚠️ Advertencia: Las imágenes subidas se eliminarán inmediatamente después de cerrar este sitio web"
+}
+

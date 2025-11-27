@@ -1,11 +1,9 @@
 from .auth_service import AuthService
-from .cache_service import CacheService
-from .language_service import LanguageService
-from .queue_service import AIQueueService
+from .chibi_image_service import ChibiImageService
+from .feedback_service import FeedbackService
 
 __all__ = [
     "AuthService",
-    "CacheService",
-    "LanguageService",
-    "AIQueueService",
+    "ChibiImageService",
+    "FeedbackService",
 ]

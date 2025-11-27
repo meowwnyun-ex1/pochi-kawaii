@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Deploy Maemi-Chan
+Deploy Pochi! Kawaii ne~
 Usage:
   python deploy.py              # Full deploy (frontend + backend)
   python deploy.py --frontend   # Frontend only
@@ -16,33 +16,40 @@ import socket
 from pathlib import Path
 from dotenv import load_dotenv
 
+
 class Colors:
-    BLUE = '\033[94m'
-    CYAN = '\033[96m'
-    GREEN = '\033[92m'
-    YELLOW = '\033[93m'
-    RED = '\033[91m'
-    END = '\033[0m'
-    BOLD = '\033[1m'
+    BLUE = "\033[94m"
+    CYAN = "\033[96m"
+    GREEN = "\033[92m"
+    YELLOW = "\033[93m"
+    RED = "\033[91m"
+    END = "\033[0m"
+    BOLD = "\033[1m"
+
 
 def print_header(text):
     print(f"\n{Colors.BOLD}{Colors.BLUE}{'='*80}{Colors.END}")
     print(f"{Colors.BOLD}{Colors.CYAN}{text.center(80)}{Colors.END}")
     print(f"{Colors.BOLD}{Colors.BLUE}{'='*80}{Colors.END}\n")
 
+
 def print_success(text):
     print(f"{Colors.GREEN}[OK] {text}{Colors.END}")
+
 
 def print_error(text):
     print(f"{Colors.RED}[FAIL] {text}{Colors.END}")
 
+
 def print_info(text):
     print(f"{Colors.CYAN}> {text}{Colors.END}")
+
 
 def print_warning(text):
     print(f"{Colors.YELLOW}[WARN] {text}{Colors.END}")
 
-def is_port_open(port, host='127.0.0.1'):
+
+def is_port_open(port, host="127.0.0.1"):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.settimeout(1)
     try:
@@ -52,11 +59,12 @@ def is_port_open(port, host='127.0.0.1'):
     except:
         return False
 
-def deploy_frontend(project_root, nginx_dir):
+
+def deploy_frontend(project_root, nginx_dir, skip_nginx_restart=False):
     """Deploy frontend to nginx"""
     print_header("DEPLOY FRONTEND")
 
-    nginx_html = Path(nginx_dir) / "html" / "maemi-chan"
+    nginx_html = Path(nginx_dir) / "html" / "pochi-kawaii"
     frontend_dir = project_root / "frontend"
     temp_dist = project_root / "dist-temp"
     nginx_exe = Path(nginx_dir) / "nginx.exe"
@@ -65,34 +73,35 @@ def deploy_frontend(project_root, nginx_dir):
     print_info(f"nginx: {nginx_html}")
     print()
 
-    # Stop nginx
-    print_header("[1/5] Stop nginx")
-    if nginx_exe.exists():
-        try:
-            subprocess.run([str(nginx_exe), "-s", "stop"],
-                         cwd=nginx_dir, capture_output=True, timeout=10)
-            print_info("Sent stop signal")
+    # Check if nginx is running
+    nginx_running = is_port_open(80)
 
-            for _ in range(15):
-                try:
-                    result = subprocess.run(
-                        ["tasklist", "/FI", "IMAGENAME eq nginx.exe"],
-                        capture_output=True, text=True
+    # Stop nginx only if not running and not skipping restart
+    if not skip_nginx_restart and not nginx_running:
+        print_header("[1/5] Start nginx (if needed)")
+        if nginx_exe.exists():
+            try:
+                if sys.platform == "win32":
+                    subprocess.Popen(
+                        [str(nginx_exe)],
+                        cwd=nginx_dir,
+                        creationflags=subprocess.CREATE_NO_WINDOW,
                     )
-                    if "nginx.exe" not in result.stdout:
-                        break
-                except:
-                    pass
-                print(".", end="", flush=True)
-                time.sleep(1)
-            print()
-
-            subprocess.run(["taskkill", "/F", "/IM", "nginx.exe"],
-                         capture_output=True, timeout=5)
-            print_success("nginx stopped")
-            time.sleep(3)
-        except Exception as e:
-            print_warning(f"nginx stop failed: {e}")
+                else:
+                    subprocess.Popen([str(nginx_exe)], cwd=nginx_dir)
+                print_success("nginx started")
+                time.sleep(2)
+            except Exception as e:
+                print_warning(f"nginx start failed: {e}")
+        else:
+            print_warning("nginx.exe not found, skipping nginx start")
+    elif nginx_running:
+        print_header("[1/5] nginx Status")
+        print_success("nginx already running - will NOT restart")
+        print_info("💡 Files will be updated without restarting nginx")
+    else:
+        print_header("[1/5] nginx Status")
+        print_warning("nginx not running - will start after deployment")
 
     # Clean old build
     print_header("[2/5] Clean old build")
@@ -111,12 +120,16 @@ def deploy_frontend(project_root, nginx_dir):
     try:
         if sys.platform == "win32":
             cmd = f'cmd /c "cd /d {frontend_dir} && npm run build -- --outDir=../dist-temp"'
-            result = subprocess.run(cmd, shell=True, capture_output=True,
-                                  text=True, timeout=120)
+            result = subprocess.run(
+                cmd, shell=True, capture_output=True, text=True, timeout=120
+            )
         else:
             result = subprocess.run(
                 ["npm", "run", "build", "--", f"--outDir=../dist-temp"],
-                cwd=frontend_dir, capture_output=True, text=True, timeout=120
+                cwd=frontend_dir,
+                capture_output=True,
+                text=True,
+                timeout=120,
             )
 
         if result.returncode != 0:
@@ -152,7 +165,9 @@ def deploy_frontend(project_root, nginx_dir):
         if sys.platform == "win32":
             result = subprocess.run(
                 ["robocopy", str(temp_dist), str(nginx_html), "/E", "/IS", "/IT"],
-                capture_output=True, text=True, timeout=60
+                capture_output=True,
+                text=True,
+                timeout=60,
             )
             if result.returncode < 8:
                 print_success("Files deployed")
@@ -160,8 +175,7 @@ def deploy_frontend(project_root, nginx_dir):
                 print_warning(f"robocopy returned {result.returncode}")
         else:
             subprocess.run(
-                ["cp", "-rf", f"{temp_dist}/.", str(nginx_html)],
-                check=True, timeout=60
+                ["cp", "-rf", f"{temp_dist}/.", str(nginx_html)], check=True, timeout=60
             )
             print_success("Files deployed")
     except Exception as e:
@@ -175,43 +189,58 @@ def deploy_frontend(project_root, nginx_dir):
     except:
         pass
 
-    # Start nginx
-    print_header("[5/5] Start nginx")
-    if nginx_exe.exists():
-        try:
-            if sys.platform == "win32":
-                subprocess.Popen(
-                    [str(nginx_exe)], cwd=nginx_dir,
-                    creationflags=subprocess.CREATE_NO_WINDOW
-                )
-            else:
-                subprocess.Popen([str(nginx_exe)], cwd=nginx_dir)
+    # Start nginx only if not running
+    print_header("[5/5] nginx Status")
+    if not nginx_running:
+        if nginx_exe.exists():
+            try:
+                if sys.platform == "win32":
+                    subprocess.Popen(
+                        [str(nginx_exe)],
+                        cwd=nginx_dir,
+                        creationflags=subprocess.CREATE_NO_WINDOW,
+                    )
+                else:
+                    subprocess.Popen([str(nginx_exe)], cwd=nginx_dir)
 
-            print_success("nginx started")
-            time.sleep(2)
+                print_success("nginx started")
+                time.sleep(2)
 
-            if is_port_open(80):
-                print_success("nginx running on port 80")
-            else:
-                print_warning("nginx may not be running")
-        except Exception as e:
-            print_error(f"Failed to start nginx: {e}")
-            sys.exit(1)
+                if is_port_open(80):
+                    print_success("nginx running on port 80")
+                else:
+                    print_warning("nginx may not be running")
+            except Exception as e:
+                print_error(f"Failed to start nginx: {e}")
+                sys.exit(1)
+        else:
+            print_warning("nginx.exe not found")
+    else:
+        print_success("nginx already running - no restart needed")
+        print_info("💡 New files are now being served automatically")
 
     print()
     print_header("FRONTEND DEPLOYED")
     print()
     print(f"{Colors.BOLD}URLs:{Colors.END}")
-    print(f"  Network: {Colors.CYAN}http://10.73.148.75/maemi-chan/{Colors.END}")
-    print(f"  Admin:   {Colors.CYAN}http://10.73.148.75/maemi-chan/sdx-secret{Colors.END}")
+    print(f"  Network: {Colors.CYAN}http://10.73.148.75/pochi-kawaii/{Colors.END}")
+    print(
+        f"  Admin:   {Colors.CYAN}http://10.73.148.75/pochi-kawaii/sdx-secret{Colors.END}"
+    )
     print()
+    print(f"{Colors.BOLD}Note:{Colors.END}")
+    print(f"  - nginx was NOT restarted (other projects unaffected)")
+    print(f"  - New files are now being served automatically")
+    print(f"  - Clear browser cache (Ctrl+F5) if you see old files")
+    print()
+
 
 def deploy_backend(project_root):
     """Start backend server"""
     print_header("DEPLOY BACKEND")
 
     # Check if backend is running
-    server_port = int(os.getenv("SERVER_PORT", "4003"))
+    server_port = int(os.getenv("SERVER_PORT", "4004"))
     if is_port_open(server_port):
         print_warning(f"Backend already running on port {server_port}")
         print_info("Stopping backend first...")
@@ -220,9 +249,7 @@ def deploy_backend(project_root):
         if stop_script.exists():
             try:
                 subprocess.run(
-                    [sys.executable, str(stop_script)],
-                    cwd=project_root,
-                    timeout=30
+                    [sys.executable, str(stop_script)], cwd=project_root, timeout=30
                 )
                 time.sleep(2)  # Wait for stop to complete
             except Exception as e:
@@ -235,14 +262,13 @@ def deploy_backend(project_root):
 
     try:
         result = subprocess.run(
-            [sys.executable, str(start_script)],
-            cwd=project_root,
-            timeout=120
+            [sys.executable, str(start_script)], cwd=project_root, timeout=120
         )
         return result.returncode == 0
     except Exception as e:
         print_error(f"Backend start failed: {e}")
         return False
+
 
 def main():
     project_root = Path(__file__).parent.absolute()
@@ -265,18 +291,28 @@ def main():
         sys.exit(1)
 
     if frontend_only:
-        deploy_frontend(project_root, nginx_dir)
+        deploy_frontend(project_root, nginx_dir, skip_nginx_restart=True)
         print_success("Frontend deployment complete!")
+        print()
+        print(f"{Colors.BOLD}Note:{Colors.END}")
+        print(f"  - nginx was NOT restarted (other projects unaffected)")
+        print(f"  - For future updates, use: python update.py --frontend")
     elif backend_only:
         if deploy_backend(project_root):
             print_success("Backend deployment complete!")
+            print()
+            print(f"{Colors.BOLD}Note:{Colors.END}")
+            print(f"  - For future updates, use: python update.py --backend")
         else:
             sys.exit(1)
     else:
-        # Full deployment
-        print_header("FULL DEPLOYMENT")
+        # Full deployment (initial setup)
+        print_header("FULL DEPLOYMENT (Initial Setup)")
+        print_info("This is the initial deployment")
+        print_info("For future updates, use: python update.py")
+        print()
 
-        deploy_frontend(project_root, nginx_dir)
+        deploy_frontend(project_root, nginx_dir, skip_nginx_restart=False)
         time.sleep(2)
 
         if deploy_backend(project_root):
@@ -286,12 +322,24 @@ def main():
             print(f"{Colors.GREEN}✓ Full deployment successful!{Colors.END}")
             print()
             print(f"{Colors.BOLD}Access:{Colors.END}")
-            print(f"  Frontend: {Colors.CYAN}http://10.73.148.75/maemi-chan/{Colors.END}")
-            print(f"  Admin:    {Colors.CYAN}http://10.73.148.75/maemi-chan/sdx-secret{Colors.END}")
+            print(
+                f"  Frontend: {Colors.CYAN}http://10.73.148.75/pochi-kawaii/{Colors.END}"
+            )
+            print(
+                f"  Admin:    {Colors.CYAN}http://10.73.148.75/pochi-kawaii/sdx-secret{Colors.END}"
+            )
+            print()
+            print(f"{Colors.BOLD}Next Steps:{Colors.END}")
+            print(
+                f"  - For code updates, use: {Colors.GREEN}python update.py{Colors.END}"
+            )
+            print(f"  - nginx will NOT be restarted during updates")
+            print(f"  - Other projects will NOT be affected")
             print()
         else:
             print_error("Backend deployment failed!")
             sys.exit(1)
+
 
 if __name__ == "__main__":
     try:
@@ -304,5 +352,6 @@ if __name__ == "__main__":
         print()
         print_error(f"Deployment failed: {e}")
         import traceback
+
         traceback.print_exc()
         sys.exit(1)

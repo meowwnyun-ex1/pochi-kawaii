@@ -39,37 +39,37 @@ const Developing = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="flex flex-col h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20 overflow-hidden pb-12">
+    <div className="flex flex-col h-screen gradient-background overflow-hidden pb-12">
       <AnnouncementPopup />
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <AppHeader onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
       <FeedbackCarousel />
       <div className="flex-1 flex items-center justify-center p-4 pt-16">
-        <div className="max-w-md w-full bg-white/90 backdrop-blur-xl rounded-2xl shadow-xl border-2 border-gray-200/50 p-8 text-center">
+        <div className="max-w-md w-full bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border-2 border-pink-100 p-8 text-center">
           <div className="flex justify-center mb-6">
             <div className="relative">
-              <div className="w-24 h-24 bg-gradient-to-br from-yellow-100 to-orange-100 rounded-full flex items-center justify-center">
-                <Construction className="h-12 w-12 text-orange-500" />
+              <div className="w-24 h-24 bg-gradient-to-br from-pink-100 to-rose-100 rounded-full flex items-center justify-center">
+                <Construction className="h-12 w-12 text-pink-500" />
               </div>
-              <div className="absolute -top-1 -right-1 w-6 h-6 bg-orange-500 rounded-full animate-pulse" />
+              <div className="absolute -top-1 -right-1 w-6 h-6 bg-pink-500 rounded-full animate-pulse" />
             </div>
           </div>
 
-          <h1 className="text-2xl font-bold text-gray-800 mb-3">
+          <h1 className="text-2xl font-bold text-pink-700 mb-3">
             {developingTexts.title[lang]}
           </h1>
 
-          <p className="text-gray-600 mb-2">
+          <p className="text-pink-600 mb-2">
             {developingTexts.message[lang]}
           </p>
 
-          <p className="text-sm text-gray-500 mb-8">
+          <p className="text-sm text-pink-500 mb-8">
             {developingTexts.description[lang]}
           </p>
 
           <button
             onClick={() => navigate('/')}
-            className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-sky-500 via-purple-500 to-indigo-500 hover:from-sky-600 hover:via-purple-600 hover:to-indigo-600 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg">
+            className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 hover:from-pink-500 hover:via-rose-500 hover:to-pink-600 text-white font-bold py-3 px-6 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 text-lg">
             <ArrowLeft className="h-5 w-5" />
             <span>{developingTexts.backButton[lang]}</span>
           </button>

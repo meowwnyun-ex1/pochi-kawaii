@@ -1,0 +1,27 @@
+{
+  "greeting": "Kamusta! 🌸 Ako si Pochi, handang gawing kaibig-ibig na chibi cartoon ang inyong larawan! ✨\n\nI-upload lang ang inyong larawan at i-click ang Generate - ang inyong larawan ay magiging cute na chibi character kaagad! 💕",
+  "upload_image": "I-upload ang Larawan",
+  "generate": "Generate",
+  "generating": "Gumagawa...",
+  "upload_prompt": "I-drag & i-drop ang inyong file dito, o i-click para pumili",
+  "supported_formats": "Sinusuportahan: JPG, PNG, WEBP (max 10MB)",
+  "connection_error": "❌ Hindi makakonekta\n\nPakitingnan ang inyong koneksyon sa internet",
+  "error": {
+    "http_error": "May naganap na error",
+    "network_error": "Hindi makakonekta",
+    "timeout": "⏱️ Timeout - Matagal na tumagal ang AI\n\nPakisubukan ulit",
+    "please_try_again": "Pakisubukan ulit",
+    "no_image": "Pakiupload muna ang larawan",
+    "invalid_format": "Hindi wasto ang format ng file. Pakigamit ang JPG, PNG o WEBP"
+  },
+  "stage_analyzing": "Sinusuri ang inyong larawan",
+  "stage_thinking": "Pinoproseso ang larawan",
+  "stage_researching": "Gumagawa ng chibi features",
+  "stage_generating": "Gumagawa ng inyong cartoon",
+  "queue": "Pila",
+  "time_sec": "seg",
+  "download": "I-download ang Larawan",
+  "generate_again": "Gumawa Muli",
+  "warning_delete_on_close": "⚠️ Babala: Ang mga na-upload na larawan ay tatanggalin kaagad pagkatapos isara ang website na ito"
+}
+

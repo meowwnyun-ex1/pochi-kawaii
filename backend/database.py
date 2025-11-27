@@ -2,15 +2,10 @@ import logging
 import json
 from pathlib import Path
 from typing import List, Dict, Optional
-from datetime import datetime, timedelta
-from difflib import SequenceMatcher
 from services.connection_pool import ConnectionPool
 
 logger = logging.getLogger(__name__)
 
-MAX_MESSAGE_LENGTH = 10000
-MAX_SYMPTOMS = 20
-MAX_KEYWORD_LENGTH = 200
 
 class DatabaseManager:
     def __init__(self, connection_string: str, timeout: int = 30, pool_size: int = 10, max_overflow: int = 20):
@@ -77,60 +72,6 @@ class DatabaseManager:
                     )
                 """)
 
-                cursor.execute("""
-                    IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='conversations' AND xtype='U')
-                    CREATE TABLE conversations (
-                        id INT IDENTITY(1,1) PRIMARY KEY,
-                        session_id VARCHAR(100) NOT NULL,
-                        user_message NVARCHAR(MAX) NOT NULL,
-                        ai_response NVARCHAR(MAX) NOT NULL,
-                        pdpa_consent BIT DEFAULT 0,
-                        is_emergency BIT DEFAULT 0,
-                        source VARCHAR(50) DEFAULT 'ai',
-                        symptoms NVARCHAR(MAX),
-                        language VARCHAR(10) DEFAULT 'th',
-                        confidence_score DECIMAL(5,4) DEFAULT 0.0,
-                        created_at DATETIME DEFAULT GETDATE(),
-                        metadata NVARCHAR(MAX),
-                        error_log NVARCHAR(MAX),
-                        response_time INT,
-                        tokens_used INT,
-                        INDEX idx_session_id (session_id),
-                        INDEX idx_created_at (created_at),
-                        INDEX idx_language (language),
-                        INDEX idx_source (source),
-                        INDEX idx_confidence (confidence_score)
-                    )
-                """)
-
-                cursor.execute("""
-                    IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='learning_data' AND xtype='U')
-                    CREATE TABLE learning_data (
-                        id INT IDENTITY(1,1) PRIMARY KEY,
-                        question NVARCHAR(MAX) NOT NULL,
-                        answer NVARCHAR(MAX),
-                        symptoms NVARCHAR(MAX),
-                        category VARCHAR(100),
-                        language VARCHAR(10) DEFAULT 'th',
-                        confidence_score DECIMAL(5,4) DEFAULT 0.0,
-                        usage_count INT DEFAULT 1,
-                        success_rate DECIMAL(5,4) DEFAULT 1.0,
-                        last_used DATETIME DEFAULT GETDATE(),
-                        created_at DATETIME DEFAULT GETDATE(),
-                        modified_at DATETIME,
-                        source VARCHAR(50) DEFAULT 'user',
-                        is_verified BIT DEFAULT 0,
-                        verified_by VARCHAR(100),
-                        verified_at DATETIME,
-                        metadata NVARCHAR(MAX),
-                        INDEX idx_category (category),
-                        INDEX idx_language (language),
-                        INDEX idx_confidence (confidence_score),
-                        INDEX idx_usage (usage_count),
-                        INDEX idx_last_used (last_used),
-                        INDEX idx_is_verified (is_verified)
-                    )
-                """)
 
                 cursor.execute("""
                     IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='announcements' AND xtype='U')
@@ -148,116 +89,6 @@ class DatabaseManager:
                     )
                 """)
 
-                ALLOWED_COLUMNS_CONVERSATIONS = {
-                    'metadata', 'error_log', 'response_time', 'tokens_used'
-                }
-
-                new_columns_conversations = [
-                    ("metadata", "NVARCHAR(MAX)"),
-                    ("error_log", "NVARCHAR(MAX)"),
-                    ("response_time", "INT"),
-                    ("tokens_used", "INT")
-                ]
-
-                for col_name, col_type in new_columns_conversations:
-                    if col_name not in ALLOWED_COLUMNS_CONVERSATIONS:
-                        logger.error(f"⚠️ Security: Invalid column name '{col_name}' blocked")
-                        continue
-
-                    cursor.execute(f"""
-                        IF NOT EXISTS (
-                            SELECT * FROM sys.columns
-                            WHERE object_id = OBJECT_ID('conversations')
-                            AND name = '{col_name}'
-                        )
-                        BEGIN
-                            ALTER TABLE conversations
-                            ADD {col_name} {col_type}
-                        END
-                    """)
-
-                ALLOWED_COLUMNS_LEARNING = {
-                    'modified_at', 'source', 'is_verified', 'verified_by', 'verified_at', 'metadata'
-                }
-
-                new_columns_learning = [
-                    ("modified_at", "DATETIME"),
-                    ("source", "VARCHAR(50) DEFAULT 'user'"),
-                    ("is_verified", "BIT DEFAULT 0"),
-                    ("verified_by", "VARCHAR(100)"),
-                    ("verified_at", "DATETIME"),
-                    ("metadata", "NVARCHAR(MAX)")
-                ]
-
-                for col_name, col_type in new_columns_learning:
-                    if col_name not in ALLOWED_COLUMNS_LEARNING:
-                        logger.error(f"⚠️ Security: Invalid column name '{col_name}' blocked")
-                        continue
-
-                    cursor.execute(f"""
-                        IF NOT EXISTS (
-                            SELECT * FROM sys.columns
-                            WHERE object_id = OBJECT_ID('learning_data')
-                            AND name = '{col_name}'
-                        )
-                        BEGIN
-                            ALTER TABLE learning_data
-                            ADD {col_name} {col_type}
-                        END
-                    """)
-
-                cursor.execute("""
-                    IF EXISTS (
-                        SELECT * FROM sys.columns 
-                        WHERE object_id = OBJECT_ID('conversations')
-                        AND name = 'confidence_score'
-                        AND system_type_id != TYPE_ID('decimal')
-                    )
-                    BEGIN
-                        ALTER TABLE conversations
-                        ALTER COLUMN confidence_score DECIMAL(5,4)
-                    END
-                """)
-
-                cursor.execute("""
-                    IF EXISTS (
-                        SELECT * FROM sys.columns 
-                        WHERE object_id = OBJECT_ID('learning_data')
-                        AND name = 'confidence_score'
-                        AND system_type_id != TYPE_ID('decimal')
-                    )
-                    BEGIN
-                        ALTER TABLE learning_data
-                        ALTER COLUMN confidence_score DECIMAL(5,4)
-                    END
-
-                    IF EXISTS (
-                        SELECT * FROM sys.columns 
-                        WHERE object_id = OBJECT_ID('learning_data')
-                        AND name = 'success_rate'
-                        AND system_type_id != TYPE_ID('decimal')
-                    )
-                    BEGIN
-                        ALTER TABLE learning_data
-                        ALTER COLUMN success_rate DECIMAL(5,4)
-                    END
-                """)
-
-                cursor.execute("""
-                    IF NOT EXISTS (SELECT * FROM sys.objects WHERE type = 'TR' AND name = 'TR_LearningData_Update')
-                    BEGIN
-                        EXEC('CREATE TRIGGER TR_LearningData_Update
-                        ON learning_data
-                        AFTER UPDATE
-                        AS
-                        BEGIN
-                            UPDATE learning_data
-                            SET modified_at = GETDATE()
-                            FROM learning_data
-                            INNER JOIN inserted ON learning_data.id = inserted.id
-                        END')
-                    END
-                """)
 
                 conn.commit()
                 cursor.close()
@@ -272,337 +103,6 @@ class DatabaseManager:
             logger.warning(msg.format(e))
             self.connection_available = False
             return False
-
-    def save_conversation(
-        self,
-        session_id: str,
-        user_message: str,
-        ai_response: str,
-        is_emergency: bool = False,
-        source: str = "ai",
-        symptoms: Optional[List[str]] = None,
-        language: str = "th",
-        confidence_score: float = 0.0,
-    ) -> bool:
-        if not self.connection_available or self.pool is None:
-            logger.warning("Database not available")
-            return False
-
-        if not session_id or not session_id.strip():
-            logger.error("Empty session_id")
-            return False
-
-        if not user_message or not user_message.strip():
-            logger.error("Empty user_message")
-            return False
-
-        if len(user_message) > MAX_MESSAGE_LENGTH:
-            logger.warning(f"Message too long: {len(user_message)}, truncating")
-            user_message = user_message[:MAX_MESSAGE_LENGTH]
-
-        if len(ai_response) > MAX_MESSAGE_LENGTH:
-            logger.warning(f"Response too long: {len(ai_response)}, truncating")
-            ai_response = ai_response[:MAX_MESSAGE_LENGTH]
-
-        if symptoms:
-            symptoms = symptoms[:MAX_SYMPTOMS]
-            
-        try:
-            with self.pool.get_connection() as conn:
-                cursor = conn.cursor()
-                
-                try:
-                    symptoms_json = json.dumps(symptoms, ensure_ascii=False) if symptoms else None
-
-                    cursor.execute("""
-                        INSERT INTO conversations
-                        (session_id, user_message, ai_response, is_emergency, source, symptoms, language, confidence_score)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                    """, (
-                        session_id.strip(),
-                        user_message.strip(),
-                        ai_response.strip(),
-                        is_emergency,
-                        source,
-                        symptoms_json,
-                        language,
-                        confidence_score,
-                    ))
-
-                    conn.commit()
-                    logger.debug(f"Saved conversation for session {session_id}")
-                    return True
-                    
-                except Exception as e:
-                    conn.rollback()
-                    raise
-                finally:
-                    cursor.close()
-                    
-        except Exception as e:
-            msg = self.log_msgs.get("save_conversation_failed", "Save conversation failed: {}")
-            logger.error(msg.format(e))
-            return False
-
-    def get_conversation_history(self, session_id: str, limit: int = 20) -> List[Dict]:
-        if not self.connection_available or self.pool is None:
-            return []
-            
-        try:
-            with self.pool.get_connection() as conn:
-                cursor = conn.cursor()
-
-                cursor.execute("""
-                    SELECT TOP (?) user_message, ai_response, created_at, language, source, confidence_score
-                    FROM conversations
-                    WHERE session_id = ?
-                    ORDER BY created_at DESC
-                """, (limit, session_id))
-
-                results = cursor.fetchall()
-                cursor.close()
-
-            history = []
-            for row in results:
-                history.append({
-                    "user_message": row[0],
-                    "ai_response": row[1],
-                    "timestamp": row[2].isoformat() if row[2] else None,
-                    "language": row[3] if len(row) > 3 else "th",
-                    "source": row[4] if len(row) > 4 else "ai",
-                    "confidence_score": row[5] if len(row) > 5 else 0.0,
-                })
-
-            return list(reversed(history))
-        except Exception as e:
-            msg = self.log_msgs.get("get_conversation_history_failed", "Get conversation history failed: {}")
-            logger.warning(msg.format(e))
-            return []
-
-    def find_similar_questions(self, question: str, lang: str, threshold: float = 0.90) -> Optional[Dict]:
-        if not self.connection_available or self.pool is None:
-            return None
-            
-        try:
-            with self.pool.get_connection() as conn:
-                cursor = conn.cursor()
-
-                cursor.execute("""
-                    SELECT TOP (20) question, answer, confidence_score, usage_count, success_rate
-                    FROM learning_data
-                    WHERE language = ? AND answer IS NOT NULL AND confidence_score >= ?
-                    ORDER BY usage_count DESC, confidence_score DESC
-                """, (lang, threshold - 0.1))
-
-                results = cursor.fetchall()
-                cursor.close()
-
-            question_lower = question.lower().strip()
-            
-            best_match = None
-            best_score = 0.0
-
-            for row in results:
-                stored_question = row[0].lower().strip()
-                similarity = SequenceMatcher(None, question_lower, stored_question).ratio()
-                
-                if similarity >= threshold and similarity > best_score:
-                    best_score = similarity
-                    best_match = {
-                        "question": row[0],
-                        "answer": row[1],
-                        "confidence_score": row[2],
-                        "usage_count": row[3],
-                        "success_rate": row[4],
-                        "similarity": similarity
-                    }
-
-            if best_match:
-                self._increment_usage_count(best_match["question"], lang)
-                logger.info(f"Found similar question with {best_score:.2%} similarity")
-
-            return best_match
-
-        except Exception as e:
-            logger.error(f"Error finding similar questions: {e}")
-            return None
-
-    def _increment_usage_count(self, question: str, lang: str):
-        if self.pool is None:
-            return
-            
-        try:
-            with self.pool.get_connection() as conn:
-                cursor = conn.cursor()
-                cursor.execute("""
-                    UPDATE learning_data
-                    SET usage_count = usage_count + 1,
-                        last_used = GETDATE()
-                    WHERE question = ? AND language = ?
-                """, (question, lang))
-
-                conn.commit()
-                cursor.close()
-        except Exception as e:
-            logger.error(f"Error incrementing usage count: {e}")
-
-    def save_learning_data(
-        self,
-        question: str,
-        answer: str,
-        symptoms: List[str],
-        category: str,
-        language: str = "th",
-        confidence_score: float = 0.0,
-    ) -> bool:
-        if not self.connection_available or self.pool is None:
-            return False
-            
-        try:
-            with self.pool.get_connection() as conn:
-                cursor = conn.cursor()
-
-                symptoms_json = json.dumps(symptoms, ensure_ascii=False) if symptoms else json.dumps([], ensure_ascii=False)
-
-                cursor.execute("""
-                    SELECT id FROM learning_data WHERE question = ? AND language = ?
-                """, (question, language))
-                
-                existing = cursor.fetchone()
-
-                if existing:
-                    cursor.execute("""
-                        UPDATE learning_data
-                        SET answer = ?,
-                            confidence_score = ?,
-                            usage_count = usage_count + 1,
-                            last_used = GETDATE()
-                        WHERE question = ? AND language = ?
-                    """, (answer, confidence_score, question, language))
-                else:
-                    cursor.execute("""
-                        INSERT INTO learning_data (question, answer, symptoms, category, language, confidence_score)
-                        VALUES (?, ?, ?, ?, ?, ?)
-                    """, (question, answer, symptoms_json, category, language, confidence_score))
-
-                conn.commit()
-                cursor.close()
-            return True
-        except Exception as e:
-            msg = self.log_msgs.get("save_learning_data_failed", "Save learning data failed: {}")
-            logger.warning(msg.format(e))
-            return False
-
-    def get_learned_patterns(self, category: Optional[str] = None, limit: int = 100) -> List[Dict]:
-        if not self.connection_available or self.pool is None:
-            return []
-            
-        try:
-            with self.pool.get_connection() as conn:
-                cursor = conn.cursor()
-
-                if category:
-                    cursor.execute("""
-                        SELECT TOP (?) question, answer, symptoms, category, confidence_score, usage_count, created_at
-                        FROM learning_data
-                        WHERE category = ?
-                        ORDER BY usage_count DESC, confidence_score DESC
-                    """, (limit, category))
-                else:
-                    cursor.execute("""
-                        SELECT TOP (?) question, answer, symptoms, category, confidence_score, usage_count, created_at
-                        FROM learning_data
-                        ORDER BY usage_count DESC, confidence_score DESC
-                    """, (limit,))
-
-                results = cursor.fetchall()
-                cursor.close()
-
-            patterns = []
-            for row in results:
-                patterns.append({
-                    "question": row[0],
-                    "answer": row[1] if len(row) > 1 else None,
-                    "symptoms": self._safe_json_parse(row[2], default=[]) if len(row) > 2 else [],
-                    "category": row[3] if len(row) > 3 else "unknown",
-                    "confidence_score": row[4] if len(row) > 4 else 0.0,
-                    "usage_count": row[5] if len(row) > 5 else 0,
-                    "created_at": row[6].isoformat() if len(row) > 6 and row[6] else None,
-                })
-
-            return patterns
-        except Exception as e:
-            msg = self.log_msgs.get("get_learned_patterns_failed", "Get learned patterns failed: {}")
-            logger.warning(msg.format(e))
-            return []
-
-    def search_similar_conversations(self, keywords: List[str], session_id: Optional[str] = None, limit: int = 10) -> List[Dict]:
-        if not self.connection_available or not keywords or self.pool is None:
-            return []
-        
-        keywords = [k.strip()[:MAX_KEYWORD_LENGTH] for k in keywords if k and k.strip()]
-        keywords = keywords[:5]
-        
-        if not keywords:
-            return []
-            
-        try:
-            with self.pool.get_connection() as conn:
-                cursor = conn.cursor()
-                
-                try:
-                    keyword_conditions = []
-                    params = []
-                    
-                    for keyword in keywords:
-                        keyword_conditions.append("(user_message LIKE ? OR ai_response LIKE ?)")
-                        search_term = f"%{keyword}%"
-                        params.extend([search_term, search_term])
-                    
-                    where_clause = " OR ".join(keyword_conditions)
-                    limit = max(1, min(limit, 50))
-                    
-                    if session_id:
-                        query = f"""
-                            SELECT TOP (?) user_message, ai_response, symptoms, language, created_at, confidence_score
-                            FROM conversations
-                            WHERE session_id = ? AND ({where_clause})
-                            ORDER BY confidence_score DESC, created_at DESC
-                        """
-                        cursor.execute(query, [limit, session_id] + params)
-                    else:
-                        query = f"""
-                            SELECT TOP (?) user_message, ai_response, symptoms, language, created_at, confidence_score
-                            FROM conversations
-                            WHERE {where_clause}
-                            ORDER BY confidence_score DESC, created_at DESC
-                        """
-                        cursor.execute(query, [limit] + params)
-
-                    results = cursor.fetchall()
-                finally:
-                    cursor.close()
-
-            similar = []
-            for row in results:
-                try:
-                    similar.append({
-                        "user_message": row[0] or "",
-                        "ai_response": row[1] or "",
-                        "symptoms": self._safe_json_parse(row[2], default=[]),
-                        "language": row[3] or "th",
-                        "timestamp": row[4].isoformat() if row[4] else None,
-                        "confidence_score": row[5] if len(row) > 5 else 0.0,
-                    })
-                except Exception as e:
-                    logger.warning(f"Error parsing similar conversation: {e}")
-                    continue
-
-            return similar
-            
-        except Exception as e:
-            logger.error(f"Failed to search similar conversations: {e}")
-            return []
 
     def save_feedback(
         self,
@@ -730,50 +230,6 @@ class DatabaseManager:
             logger.warning(msg.format(e))
             return False
 
-    def get_symptom_analytics(self, days: int = 30, language: Optional[str] = None) -> List[Dict]:
-        if not self.connection_available or self.pool is None:
-            return []
-            
-        try:
-            with self.pool.get_connection() as conn:
-                cursor = conn.cursor()
-
-                date_from = datetime.now() - timedelta(days=days)
-
-                if language:
-                    cursor.execute("""
-                        SELECT symptoms, COUNT(*) as count
-                        FROM learning_data
-                        WHERE created_at >= ? AND language = ?
-                        GROUP BY symptoms
-                        ORDER BY count DESC
-                    """, (date_from, language))
-                else:
-                    cursor.execute("""
-                        SELECT symptoms, COUNT(*) as count
-                        FROM learning_data
-                        WHERE created_at >= ?
-                        GROUP BY symptoms
-                        ORDER BY count DESC
-                    """, (date_from,))
-
-                results = cursor.fetchall()
-                cursor.close()
-
-            analytics = []
-            if results:
-                for row in results:
-                    symptoms = self._safe_json_parse(row[0], default=[])
-                    if symptoms:
-                        for symptom in symptoms:
-                            analytics.append({"symptom": symptom, "count": row[1]})
-
-            return analytics
-        except Exception as e:
-            msg = self.log_msgs.get("get_symptom_analytics_failed", "Get symptom analytics failed: {}")
-            logger.warning(msg.format(e))
-            return []
-
     def get_active_announcements(self, limit: int = 3) -> List[Dict]:
         """Get active announcements (max 3)"""
         if not self.connection_available or self.pool is None:
@@ -797,7 +253,7 @@ class DatabaseManager:
                 announcements.append({
                     "id": row[0],
                     "title": row[1],
-                    "image_url": f"/maemi-chan/api/announcements/image/{row[2]}",
+                    "image_url": f"/pochi-kawaii/api/announcements/image/{row[2]}",
                     "link_url": row[3],
                     "display_order": row[4],
                 })
@@ -829,7 +285,7 @@ class DatabaseManager:
                 announcements.append({
                     "id": row[0],
                     "title": row[1],
-                    "image_url": f"/maemi-chan/api/announcements/image/{row[2]}",
+                    "image_url": f"/pochi-kawaii/api/announcements/image/{row[2]}",
                     "link_url": row[3],
                     "display_order": row[4],
                     "is_active": bool(row[5]),
@@ -881,7 +337,7 @@ class DatabaseManager:
             return {
                 "id": announcement_id,
                 "title": title,
-                "image_url": f"/maemi-chan/api/announcements/image/{image_filename}",
+                "image_url": f"/pochi-kawaii/api/announcements/image/{image_filename}",
                 "link_url": link_url,
                 "display_order": display_order,
                 "is_active": True,

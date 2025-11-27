@@ -68,7 +68,9 @@ export async function fetchWithRetry(
       
       if (attempt < maxRetries!) {
         const delay = retryDelay! * Math.pow(2, attempt);
+        // Log retry attempts in development only
         if (import.meta.env.DEV) {
+          // Using console.warn here is acceptable as it's for retry logic debugging
           console.warn(
             `API request failed (${response.status}), retrying in ${delay}ms... (attempt ${attempt + 1}/${maxRetries})`
           );
@@ -83,6 +85,7 @@ export async function fetchWithRetry(
       if (isNetworkError(error) && !(error instanceof Error && error.name === 'AbortError')) {
         if (attempt < maxRetries!) {
           const delay = retryDelay! * Math.pow(2, attempt);
+          // Using console.warn here is acceptable as it's for retry logic debugging
           if (import.meta.env.DEV) {
             console.warn(
               `Network error, retrying in ${delay}ms... (attempt ${attempt + 1}/${maxRetries})`

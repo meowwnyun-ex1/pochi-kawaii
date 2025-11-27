@@ -20,7 +20,7 @@ const DEFAULT_LANGUAGE = 'th';
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { t: i18nT, ready } = useTranslation();
   const [language, setLanguageState] = useState<string>(() => {
-    const savedLang = localStorage.getItem('maemi_language');
+    const savedLang = localStorage.getItem('pochi_language');
     return (savedLang && SUPPORTED_LANGUAGES.includes(savedLang)) ? savedLang : DEFAULT_LANGUAGE;
   });
 
@@ -40,7 +40,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
 
     setLanguageState(lang);
-    localStorage.setItem('maemi_language', lang);
+    localStorage.setItem('pochi_language', lang);
     i18n.changeLanguage(lang);
 
     if (typeof document !== 'undefined') {
@@ -169,56 +169,6 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         hi: 'AI प्रश्न की भाषा में जवाब देता है',
       },
     },
-    quick_chat: {
-      title: {
-        th: 'คำถามด่วน',
-        en: 'Quick Questions',
-        jp: 'クイック質問',
-        id: 'Pertanyaan Cepat',
-        zh: '快速问题',
-        ko: '빠른 질문',
-        vi: 'Câu hỏi nhanh',
-        es: 'Preguntas rápidas',
-        fil: 'Mabilis na Tanong',
-        hi: 'त्वरित प्रश्न',
-      },
-      subtitle: {
-        th: 'เลือกคำถามเพื่อถามได้ทันที',
-        en: 'Select a question to ask instantly',
-        jp: '質問を選択してすぐに質問',
-        id: 'Pilih pertanyaan untuk ditanyakan segera',
-        zh: '选择问题立即提问',
-        ko: '질문을 선택하여 즉시 질문',
-        vi: 'Chọn câu hỏi để hỏi ngay',
-        es: 'Selecciona una pregunta para hacerla al instante',
-        fil: 'Pumili ng tanong upang agad na itanong',
-        hi: 'तुरंत पूछने के लिए प्रश्न चुनें',
-      },
-      footer: {
-        th: 'หรือพิมพ์คำถามของคุณเองได้เลย',
-        en: 'Or type your own question',
-        jp: 'または自分で質問を入力してください',
-        id: 'Atau ketik pertanyaan Anda sendiri',
-        zh: '或输入您自己的问题',
-        ko: '또는 직접 질문을 입력하세요',
-        vi: 'Hoặc nhập câu hỏi của riêng bạn',
-        es: 'O escribe tu propia pregunta',
-        fil: 'O i-type ang iyong sariling tanong',
-        hi: 'या अपना प्रश्न टाइप करें',
-      },
-    },
-    quick_suggestions: {
-      th: [],
-      en: [],
-      jp: [],
-      id: [],
-      zh: [],
-      ko: [],
-      vi: [],
-      es: [],
-      fil: [],
-      hi: [],
-    },
     admin_panel: {
       panel_title: { th: 'แผงควบคุมผู้ดูแลระบบ', en: 'Admin Control Panel', jp: '管理者コントロールパネル', id: 'Panel Kontrol Admin', zh: '管理员控制面板', ko: '관리자 제어판', vi: 'Bảng điều khiển quản trị', es: 'Panel de control de administrador', fil: 'Admin Control Panel', hi: 'एडमिन नियंत्रण पैनल' },
       login_title: { th: 'เข้าสู่ระบบผู้ดูแล', en: 'Admin Login', jp: '管理者ログイン', id: 'Login Admin', zh: '管理员登录', ko: '관리자 로그인', vi: 'Đăng nhập quản trị', es: 'Inicio de sesión de administrador', fil: 'Admin Login', hi: 'एडमिन लॉगिन' },
@@ -256,10 +206,6 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       es: [],
       fil: [],
       hi: [],
-    },
-    thinking_process: {
-      deepThinkMode: { th: 'โหมดคิดลึก', en: 'Deep Think Mode', jp: '深い思考モード', id: 'Mode Berpikir Mendalam', zh: '深度思考模式', ko: '깊은 사고 모드', vi: 'Chế độ suy nghĩ sâu', es: 'Modo de pensamiento profundo', fil: 'Deep Think Mode', hi: 'गहरी सोच मोड' },
-      normalMode: { th: 'โหมดปกติ', en: 'Normal Mode', jp: '通常モード', id: 'Mode Normal', zh: '普通模式', ko: '일반 모드', vi: 'Chế độ bình thường', es: 'Modo normal', fil: 'Normal Mode', hi: 'सामान्य मोड' },
     },
   }), []);
 

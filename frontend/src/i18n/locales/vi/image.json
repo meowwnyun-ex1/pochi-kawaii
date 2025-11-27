@@ -1,0 +1,27 @@
+{
+  "greeting": "Xin chào! 🌸 Tôi là Pochi, sẵn sàng biến đổi ảnh của bạn thành nhân vật chibi dễ thương! ✨\n\nChỉ cần tải lên hình ảnh của bạn và nhấp Generate - ảnh của bạn sẽ trở thành nhân vật chibi dễ thương ngay lập tức! 💕",
+  "upload_image": "Tải lên hình ảnh",
+  "generate": "Generate",
+  "generating": "Đang tạo...",
+  "upload_prompt": "Kéo & thả tệp của bạn vào đây, hoặc nhấp để chọn",
+  "supported_formats": "Hỗ trợ: JPG, PNG, WEBP (tối đa 10MB)",
+  "connection_error": "❌ Không thể kết nối\n\nVui lòng kiểm tra kết nối internet của bạn",
+  "error": {
+    "http_error": "Đã xảy ra lỗi",
+    "network_error": "Không thể kết nối",
+    "timeout": "⏱️ Hết thời gian - AI mất quá nhiều thời gian\n\nVui lòng thử lại",
+    "please_try_again": "Vui lòng thử lại",
+    "no_image": "Vui lòng tải lên hình ảnh trước",
+    "invalid_format": "Định dạng tệp không hợp lệ. Vui lòng sử dụng JPG, PNG hoặc WEBP"
+  },
+  "stage_analyzing": "Đang phân tích hình ảnh của bạn",
+  "stage_thinking": "Đang xử lý hình ảnh",
+  "stage_researching": "Đang tạo đặc điểm chibi",
+  "stage_generating": "Đang tạo nhân vật của bạn",
+  "queue": "Hàng đợi",
+  "time_sec": "giây",
+  "download": "Tải xuống hình ảnh",
+  "generate_again": "Tạo lại",
+  "warning_delete_on_close": "⚠️ Cảnh báo: Hình ảnh đã tải lên sẽ bị xóa ngay sau khi đóng trang web này"
+}
+

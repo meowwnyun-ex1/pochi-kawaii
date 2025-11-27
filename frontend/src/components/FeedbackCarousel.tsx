@@ -25,7 +25,7 @@ interface CarouselTexts {
   expand_button?: Record<string, string>;
 }
 
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+const API_BASE_URL = import.meta.env.VITE_API_URL || '';
 
 const getAnimalEmoji = (timestamp: string) => {
   const emojis = [
@@ -61,14 +61,13 @@ export default function FeedbackCarousel() {
   const [items, setItems] = useState<Feedback[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(true); // Always expanded by default
+  const [isExpanded, setIsExpanded] = useState(false);
   const [lastFetchTime, setLastFetchTime] = useState<number>(0);
 
   const refreshTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
   const loadingRef = useRef(false);
   const mountedRef = useRef(true);
 
-  // Safe access to config with fallback
   const safeConfig = config || {};
   const carouselTexts = (safeConfig.carousel_texts || {}) as CarouselTexts;
 
@@ -172,16 +171,8 @@ export default function FeedbackCarousel() {
     };
   }, []);
 
-  // Always show carousel when there are items
-  useEffect(() => {
-    if (items.length > 0) {
-      setIsExpanded(true);
-    }
-  }, [items.length]);
-
   if (error && items.length === 0) return null;
 
-  // ถ้ายังไม่มี feedback ให้ซ่อนไว้เลย
   if (!items || items.length === 0) {
     return null;
   }
@@ -203,7 +194,6 @@ export default function FeedbackCarousel() {
 
   const lang = language as 'th' | 'en' | 'jp';
 
-  // Safe fallback for carousel texts
   const safeCarouselTexts = carouselTexts || {};
   const collapseButton = safeCarouselTexts.collapse_button || {};
   const expandButton = safeCarouselTexts.expand_button || {};

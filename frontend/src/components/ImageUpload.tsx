@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { Upload, X, Image as ImageIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { showToast } from '@/utils/toast';
@@ -8,20 +8,29 @@ interface ImageUploadProps {
   selectedImage: File | null;
   onClear: () => void;
   disabled?: boolean;
+  onPreviewUrlChange?: (url: string | null) => void;
 }
 
-const ImageUpload = ({ onImageSelect, selectedImage, onClear, disabled = false }: ImageUploadProps) => {
-  const { t } = useTranslation(['chat']);
+const ImageUpload = ({ onImageSelect, selectedImage, onClear, disabled = false, onPreviewUrlChange }: ImageUploadProps) => {
+  const { t } = useTranslation(['image']);
   const [isDragging, setIsDragging] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const previewUrlRef = useRef<string | null>(null);
 
   const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
-  const ACCEPTED_FORMATS = ['image/jpeg', 'image/png', 'image/webp'];
+  const ACCEPTED_FORMATS = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 
   const validateFile = (file: File): boolean => {
-    if (!ACCEPTED_FORMATS.includes(file.type)) {
-      showToast.error(t('chat:error.invalid_format'));
+    // Check if file type starts with 'image/'
+    if (!file.type.startsWith('image/')) {
+      showToast.error(t('image:error.invalid_format') || 'กรุณาแนบเฉพาะไฟล์ภาพเท่านั้น');
+      return false;
+    }
+
+    // Check if file type is in accepted formats
+    if (!ACCEPTED_FORMATS.includes(file.type.toLowerCase())) {
+      showToast.error(t('image:error.invalid_format') || 'รองรับเฉพาะไฟล์ JPG, PNG, WEBP เท่านั้น');
       return false;
     }
 
@@ -36,15 +45,22 @@ const ImageUpload = ({ onImageSelect, selectedImage, onClear, disabled = false }
   const handleFile = useCallback((file: File) => {
     if (!validateFile(file)) return;
 
-    // Create preview
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setPreviewUrl(reader.result as string);
-    };
-    reader.readAsDataURL(file);
+    // Cleanup previous preview URL
+    if (previewUrlRef.current) {
+      URL.revokeObjectURL(previewUrlRef.current);
+    }
+
+    // Create preview using object URL for better memory management
+    const objectUrl = URL.createObjectURL(file);
+    setPreviewUrl(objectUrl);
+    previewUrlRef.current = objectUrl;
+    
+    if (onPreviewUrlChange) {
+      onPreviewUrlChange(objectUrl);
+    }
 
     onImageSelect(file);
-  }, [onImageSelect]);
+  }, [onImageSelect, onPreviewUrlChange, t]);
 
   const handleDrop = useCallback((e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -84,22 +100,40 @@ const ImageUpload = ({ onImageSelect, selectedImage, onClear, disabled = false }
   };
 
   const handleClear = () => {
+    // Cleanup preview URL
+    if (previewUrlRef.current) {
+      URL.revokeObjectURL(previewUrlRef.current);
+      previewUrlRef.current = null;
+    }
     setPreviewUrl(null);
+    if (onPreviewUrlChange) {
+      onPreviewUrlChange(null);
+    }
     onClear();
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
   };
 
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (previewUrlRef.current) {
+        URL.revokeObjectURL(previewUrlRef.current);
+      }
+    };
+  }, []);
+
   return (
     <div className="w-full">
       <input
         ref={fileInputRef}
         type="file"
-        accept="image/jpeg,image/png,image/webp"
+        accept="image/jpeg,image/jpg,image/png,image/webp"
         onChange={handleFileChange}
         className="hidden"
         disabled={disabled}
+        capture="environment"
       />
 
       {!selectedImage ? (
@@ -130,15 +164,14 @@ const ImageUpload = ({ onImageSelect, selectedImage, onClear, disabled = false }
 
             <div className="space-y-2">
               <p className="text-lg font-semibold text-pink-700">
-                {t('chat:upload_prompt')}
+                Drop Image Here
               </p>
               <p className="text-sm text-pink-500">
-                {t('chat:supported_formats')}
+                - or -
               </p>
-            </div>
-
-            <div className="mt-4 px-6 py-2 bg-gradient-to-r from-pink-400 to-rose-400 text-white rounded-xl font-medium hover:shadow-lg transition-shadow">
-              {t('chat:upload_image')}
+              <p className="text-sm font-medium text-pink-600">
+                Click to Upload
+              </p>
             </div>
           </div>
         </div>

@@ -1,0 +1,27 @@
+{
+  "greeting": "Halo! 🌸 Saya Pochi, siap mengubah foto Anda menjadi kartun chibi yang menggemaskan! ✨\n\nCukup unggah gambar Anda dan klik Generate - foto Anda akan menjadi karakter chibi yang lucu secara instan! 💕",
+  "upload_image": "Unggah Gambar",
+  "generate": "Generate",
+  "generating": "Membuat...",
+  "upload_prompt": "Seret & lepas file Anda di sini, atau klik untuk memilih",
+  "supported_formats": "Didukung: JPG, PNG, WEBP (maks 10MB)",
+  "connection_error": "❌ Tidak dapat terhubung\n\nSilakan periksa koneksi internet Anda",
+  "error": {
+    "http_error": "Terjadi kesalahan",
+    "network_error": "Tidak dapat terhubung",
+    "timeout": "⏱️ Waktu habis - AI memakan waktu terlalu lama\n\nSilakan coba lagi",
+    "please_try_again": "Silakan coba lagi",
+    "no_image": "Silakan unggah gambar terlebih dahulu",
+    "invalid_format": "Format file tidak valid. Silakan gunakan JPG, PNG atau WEBP"
+  },
+  "stage_analyzing": "Menganalisis gambar Anda",
+  "stage_thinking": "Memproses gambar",
+  "stage_researching": "Membuat fitur chibi",
+  "stage_generating": "Membuat kartun Anda",
+  "queue": "Antrian",
+  "time_sec": "detik",
+  "download": "Unduh Gambar",
+  "generate_again": "Buat Lagi",
+  "warning_delete_on_close": "⚠️ Peringatan: Gambar yang diunggah akan dihapus segera setelah menutup situs web ini"
+}
+

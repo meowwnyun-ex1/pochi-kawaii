@@ -4,7 +4,7 @@ const getAvatarSrc = () => {
 };
 
 const getAvatarAlt = () => {
-  return 'Maemi-Chan Medical AI';
+  return 'Pochi! Kawaii ne~';
 };
 
 const AvatarImage = ({

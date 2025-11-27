@@ -107,7 +107,7 @@ def fix_connection_string(conn_str: str) -> str:
 
     # Always log what we received (with masked sensitive data)
     masked = mask_sensitive_data(original)
-    print(f"[DB] Received connection string ({len(original)} chars)")
+    logger.info(f"[DB] Received connection string ({len(original)} chars)")
     logger.info(f"[DB] Connection string: {masked}")
 
     # Step 1: Auto-detect and replace DRIVER
@@ -178,11 +178,10 @@ def fix_connection_string(conn_str: str) -> str:
     conn_str = ';'.join(fixed_parts)
 
     if changes_made:
-        print(f"[DB] OK Auto-fixed: {', '.join(changes_made)}")
-        logger.info(f"[DB] Auto-fixed: {', '.join(changes_made)}")
+        logger.info(f"[DB] OK Auto-fixed: {', '.join(changes_made)}")
         logger.info(f"[DB] Final connection string: {mask_sensitive_data(conn_str)}")
     else:
-        print(f"[DB] OK No changes needed")
+        logger.info(f"[DB] OK No changes needed")
         logger.info(f"[DB] Final connection string: {mask_sensitive_data(conn_str)}")
 
     return conn_str

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Maemi-Chan Medical AI - Start Script
+Pochi! Kawaii ne~ - Start Script
 Start Backend + nginx (Production Mode)
 """
 
@@ -62,7 +62,7 @@ def wait_for_port(port, timeout=30, host='127.0.0.1'):
     return False
 
 def main():
-    print_header("MAEMI-CHAN MEDICAL AI - START PRODUCTION")
+    print_header("POCHI! KAWAII NE~ - START PRODUCTION")
 
     # Get project root
     project_root = Path(__file__).parent.absolute()
@@ -78,7 +78,7 @@ def main():
     load_dotenv(env_file)
 
     # Get configuration
-    server_port = int(os.getenv("SERVER_PORT", "4003"))
+    server_port = int(os.getenv("SERVER_PORT", "4004"))
     nginx_dir = os.getenv("NGINX_DIR", "D:/nginx")
 
     print_info(f"Project: {project_root}")
@@ -243,7 +243,7 @@ cd /d "{backend_dir}"
         print_error("Backend failed to start!")
         print_info("Common issues:")
         print_info(f"   1. Port {server_port} already in use - run: python stop.py")
-        print_info("   2. Dependencies missing - run: pip install -r backend/requirements.txt")
+        print_info("   2. Dependencies missing - run: pip install -r requirements.txt")
         print_info("   3. Database connection error - check .env DATABASE_URL")
         sys.exit(1)
 
@@ -306,8 +306,8 @@ cd /d "{backend_dir}"
     print(f"  Docs:     {Colors.CYAN}http://localhost:{server_port}/docs{Colors.END}")
 
     if is_port_open(80):
-        print(f"  Frontend: {Colors.GREEN}http://10.73.148.75/maemi-chan/{Colors.END}")
-        print(f"  Admin:    {Colors.GREEN}http://10.73.148.75/maemi-chan/sdx-secret{Colors.END}")
+        print(f"  Frontend: {Colors.GREEN}http://10.73.148.75/pochi-kawaii/{Colors.END}")
+        print(f"  Admin:    {Colors.GREEN}http://10.73.148.75/pochi-kawaii/sdx-secret{Colors.END}")
 
     print()
     print(f"{Colors.BOLD}Logs:{Colors.END}")

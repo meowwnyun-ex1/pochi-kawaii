@@ -17,14 +17,14 @@ def load_env_file(env_path: Path) -> None:
         return
 
     try:
-        with open(env_path, 'r', encoding='utf-8') as f:
+        with open(env_path, "r", encoding="utf-8") as f:
             for line in f:
                 line = line.strip()
 
-                if not line or line.startswith('#'):
+                if not line or line.startswith("#"):
                     continue
 
-                match = re.match(r'^([A-Za-z_][A-Za-z0-9_]*)=(.*)$', line)
+                match = re.match(r"^([A-Za-z_][A-Za-z0-9_]*)=(.*)$", line)
                 if match:
                     key, value = match.groups()
                     key = key.strip()
@@ -63,7 +63,9 @@ class Config:
                 raise FileNotFoundError(error_msg)
             else:
                 logger.warning(f".env file not found at {env_file}")
-                logger.warning("Using environment variables or defaults - this may cause issues!")
+                logger.warning(
+                    "Using environment variables or defaults - this may cause issues!"
+                )
 
         self._validate_required_env_vars()
         self._security_checks()
@@ -82,10 +84,6 @@ class Config:
 
         self._api_config = self._load_api_config()
 
-        self.enable_learning = True
-        self.learning_min_confidence = 0.85
-        self.similar_question_threshold = 0.90
-
     def _validate_required_env_vars(self) -> None:
         required_vars = [
             "DATABASE_URL",
@@ -103,10 +101,16 @@ class Config:
                 missing_vars.append(var)
 
         if missing_vars:
-            error_msg = f"❌ Missing required environment variables: {', '.join(missing_vars)}"
+            error_msg = (
+                f"❌ Missing required environment variables: {', '.join(missing_vars)}"
+            )
             logger.error(error_msg)
-            logger.error("Please check your .env file and ensure all required variables are set")
-            logger.error("Run: python scripts/generate_secrets.py to generate secure secrets")
+            logger.error(
+                "Please check your .env file and ensure all required variables are set"
+            )
+            logger.error(
+                "Run: python scripts/generate_secrets.py to generate secure secrets"
+            )
             raise ValueError(error_msg)
 
         logger.info("✅ All required environment variables are set")
@@ -123,23 +127,40 @@ class Config:
         ]
 
         if len(jwt_secret) < 32:
-            warnings.append("⚠️  JWT_SECRET is too short (minimum 32 characters recommended)")
+            warnings.append(
+                "⚠️  JWT_SECRET is too short (minimum 32 characters recommended)"
+            )
 
-        if any(pattern.lower() in jwt_secret.lower() for pattern in insecure_jwt_patterns):
-            warnings.append("⚠️  JWT_SECRET appears to be using a default/insecure value")
+        if any(
+            pattern.lower() in jwt_secret.lower() for pattern in insecure_jwt_patterns
+        ):
+            warnings.append(
+                "⚠️  JWT_SECRET appears to be using a default/insecure value"
+            )
 
         admin_password = os.getenv("ADMIN_PASSWORD", "")
-        if admin_password in ["admin", "password", "change_this_password", "sdx@admin123"]:
-            warnings.append("⚠️  ADMIN_PASSWORD appears to be using a default/insecure value")
+        if admin_password in [
+            "admin",
+            "password",
+            "change_this_password",
+            "sdx@admin123",
+        ]:
+            warnings.append(
+                "⚠️  ADMIN_PASSWORD appears to be using a default/insecure value"
+            )
 
         if len(admin_password) < 12:
-            warnings.append("⚠️  ADMIN_PASSWORD is too short (minimum 12 characters recommended)")
+            warnings.append(
+                "⚠️  ADMIN_PASSWORD is too short (minimum 12 characters recommended)"
+            )
 
         hf_token = os.getenv("HUGGINGFACE_API_TOKEN", "")
         if not hf_token:
             warnings.append("⚠️  HUGGINGFACE_API_TOKEN is missing or not set")
         elif not hf_token.startswith("hf_"):
-            warnings.append("⚠️  HUGGINGFACE_API_TOKEN has invalid format (should start with 'hf_')")
+            warnings.append(
+                "⚠️  HUGGINGFACE_API_TOKEN has invalid format (should start with 'hf_')"
+            )
         elif "YOUR_HF" in hf_token or "YOUR_HUGGING" in hf_token:
             warnings.append("⚠️  HUGGINGFACE_API_TOKEN contains placeholder value")
 
@@ -152,18 +173,35 @@ class Config:
         database_url = os.getenv("DATABASE_URL", "").strip().strip('"').strip("'")
         if not database_url:
             warnings.append("⚠️  DATABASE_URL is missing")
-        elif len(database_url) < 30:  # Relaxed minimum from 50 to 30 for shorter valid connections
-            warnings.append(f"⚠️  DATABASE_URL seems too short ({len(database_url)} chars) - check .env file encoding")
-        elif "DRIVER=" not in database_url.upper() and "mssql://" not in database_url.lower():
-            warnings.append(f"⚠️  DATABASE_URL missing DRIVER parameter or invalid format")
-        elif "YOUR_" in database_url or "your_" in database_url or "PLACEHOLDER" in database_url.upper():
-            warnings.append("⚠️  DATABASE_URL contains placeholder values - update with actual credentials")
+        elif (
+            len(database_url) < 30
+        ):  # Relaxed minimum from 50 to 30 for shorter valid connections
+            warnings.append(
+                f"⚠️  DATABASE_URL seems too short ({len(database_url)} chars) - check .env file encoding"
+            )
+        elif (
+            "DRIVER=" not in database_url.upper()
+            and "mssql://" not in database_url.lower()
+        ):
+            warnings.append(
+                f"⚠️  DATABASE_URL missing DRIVER parameter or invalid format"
+            )
+        elif (
+            "YOUR_" in database_url
+            or "your_" in database_url
+            or "PLACEHOLDER" in database_url.upper()
+        ):
+            warnings.append(
+                "⚠️  DATABASE_URL contains placeholder values - update with actual credentials"
+            )
 
         # Validate server port is a valid number
         try:
-            port = int(os.getenv("SERVER_PORT", "4003"))
+            port = int(os.getenv("SERVER_PORT", "4004"))
             if port < 1 or port > 65535:
-                warnings.append(f"⚠️  SERVER_PORT ({port}) is outside valid range (1-65535)")
+                warnings.append(
+                    f"⚠️  SERVER_PORT ({port}) is outside valid range (1-65535)"
+                )
         except ValueError:
             warnings.append("⚠️  SERVER_PORT is not a valid number")
 
@@ -171,21 +209,27 @@ class Config:
         try:
             rate_per_min = int(os.getenv("RATE_LIMIT_PER_MINUTE", "30"))
             if rate_per_min < 1 or rate_per_min > 1000:
-                warnings.append(f"⚠️  RATE_LIMIT_PER_MINUTE ({rate_per_min}) seems unusual")
+                warnings.append(
+                    f"⚠️  RATE_LIMIT_PER_MINUTE ({rate_per_min}) seems unusual"
+                )
         except ValueError:
             warnings.append("⚠️  RATE_LIMIT_PER_MINUTE is not a valid number")
 
         try:
             rate_per_hour = int(os.getenv("RATE_LIMIT_PER_HOUR", "500"))
             if rate_per_hour < 1 or rate_per_hour > 100000:
-                warnings.append(f"⚠️  RATE_LIMIT_PER_HOUR ({rate_per_hour}) seems unusual")
+                warnings.append(
+                    f"⚠️  RATE_LIMIT_PER_HOUR ({rate_per_hour}) seems unusual"
+                )
         except ValueError:
             warnings.append("⚠️  RATE_LIMIT_PER_HOUR is not a valid number")
 
         # Check for suspicious patterns in CORS_ORIGINS
         cors_origins = os.getenv("CORS_ORIGINS", "")
         if "*" in cors_origins and environment == "production":
-            warnings.append("⚠️  CORS_ORIGINS contains wildcard (*) in production - security risk!")
+            warnings.append(
+                "⚠️  CORS_ORIGINS contains wildcard (*) in production - security risk!"
+            )
 
         if warnings:
             logger.warning("=" * 80)
@@ -194,16 +238,26 @@ class Config:
             for warning in warnings:
                 logger.warning(warning)
             logger.warning("=" * 80)
-            logger.warning("Run: python scripts/generate_secrets.py to generate secure secrets")
+            logger.warning(
+                "Run: python scripts/generate_secrets.py to generate secure secrets"
+            )
             logger.warning("=" * 80)
 
             if environment == "production":
-                critical_warnings = [w for w in warnings if "JWT_SECRET" in w or "ADMIN_PASSWORD" in w]
+                critical_warnings = [
+                    w for w in warnings if "JWT_SECRET" in w or "ADMIN_PASSWORD" in w
+                ]
                 if critical_warnings:
                     logger.error("=" * 80)
-                    logger.error("❌ CRITICAL: Insecure secrets detected in production!")
-                    logger.error("⚠️  System will start but you MUST fix these issues ASAP!")
-                    logger.error("⚠️  Generate secure secrets: python scripts/generate_secrets.py")
+                    logger.error(
+                        "❌ CRITICAL: Insecure secrets detected in production!"
+                    )
+                    logger.error(
+                        "⚠️  System will start but you MUST fix these issues ASAP!"
+                    )
+                    logger.error(
+                        "⚠️  Generate secure secrets: python scripts/generate_secrets.py"
+                    )
                     logger.error("=" * 80)
         else:
             logger.info("✅ Security checks passed")
@@ -229,13 +283,19 @@ class Config:
         if len(url) < 30:
             logger.error(f"DATABASE_URL seems too short: {len(url)} chars")
             logger.error(f"Content (first 50 chars): '{url[:50]}'")
-            logger.error("This usually means .env file has encoding issues or line breaks")
+            logger.error(
+                "This usually means .env file has encoding issues or line breaks"
+            )
             logger.error("Try recreating .env file with proper UTF-8 encoding")
-            raise ValueError(f"DATABASE_URL is too short ({len(url)} chars - minimum 30)")
+            raise ValueError(
+                f"DATABASE_URL is too short ({len(url)} chars - minimum 30)"
+            )
 
         # Validate connection string format
         if "DRIVER=" not in url.upper() and "mssql://" not in url.lower():
-            logger.warning("DATABASE_URL doesn't contain DRIVER parameter - might be invalid format")
+            logger.warning(
+                "DATABASE_URL doesn't contain DRIVER parameter - might be invalid format"
+            )
 
         logger.debug(f"DATABASE_URL loaded successfully ({len(url)} chars)")
         return url
@@ -270,12 +330,16 @@ class Config:
 
     @property
     def huggingface_base_url(self) -> str:
-        url = os.getenv("HUGGINGFACE_BASE_URL", "https://router.huggingface.co/hf-inference/models")
+        url = os.getenv(
+            "HUGGINGFACE_BASE_URL", "https://router.huggingface.co/hf-inference/models"
+        )
         return url
 
     @property
     def huggingface_model(self) -> str:
-        model = os.getenv("HUGGINGFACE_MODEL", "emilyalsentzer/Bio_ClinicalBERT")
+        model = os.getenv(
+            "HUGGINGFACE_MODEL", "eigen-ai-labs/eigen-banana-qwen-image-edit"
+        )
         return model
 
     @property
@@ -289,7 +353,7 @@ class Config:
         except (ValueError, TypeError):
             logger.error("Invalid HUGGINGFACE_TIMEOUT, using default 60")
             return 60
-    
+
     @property
     def admin_password(self) -> str:
         return os.getenv("ADMIN_PASSWORD", "")
@@ -305,12 +369,12 @@ class Config:
     @property
     def server_port(self) -> int:
         try:
-            port = int(os.getenv("SERVER_PORT", "4003"))
+            port = int(os.getenv("SERVER_PORT", "4004"))
             if port <= 0 or port > 65535:
-                return 4003
+                return 4004
             return port
         except (ValueError, TypeError):
-            return 4003
+            return 4004
 
     @property
     def log_level(self) -> str:
@@ -326,10 +390,12 @@ class Config:
             return ["*"]
 
         origins = []
-        
+
         cors_origins_env = os.getenv("CORS_ORIGINS", "")
         if cors_origins_env:
-            origins.extend([o.strip() for o in cors_origins_env.split(",") if o.strip()])
+            origins.extend(
+                [o.strip() for o in cors_origins_env.split(",") if o.strip()]
+            )
 
         additional = os.getenv("CORS_ADDITIONAL_ORIGINS", "")
         if additional:
@@ -400,12 +466,12 @@ class Config:
             path = self._get_config_path(filename)
             if not path.exists():
                 return {}
-                
+
             with open(path, "r", encoding="utf-8") as f:
                 config = json.load(f)
                 logger.info(f"Loaded config from {path}")
                 return config
-                
+
         except FileNotFoundError:
             logger.debug(f"Config file not found: {filename} (optional)")
             return {}
@@ -426,11 +492,29 @@ class Config:
     def _get_minimal_api_config(self) -> Dict[str, Any]:
         return {
             "app_info": {
-                "name": os.getenv("APP_NAME", "Maemi-Chan Medical AI"),
-                "version": os.getenv("APP_VERSION", "v2.1"),
-                "developer": os.getenv("APP_DEVELOPER", "Thammaphon Chittasuwanna (SDM)"),
-                "company": os.getenv("APP_COMPANY", "SIAM DENSO MANUFACTURING CO., LTD."),
-                "supported_languages": ["th", "en", "jp", "id", "zh", "ko", "vi", "es", "fil", "hi"],
+                "name": os.getenv("APP_NAME", "Pochi! Kawaii ne~"),
+                "version": os.getenv("APP_VERSION", "v1"),
+                "description": os.getenv(
+                    "APP_DESCRIPTION", "DENSO AI Cartoon Avatar Generator"
+                ),
+                "developer": os.getenv(
+                    "APP_DEVELOPER", "Thammaphon Chittasuwanna (SDM)"
+                ),
+                "company": os.getenv(
+                    "APP_COMPANY", "SIAM DENSO MANUFACTURING CO., LTD."
+                ),
+                "supported_languages": [
+                    "th",
+                    "en",
+                    "jp",
+                    "id",
+                    "zh",
+                    "ko",
+                    "vi",
+                    "es",
+                    "fil",
+                    "hi",
+                ],
             },
             "response_messages": {"ok": "OK"},
             "error_messages": {"generic_error": "An error occurred"},

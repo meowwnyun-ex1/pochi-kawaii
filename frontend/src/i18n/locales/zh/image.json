@@ -1,0 +1,27 @@
+{
+  "greeting": "你好！🌸 我是 Pochi，准备将您的照片转换成可爱的 chibi 卡通！✨\n\n只需上传您的图片并点击 Generate - 您的照片将立即变成可爱的 chibi 角色！💕",
+  "upload_image": "上传图片",
+  "generate": "Generate",
+  "generating": "生成中...",
+  "upload_prompt": "将文件拖放到此处，或点击选择",
+  "supported_formats": "支持：JPG、PNG、WEBP（最大 10MB）",
+  "connection_error": "❌ 无法连接\n\n请检查您的互联网连接",
+  "error": {
+    "http_error": "发生错误",
+    "network_error": "无法连接",
+    "timeout": "⏱️ 超时 - AI 处理时间过长\n\n请重试",
+    "please_try_again": "请重试",
+    "no_image": "请先上传图片",
+    "invalid_format": "文件格式无效。请使用 JPG、PNG 或 WEBP"
+  },
+  "stage_analyzing": "正在分析您的图片",
+  "stage_thinking": "正在处理图片",
+  "stage_researching": "正在创建 chibi 特征",
+  "stage_generating": "正在生成您的卡通",
+  "queue": "队列",
+  "time_sec": "秒",
+  "download": "下载图片",
+  "generate_again": "再次生成",
+  "warning_delete_on_close": "⚠️ 警告：上传的图片将在关闭此网站后立即删除"
+}
+

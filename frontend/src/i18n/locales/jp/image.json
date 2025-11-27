@@ -1,0 +1,27 @@
+{
+  "greeting": "こんにちは！🌸 私はPochiです。あなたの写真をかわいいちびキャラクターに変換します！✨\n\n画像をアップロードしてGenerateをクリックするだけで、すぐにかわいいちびキャラクターになります！💕",
+  "upload_image": "画像をアップロード",
+  "generate": "Generate",
+  "generating": "生成中...",
+  "upload_prompt": "ファイルをここにドラッグ＆ドロップ、またはクリックして選択",
+  "supported_formats": "対応形式：JPG、PNG、WEBP（最大10MB）",
+  "connection_error": "❌ 接続できません\n\nインターネット接続を確認してください",
+  "error": {
+    "http_error": "エラーが発生しました",
+    "network_error": "接続できません",
+    "timeout": "⏱️ タイムアウト - AIの処理に時間がかかりすぎました\n\nもう一度お試しください",
+    "please_try_again": "もう一度お試しください",
+    "no_image": "まず画像をアップロードしてください",
+    "invalid_format": "無効なファイル形式です。JPG、PNG、WEBPを使用してください"
+  },
+  "stage_analyzing": "画像を分析中",
+  "stage_thinking": "画像を処理中",
+  "stage_researching": "ちび特徴を作成中",
+  "stage_generating": "キャラクターを生成中",
+  "queue": "順番",
+  "time_sec": "秒",
+  "download": "画像をダウンロード",
+  "generate_again": "再生成",
+  "warning_delete_on_close": "⚠️ 警告: アップロードした画像は、このウェブサイトを閉じた直後に削除されます"
+}
+

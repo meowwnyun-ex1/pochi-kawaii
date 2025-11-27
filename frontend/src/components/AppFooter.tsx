@@ -3,12 +3,12 @@ interface AppFooterProps {
 }
 
 const AppFooter = ({ showCarousel = false }: AppFooterProps) => {
-  const copyrightText = '© 2025 Maemi-Chan Medical AI; Developed by Thammaphon Chittasuwanna (SDM)';
+  const copyrightText = '© 2025 Pochi! Kawaii ne~ | Developed by Thammaphon Chittasuwanna (SDM)';
 
   return (
-    <footer className="fixed bottom-0 left-0 right-0 z-20 bg-gradient-to-r from-gray-50 to-sky-50/30 border-t border-gray-200/50 shadow-sm">
+    <footer className="fixed bottom-0 left-0 right-0 z-20 bg-gradient-to-r from-pink-50/90 to-rose-50/90 backdrop-blur-sm border-t border-pink-200/50 shadow-sm">
       <div className="px-6 py-2">
-        <div className="text-center text-xs text-gray-600 font-medium">
+        <div className="text-center text-xs text-pink-700 font-medium">
           <p>{copyrightText}</p>
         </div>
       </div>

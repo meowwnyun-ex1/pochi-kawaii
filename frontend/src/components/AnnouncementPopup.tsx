@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
+import logger from '@/utils/logger';
 
 interface Announcement {
   id: number;
@@ -37,33 +38,46 @@ const AnnouncementPopup = () => {
           throw new Error('Response is not JSON');
         }
 
-        const data = await response.json();
+        let data;
+        try {
+          data = await response.json();
+        } catch (jsonError) {
+          throw new Error('Failed to parse JSON response');
+        }
         
         if (data && data.announcements && Array.isArray(data.announcements) && data.announcements.length > 0) {
           // Filter only active announcements with valid image_url
-          const activeAnnouncements = data.announcements.filter((ann: Announcement) => ann.image_url);
+          const activeAnnouncements = data.announcements.filter((ann: Announcement) => ann?.image_url);
           
           // Filter out announcements that were closed in this session
-          const closedAnnouncements = JSON.parse(localStorage.getItem('closed_announcements') || '[]');
+          let closedAnnouncements: number[] = [];
+          try {
+            const closedStr = localStorage.getItem('closed_announcements');
+            if (closedStr) {
+              closedAnnouncements = JSON.parse(closedStr);
+            }
+          } catch (parseError) {
+            logger.warn('Failed to parse closed_announcements from localStorage', 'AnnouncementPopup', parseError);
+            localStorage.removeItem('closed_announcements');
+          }
+          
           const visibleAnnouncements = activeAnnouncements.filter(
             (ann: Announcement) => !closedAnnouncements.includes(ann.id)
           );
           
           if (visibleAnnouncements.length > 0) {
             setAnnouncements(visibleAnnouncements);
-          setIsVisible(true);
-
-          // Auto-close after 20 seconds
-            const autoCloseTimer = setTimeout(() => {
-            handleClose();
-          }, 20000);
+            setIsVisible(true);
             
-            return () => clearTimeout(autoCloseTimer);
+            // Auto-close after 20 seconds
+            autoCloseTimer = setTimeout(() => {
+              handleClose();
+            }, 20000);
           }
         }
       } catch (err) {
-        if (import.meta.env.DEV && err instanceof Error && err.name !== 'AbortError') {
-          console.error('Failed to fetch announcements:', err);
+        if (err instanceof Error && err.name !== 'AbortError') {
+          logger.error('Failed to fetch announcements', 'AnnouncementPopup', err);
         }
       }
     };
@@ -72,19 +86,37 @@ const AnnouncementPopup = () => {
 
     return () => {
       controller.abort();
+      if (autoCloseTimer) {
+        clearTimeout(autoCloseTimer);
+      }
     };
   }, []);
 
   const handleClose = () => {
     setIsVisible(false);
     // Store in localStorage to prevent showing again in this session
-    const closedAnnouncements = JSON.parse(localStorage.getItem('closed_announcements') || '[]');
-    announcements.forEach(ann => {
-      if (!closedAnnouncements.includes(ann.id)) {
-        closedAnnouncements.push(ann.id);
+    try {
+      let closedAnnouncements: number[] = [];
+      const closedStr = localStorage.getItem('closed_announcements');
+      if (closedStr) {
+        try {
+          closedAnnouncements = JSON.parse(closedStr);
+        } catch (parseError) {
+          logger.warn('Failed to parse closed_announcements', 'AnnouncementPopup.handleClose', parseError);
+          closedAnnouncements = [];
+        }
       }
-    });
-    localStorage.setItem('closed_announcements', JSON.stringify(closedAnnouncements));
+      
+      announcements.forEach(ann => {
+        if (ann?.id && !closedAnnouncements.includes(ann.id)) {
+          closedAnnouncements.push(ann.id);
+        }
+      });
+      
+      localStorage.setItem('closed_announcements', JSON.stringify(closedAnnouncements));
+    } catch (error) {
+      logger.error('Failed to save closed announcements', 'AnnouncementPopup.handleClose', error);
+    }
   };
 
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {

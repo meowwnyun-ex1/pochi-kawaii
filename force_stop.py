@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Maemi-Chan Medical AI - Force Stop Script
+Pochi! Kawaii ne~ - Force Stop Script
 ONLY use this if stop.py fails due to zombie processes
 This will restart Winsock to clear zombie TCP states
 """
@@ -40,11 +40,11 @@ def print_warning(text):
     print(f"{Colors.YELLOW}[WARN] {text}{Colors.END}")
 
 def main():
-    print_header("MAEMI-CHAN MEDICAL AI - FORCE STOP")
+    print_header("POCHI! KAWAII NE~ - FORCE STOP")
 
     if sys.platform != "win32":
         print_error("This script is Windows-only")
-        print_info("On Linux/Mac, use: lsof -ti :4003 | xargs kill -9")
+        print_info("On Linux/Mac, use: lsof -ti :4004 | xargs kill -9")
         sys.exit(1)
 
     # Get project root
@@ -56,7 +56,7 @@ def main():
     if env_file.exists():
         load_dotenv(env_file)
 
-    server_port = int(os.getenv("SERVER_PORT", "4003"))
+    server_port = int(os.getenv("SERVER_PORT", "4004"))
 
     print_warning("THIS IS A LAST RESORT - Only use if normal stop.py fails!")
     print_info("This will change the port number to avoid zombie processes")

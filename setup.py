@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Maemi-Chan Medical AI - Setup Script
+Pochi! Kawaii ne~ - Setup Script
 ติดตั้งระบบครั้งแรก
 """
 
@@ -59,7 +59,7 @@ def run_command(cmd, shell=False, cwd=None, check=True):
         return None
 
 def main():
-    print_header("MAEMI-CHAN MEDICAL AI - SETUP")
+    print_header("POCHI! KAWAII NE~ - SETUP")
 
     # Get project root
     project_root = Path(__file__).parent.absolute()
@@ -142,13 +142,56 @@ def main():
 
     venv_dir = project_root / ".venv"
 
-    if venv_dir.exists():
-        print_warning("Virtual environment already exists, skipping...")
+    # Determine python path in venv
+    if sys.platform == "win32":
+        python_venv = venv_dir / "Scripts" / "python.exe"
     else:
+        python_venv = venv_dir / "bin" / "python"
+
+    # Check if venv exists and is valid
+    venv_needs_recreation = False
+    if venv_dir.exists():
+        if python_venv.exists():
+            # Test if venv python works
+            print_info("Testing virtual environment...")
+            test_result = run_command([str(python_venv), "--version"], check=False)
+            if test_result is None or test_result.returncode != 0:
+                print_warning("Virtual environment exists but is broken")
+                venv_needs_recreation = True
+            else:
+                print_success(f"Virtual environment is valid: {test_result.stdout.strip()}")
+        else:
+            print_warning("Virtual environment directory exists but Python executable not found")
+            venv_needs_recreation = True
+    else:
+        venv_needs_recreation = True
+
+    if venv_needs_recreation:
+        if venv_dir.exists():
+            print_info("Removing broken virtual environment...")
+            try:
+                shutil.rmtree(venv_dir)
+                print_success("Old virtual environment removed")
+            except Exception as e:
+                print_error(f"Failed to remove old venv: {e}")
+                print_info("Please manually delete .venv folder and try again")
+                sys.exit(1)
+        
         print_info("Creating virtual environment...")
         result = run_command([python_cmd, "-m", "venv", ".venv"])
         if result is not None:
             print_success("Virtual environment created")
+            # Verify it works
+            if python_venv.exists():
+                verify_result = run_command([str(python_venv), "--version"], check=False)
+                if verify_result and verify_result.returncode == 0:
+                    print_success(f"Verified: {verify_result.stdout.strip()}")
+                else:
+                    print_error("Virtual environment created but verification failed")
+                    sys.exit(1)
+            else:
+                print_error("Virtual environment created but Python executable not found")
+                sys.exit(1)
         else:
             print_error("Failed to create virtual environment")
             sys.exit(1)
@@ -158,30 +201,33 @@ def main():
     # ========================================================================
     print_header("[4/7] Installing Python Dependencies")
 
-    # Determine pip path
-    if sys.platform == "win32":
-        pip_cmd = str(venv_dir / "Scripts" / "pip.exe")
-        python_venv = str(venv_dir / "Scripts" / "python.exe")
-    else:
-        pip_cmd = str(venv_dir / "bin" / "pip")
-        python_venv = str(venv_dir / "bin" / "python")
+    # python_venv should already be set from step 3
+    if not python_venv.exists():
+        print_error(f"Virtual environment Python not found at: {python_venv}")
+        print_error("This should not happen - please report this issue")
+        sys.exit(1)
+
+    python_venv_str = str(python_venv)
 
     # Upgrade pip
     print_info("Upgrading pip...")
-    run_command([python_venv, "-m", "pip", "install", "--upgrade", "pip"], check=False)
+    result = run_command([python_venv_str, "-m", "pip", "install", "--upgrade", "pip"], check=False)
+    if result is None:
+        print_warning("pip upgrade failed, continuing anyway...")
 
     # Install requirements
-    requirements = project_root / "backend" / "requirements.txt"
+    requirements = project_root / "requirements.txt"
     if requirements.exists():
         print_info("Installing backend dependencies...")
-        result = run_command([pip_cmd, "install", "-r", str(requirements)])
+        result = run_command([python_venv_str, "-m", "pip", "install", "-r", str(requirements)])
         if result is not None:
             print_success("Python dependencies installed")
         else:
             print_error("Failed to install Python dependencies")
+            print_info(f"Try running manually: {python_venv_str} -m pip install -r {requirements}")
             sys.exit(1)
     else:
-        print_error("backend/requirements.txt not found!")
+        print_error("requirements.txt not found!")
         sys.exit(1)
 
     # ========================================================================
@@ -278,7 +324,7 @@ def main():
     print(f"   {Colors.GREEN}python status.py{Colors.END}")
     print()
     print("4. Open application:")
-    print(f"   {Colors.CYAN}http://10.73.148.75/maemi-chan/{Colors.END}")
+    print(f"   {Colors.CYAN}http://10.73.148.75/pochi-kawaii/{Colors.END}")
     print()
 
 if __name__ == "__main__":

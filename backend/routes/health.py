@@ -11,7 +11,7 @@ router = APIRouter()
 
 
 def setup_health_routes(
-    app, config, db_manager, ai_service, queue_service, cache_service
+    app, config, db_manager, chibi_service
 ):
     config_dir_str = os.getenv("CONFIG_DIR", "config")
     config_dir = Path(config_dir_str) if config_dir_str else Path("config")
@@ -38,22 +38,6 @@ def setup_health_routes(
 
     @router.get("/")
     async def root():
-        queue_stats = queue_service.get_stats()
-        cache_stats = cache_service.get_stats()
-
-        ai_info = {
-            "status": "enabled",
-            "learning_enabled": config.enable_learning
-        }
-
-        learning_stats = {}
-        if config.enable_learning:
-            try:
-                learning_stats = ai_service.learning_service.get_learning_stats()
-            except (AttributeError, Exception) as e:
-                logger.debug(f"Failed to get learning stats: {e}")
-                learning_stats = {}
-
         return {
             "message": app_info.get("description", ""),
             "status": "running",
@@ -62,16 +46,13 @@ def setup_health_routes(
             "company": app_info.get("company", ""),
             "copyright": app_info.get("copyright", ""),
             "endpoints": endpoints,
-            "ai_service": ai_info,
-            "learning": {
-                "enabled": config.enable_learning,
-                "stats": learning_stats,
+            "chibi_service": {
+                "status": "enabled",
+                "model": chibi_service.model_name if chibi_service else None
             },
             "environment": config.environment,
             "debug_mode": config.enable_debug,
             "supported_languages": app_info.get("supported_languages", []),
-            "queue_stats": queue_stats,
-            "cache_stats": cache_stats,
         }
 
     @router.get("/health")
@@ -109,18 +90,15 @@ def setup_health_routes(
             health_status["status"] = "degraded"
             logger.error(f"Health check error: {e}")
 
-        health_status["components"]["ai_service"] = {
+        health_status["components"]["chibi_service"] = {
             "provider": "HuggingFace",
             "model": config.huggingface_model,
-            "status": "configured",
-            "mode": "huggingface_only"
+            "status": "configured"
         }
 
         health_status["components"]["environment"] = (
             "loaded" if config.database_url else "missing_config"
         )
-        health_status["components"]["queue"] = queue_service.get_stats()
-        health_status["components"]["cache"] = cache_service.get_stats()
         
         if db_manager.pool:
             health_status["components"]["connection_pool"] = db_manager.pool.get_stats()
@@ -189,34 +167,14 @@ def setup_health_routes(
 
     @router.get("/api/stats")
     async def get_stats():
-        queue_stats = queue_service.get_stats()
-        cache_stats = cache_service.get_stats()
-
-        hf_stat_key = config.huggingface_model.replace("-", "_").replace(".", "_").replace("/", "_") + "_used"
-        total_requests = queue_stats.get(hf_stat_key, 0)
-
-        learning_stats = {}
-        if config.enable_learning:
-            try:
-                learning_stats = ai_service.learning_service.get_learning_stats()
-            except (AttributeError, Exception) as e:
-                logger.debug(f"Failed to get learning stats: {e}")
-                learning_stats = {}
-
-        ai_usage = {
+        chibi_usage = {
             "provider": "HuggingFace",
             "model": config.huggingface_model,
-            "mode": "huggingface_only",
-            "total_requests": total_requests,
-            "cache_hits": queue_stats.get("cache_hits", 0),
-            "learned_responses": queue_stats.get("learned", 0) if config.enable_learning else 0
+            "status": "ready"
         }
 
         return {
-            "queue": queue_stats,
-            "cache": cache_stats,
-            "ai_usage": ai_usage,
-            "learning": learning_stats if config.enable_learning else {"enabled": False},
+            "chibi_service": chibi_usage,
             "timestamp": datetime.utcnow().isoformat(),
         }
 
@@ -226,9 +184,6 @@ def setup_health_routes(
         Prometheus-compatible metrics endpoint for monitoring tools
         (Netdata, Prometheus, Grafana, etc.)
         """
-        queue_stats = queue_service.get_stats()
-        cache_stats = cache_service.get_stats()
-
         # Database connection pool stats
         pool_stats = db_manager.pool.get_stats() if db_manager.pool else {}
 
@@ -236,72 +191,31 @@ def setup_health_routes(
         metrics = []
 
         # Application info
-        metrics.append('# HELP maemi_app_info Application information')
-        metrics.append('# TYPE maemi_app_info gauge')
-        metrics.append(f'maemi_app_info{{version="{app_info.get("version", "unknown")}",environment="{config.environment}"}} 1')
-
-        # Queue metrics
-        metrics.append('# HELP maemi_queue_size Current queue size')
-        metrics.append('# TYPE maemi_queue_size gauge')
-        metrics.append(f'maemi_queue_size {queue_stats.get("queue_size", 0)}')
-
-        metrics.append('# HELP maemi_queue_processing Currently processing requests')
-        metrics.append('# TYPE maemi_queue_processing gauge')
-        metrics.append(f'maemi_queue_processing {queue_stats.get("processing", 0)}')
-
-        metrics.append('# HELP maemi_total_requests_total Total requests processed')
-        metrics.append('# TYPE maemi_total_requests_total counter')
-        hf_stat_key = config.huggingface_model.replace("-", "_").replace(".", "_").replace("/", "_") + "_used"
-        metrics.append(f'maemi_total_requests_total {queue_stats.get(hf_stat_key, 0)}')
-
-        # Cache metrics
-        metrics.append('# HELP maemi_cache_size Current cache size')
-        metrics.append('# TYPE maemi_cache_size gauge')
-        metrics.append(f'maemi_cache_size {cache_stats.get("size", 0)}')
-
-        metrics.append('# HELP maemi_cache_hits_total Total cache hits')
-        metrics.append('# TYPE maemi_cache_hits_total counter')
-        metrics.append(f'maemi_cache_hits_total {cache_stats.get("hits", 0)}')
-
-        metrics.append('# HELP maemi_cache_misses_total Total cache misses')
-        metrics.append('# TYPE maemi_cache_misses_total counter')
-        metrics.append(f'maemi_cache_misses_total {cache_stats.get("misses", 0)}')
+        metrics.append('# HELP pochi_app_info Application information')
+        metrics.append('# TYPE pochi_app_info gauge')
+        metrics.append(f'pochi_app_info{{version="{app_info.get("version", "unknown")}",environment="{config.environment}"}} 1')
 
         # Database metrics
         if pool_stats:
-            metrics.append('# HELP maemi_db_pool_active Active database connections')
-            metrics.append('# TYPE maemi_db_pool_active gauge')
-            metrics.append(f'maemi_db_pool_active {pool_stats.get("active", 0)}')
+            metrics.append('# HELP pochi_db_pool_active Active database connections')
+            metrics.append('# TYPE pochi_db_pool_active gauge')
+            metrics.append(f'pochi_db_pool_active {pool_stats.get("active", 0)}')
 
-            metrics.append('# HELP maemi_db_pool_size Total database connection pool size')
-            metrics.append('# TYPE maemi_db_pool_size gauge')
-            metrics.append(f'maemi_db_pool_size {pool_stats.get("size", 0)}')
+            metrics.append('# HELP pochi_db_pool_size Total database connection pool size')
+            metrics.append('# TYPE pochi_db_pool_size gauge')
+            metrics.append(f'pochi_db_pool_size {pool_stats.get("size", 0)}')
 
         # Database status
-        metrics.append('# HELP maemi_db_available Database availability')
-        metrics.append('# TYPE maemi_db_available gauge')
+        metrics.append('# HELP pochi_db_available Database availability')
+        metrics.append('# TYPE pochi_db_available gauge')
         db_available = 1 if (db_manager.connection_available and db_manager.pool) else 0
-        metrics.append(f'maemi_db_available {db_available}')
+        metrics.append(f'pochi_db_available {db_available}')
 
-        # Learning metrics (if enabled)
-        if config.enable_learning:
-            try:
-                learning_stats = ai_service.learning_service.get_learning_stats()
-
-                metrics.append('# HELP maemi_learned_responses_total Total learned responses')
-                metrics.append('# TYPE maemi_learned_responses_total counter')
-                metrics.append(f'maemi_learned_responses_total {learning_stats.get("total_learned", 0)}')
-
-                metrics.append('# HELP maemi_learning_enabled Learning feature status')
-                metrics.append('# TYPE maemi_learning_enabled gauge')
-                metrics.append('maemi_learning_enabled 1')
-            except Exception as e:
-                logger.debug(f"Failed to get learning stats: {e}")
-                metrics.append('maemi_learning_enabled 0')
-        else:
-            metrics.append('# HELP maemi_learning_enabled Learning feature status')
-            metrics.append('# TYPE maemi_learning_enabled gauge')
-            metrics.append('maemi_learning_enabled 0')
+        # Chibi service status
+        metrics.append('# HELP pochi_chibi_service_available Chibi image generation service availability')
+        metrics.append('# TYPE pochi_chibi_service_available gauge')
+        chibi_available = 1 if chibi_service else 0
+        metrics.append(f'pochi_chibi_service_available {chibi_available}')
 
         # Return as plain text
         from fastapi.responses import PlainTextResponse

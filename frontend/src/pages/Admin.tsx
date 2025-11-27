@@ -1,22 +1,46 @@
+import { useState, useEffect } from 'react';
 import AdminPanel from '@/components/AdminPanel';
+import AdminLogin from '@/components/AdminLogin';
 import AnnouncementPopup from '@/components/AnnouncementPopup';
 import AppHeader from '@/components/AppHeader';
 import AppFooter from '@/components/AppFooter';
 import Sidebar from '@/components/Sidebar';
 import FeedbackCarousel from '@/components/FeedbackCarousel';
-import { useState } from 'react';
 
 const Admin = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [authToken, setAuthToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Clear any existing token on mount
+    localStorage.removeItem('admin_token');
+    setAuthToken(null);
+    setIsLoggedIn(false);
+  }, []);
+
+  const handleLoginSuccess = (token: string) => {
+    setAuthToken(token);
+    setIsLoggedIn(true);
+  };
+
+  const handleLogout = () => {
+    setAuthToken(null);
+    setIsLoggedIn(false);
+  };
+
   return (
-    <div className="flex flex-col h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20 overflow-hidden pb-12">
+    <div className="flex flex-col h-screen gradient-background overflow-hidden pb-12">
       <AnnouncementPopup />
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <AppHeader onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
       <FeedbackCarousel />
       <div className="flex-1 pt-16 overflow-y-auto">
-        <AdminPanel />
+        {isLoggedIn && authToken ? (
+          <AdminPanel authToken={authToken} onLogout={handleLogout} />
+        ) : (
+          <AdminLogin onLoginSuccess={handleLoginSuccess} />
+        )}
       </div>
       <AppFooter showCarousel={false} />
     </div>

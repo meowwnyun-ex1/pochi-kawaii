@@ -70,7 +70,7 @@ class AdminToken(BaseModel):
     token_type: str = "bearer"
 
 
-def setup_admin_routes(app, auth_service, feedback_service, cache_service, ai_service=None):
+def setup_admin_routes(app, auth_service, feedback_service):
     def verify_admin_token(
         credentials: HTTPAuthorizationCredentials = Depends(security),
     ):
@@ -167,64 +167,5 @@ def setup_admin_routes(app, auth_service, feedback_service, cache_service, ai_se
             logger.error(f"Failed to delete feedback: {e}")
             raise HTTPException(status_code=500, detail=ERROR_MESSAGES.get("delete_feedback_failed", "Failed to delete feedback"))
 
-    @router.post("/api/admin/cache/clear")
-    async def clear_cache(admin_data: dict = Depends(verify_admin_token)):
-        try:
-            cache_service.clear()
-            return {"message": MESSAGES.get("cache_cleared", "Cache cleared successfully")}
-        except Exception as e:
-            logger.error(f"Failed to clear cache: {e}")
-            raise HTTPException(status_code=500, detail=ERROR_MESSAGES.get("clear_cache_failed", "Failed to clear cache"))
-
-    @router.post("/api/admin/learn-from-database")
-    async def learn_from_database(limit: int = 100, admin_data: dict = Depends(verify_admin_token)):
-        """
-        เรียนรู้จากการสนทนาที่มีอยู่ใน database
-        AI will analyze existing conversations and improve its responses
-        """
-        try:
-            if not ai_service:
-                raise HTTPException(status_code=503, detail="AI service not available")
-
-            if not hasattr(ai_service, 'learning_service') or not ai_service.learning_service:
-                raise HTTPException(status_code=503, detail="Learning service not available")
-
-            # Call learning service to learn from database
-            stats = ai_service.learning_service.learn_from_database_conversations(limit=limit)
-
-            return {
-                "success": True,
-                "message": f"AI learned from {stats.get('learned', 0)} conversations",
-                "stats": stats
-            }
-
-        except HTTPException:
-            raise
-        except Exception as e:
-            logger.error(f"Failed to learn from database: {e}")
-            raise HTTPException(status_code=500, detail=f"Failed to learn from database: {str(e)}")
-
-    @router.get("/api/admin/learning-stats")
-    async def get_learning_stats(admin_data: dict = Depends(verify_admin_token)):
-        """Get AI learning statistics"""
-        try:
-            if not ai_service:
-                raise HTTPException(status_code=503, detail="AI service not available")
-
-            if not hasattr(ai_service, 'learning_service') or not ai_service.learning_service:
-                raise HTTPException(status_code=503, detail="Learning service not available")
-
-            stats = ai_service.learning_service.get_learning_stats()
-
-            return {
-                "success": True,
-                "stats": stats
-            }
-
-        except HTTPException:
-            raise
-        except Exception as e:
-            logger.error(f"Failed to get learning stats: {e}")
-            raise HTTPException(status_code=500, detail=f"Failed to get learning stats: {str(e)}")
 
     app.include_router(router)

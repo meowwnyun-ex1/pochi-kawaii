@@ -23,25 +23,13 @@ sys.path.insert(0, str(Path(__file__).parent))
 from config import Config
 from database import DatabaseManager
 from routes.admin import setup_admin_routes
-from routes.chat import setup_chat_routes
 from routes.feedback import setup_feedback_routes
 from routes.health import setup_health_routes
 from routes.announcements import setup_announcement_routes
 from routes.generate import setup_generate_routes
-from services.ai_service import AIService
 from services.auth_service import AuthService
-from services.cache_service import CacheService
 from services.feedback_service import FeedbackService
-from services.language_service import LanguageService
-from services.queue_service import AIQueueService
 from services.chibi_image_service import ChibiImageService
-try:
-    from services.medical_knowledge_service import MedicalKnowledgeService
-    from services.health_analytics_service import HealthAnalyticsService
-    MEDICAL_SERVICES_AVAILABLE = True
-except ImportError:
-    MEDICAL_SERVICES_AVAILABLE = False
-    logger.warning("Medical services not available (optional)")
 
 try:
     from middleware.rate_limiter import init_rate_limiter, rate_limit_middleware
@@ -94,20 +82,7 @@ auth_service = AuthService(
     config.jwt_secret,
     config.jwt_token_expiry_hours
 )
-ai_service = AIService(
-    config.huggingface_api_token,
-    config.huggingface_base_url,
-    config.huggingface_model,
-    config.huggingface_timeout,
-    db_manager,
-    config.enable_learning,
-    config.learning_min_confidence,
-    config.similar_question_threshold,
-)
 feedback_service = FeedbackService(db_manager)
-language_service = LanguageService()
-queue_service = AIQueueService()
-cache_service = CacheService()
 
 # Chibi Image Generation Service
 chibi_service = ChibiImageService(
@@ -116,12 +91,6 @@ chibi_service = ChibiImageService(
     base_url=config.huggingface_base_url,
     timeout=config.huggingface_timeout
 )
-
-# Optional medical services
-if MEDICAL_SERVICES_AVAILABLE:
-    health_analytics_service = HealthAnalyticsService(db_manager)
-else:
-    health_analytics_service = None
 
 
 @asynccontextmanager
@@ -157,17 +126,6 @@ async def lifespan(app: FastAPI):
         db_initialized = db_manager.initialize_tables()
         if db_initialized:
             logger.info("✅ " + startup_msgs.get("db_init_success", "Database initialized"))
-
-            if MEDICAL_SERVICES_AVAILABLE:
-                try:
-                    medical_service = MedicalKnowledgeService(db_manager)
-                    medical_initialized = medical_service.initialize_medical_tables()
-                    if medical_initialized:
-                        logger.info("✅ Medical Knowledge tables initialized (optional)")
-                    else:
-                        logger.warning("⚠️  Medical tables initialization failed (optional)")
-                except Exception as e:
-                    logger.warning(f"⚠️  Medical services not initialized: {e}")
         else:
             logger.warning("⚠️  " + startup_msgs.get("db_init_failed", "Database unavailable"))
     except Exception as e:
@@ -175,17 +133,6 @@ async def lifespan(app: FastAPI):
 
     logger.info(f"🎨 HuggingFace AI: {config.huggingface_model} - Chibi Image Generation")
     logger.info(f"✨ Fixed Chibi Prompt: Consistent kawaii style for all users")
-
-    if config.enable_learning:
-        logger.info(f"🧠 Learning: ENABLED (confidence≥{config.learning_min_confidence}, similarity≥{config.similar_question_threshold})")
-    else:
-        logger.info("📖 Learning: DISABLED")
-
-    try:
-        await queue_service.start_workers(ai_service)
-        logger.info("✅ " + startup_msgs.get("queue_service_started", "Queue service started"))
-    except Exception as e:
-        logger.error(f"❌ Failed to start queue service: {e}", exc_info=True)
 
     logger.info("=" * 60)
     logger.info(f"✅ Pochi! Kawaii ne~ ready on http://{config.server_host}:{config.server_port}")
@@ -197,14 +144,6 @@ async def lifespan(app: FastAPI):
     logger.info("🛑 " + startup_msgs.get("application_shutting_down", "Shutting down gracefully..."))
     logger.info("=" * 60)
 
-    try:
-        logger.info("Stopping queue service...")
-        await asyncio.wait_for(queue_service.shutdown(), timeout=10.0)
-        logger.info("✅ Queue service stopped")
-    except asyncio.TimeoutError:
-        logger.warning("⚠️  Queue service shutdown timed out")
-    except Exception as e:
-        logger.error(f"❌ Error shutting down queue service: {e}")
 
     try:
         logger.info("Closing database connections...")
@@ -221,8 +160,8 @@ async def lifespan(app: FastAPI):
 try:
     from backend import __version__ as app_version, __description__ as app_description
 except (ImportError, ModuleNotFoundError, AttributeError):
-    app_version = "beta"
-    app_description = "Medical AI consultation backend"
+    app_version = "v1"
+    app_description = "DENSO AI Cartoon Avatar Generator"
 
 
 class backend_info:
@@ -350,12 +289,9 @@ async def request_middleware(request: Request, call_next):
     return response
 
 
-setup_health_routes(app, config, db_manager, ai_service, queue_service, cache_service)
-setup_chat_routes(
-    app, ai_service, db_manager, language_service, cache_service, queue_service, config
-)
+setup_health_routes(app, config, db_manager, chibi_service)
 setup_feedback_routes(app, feedback_service)
-setup_admin_routes(app, auth_service, feedback_service, cache_service, ai_service)
+setup_admin_routes(app, auth_service, feedback_service)
 setup_announcement_routes(app, db_manager, auth_service)
 setup_generate_routes(app, chibi_service)
 

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { showToast } from '@/utils/toast';
+import logger from '@/utils/logger';
 import { Plus, Trash2, Edit, Eye, EyeOff, ZoomIn, X, Upload } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -52,9 +53,7 @@ const AnnouncementManager = ({ token }: AnnouncementManagerProps) => {
         showToast.error(t('announcement:load_failed'), { icon: '❌' });
       }
     } catch (error) {
-      if (import.meta.env.DEV) {
-        console.error('Error fetching announcements:', error);
-      }
+      logger.error('Error fetching announcements', 'AnnouncementManager', error);
       showToast.error(t('announcement:load_error'), { icon: '⚠️' });
     } finally {
       setLoading(false);
@@ -138,13 +137,23 @@ const AnnouncementManager = ({ token }: AnnouncementManagerProps) => {
         });
 
         if (res.ok) {
-          const data = await res.json();
-          showToast.success(t('announcement:update_success') || 'Announcement updated successfully', { icon: '✅' });
-          await fetchAnnouncements();
-          resetForm();
+          try {
+            const data = await res.json();
+            showToast.success(t('announcement:update_success') || 'Announcement updated successfully', { icon: '✅' });
+            await fetchAnnouncements();
+            resetForm();
+          } catch (jsonError) {
+            logger.error('Failed to parse update response', 'AnnouncementManager.handleSubmit', jsonError);
+            showToast.error('เกิดข้อผิดพลาดในการอ่านข้อมูล', { icon: '❌' });
+          }
         } else {
-          const errorData = await res.json().catch(() => ({ detail: 'Update failed' }));
-          showToast.error(errorData.detail || t('announcement:update_failed') || 'Failed to update announcement', { icon: '❌', duration: 5000 });
+          try {
+            const errorData = await res.json();
+            showToast.error(errorData?.detail || t('announcement:update_failed') || 'Failed to update announcement', { icon: '❌', duration: 5000 });
+          } catch (jsonError) {
+            logger.error('Failed to parse error response', 'AnnouncementManager.handleSubmit', jsonError);
+            showToast.error(`เกิดข้อผิดพลาด (HTTP ${res.status})`, { icon: '❌', duration: 5000 });
+          }
         }
       } else {
         // Create new announcement
@@ -168,19 +177,27 @@ const AnnouncementManager = ({ token }: AnnouncementManagerProps) => {
         });
 
         if (res.ok) {
-          const data = await res.json();
-          showToast.success(t('announcement:create_success') || 'Announcement created successfully', { icon: '🎉' });
-          await fetchAnnouncements();
-          resetForm();
+          try {
+            const data = await res.json();
+            showToast.success(t('announcement:create_success') || 'Announcement created successfully', { icon: '🎉' });
+            await fetchAnnouncements();
+            resetForm();
+          } catch (jsonError) {
+            logger.error('Failed to parse create response', 'AnnouncementManager.handleSubmit', jsonError);
+            showToast.error('เกิดข้อผิดพลาดในการอ่านข้อมูล', { icon: '❌' });
+          }
         } else {
-          const errorData = await res.json().catch(() => ({ detail: 'Create failed' }));
-          showToast.error(errorData.detail || t('announcement:create_failed') || 'Failed to create announcement', { icon: '❌', duration: 5000 });
+          try {
+            const errorData = await res.json();
+            showToast.error(errorData?.detail || t('announcement:create_failed') || 'Failed to create announcement', { icon: '❌', duration: 5000 });
+          } catch (jsonError) {
+            logger.error('Failed to parse error response', 'AnnouncementManager.handleSubmit', jsonError);
+            showToast.error(`เกิดข้อผิดพลาด (HTTP ${res.status})`, { icon: '❌', duration: 5000 });
+          }
         }
       }
     } catch (error) {
-      if (import.meta.env.DEV) {
-        console.error('Error submitting announcement:', error);
-      }
+      logger.error('Error submitting announcement', 'AnnouncementManager.handleSubmit', error);
       showToast.error(t('announcement:error') || 'An error occurred', { icon: '❌', duration: 5000 });
     }
   };
@@ -204,9 +221,7 @@ const AnnouncementManager = ({ token }: AnnouncementManagerProps) => {
         showToast.error(t('announcement:delete_failed'), { icon: '❌' });
       }
     } catch (error) {
-      if (import.meta.env.DEV) {
-        console.error('Error:', error);
-      }
+      logger.error('Error deleting announcement', 'AnnouncementManager.handleDelete', error);
       showToast.error(t('announcement:error'), { icon: '❌' });
     }
   };
@@ -232,9 +247,7 @@ const AnnouncementManager = ({ token }: AnnouncementManagerProps) => {
         showToast.error(t('announcement:status_update_failed'), { icon: '❌' });
       }
     } catch (error) {
-      if (import.meta.env.DEV) {
-        console.error('Error:', error);
-      }
+      logger.error('Error toggling announcement status', 'AnnouncementManager.handleToggleActive', error);
       showToast.error(t('announcement:error'), { icon: '❌' });
     }
   };

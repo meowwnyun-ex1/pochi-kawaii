@@ -1,6 +1,6 @@
-# 🏥 Maemi-Chan Medical AI
+# 🌸 Pochi! Kawaii ne~
 
-Medical AI consultation system powered by FastAPI, React, and HuggingFace Bio_ClinicalBERT.
+AI Chibi Image Generator powered by FastAPI, React, and HuggingFace eigen-banana-qwen-image-edit.
 
 ## 📦 Requirements
 
@@ -30,14 +30,40 @@ Setup auto-installs: Python packages, Node.js packages, builds frontend, creates
 
 Edit `.env`:
 ```
-DATABASE_URL=DRIVER={ODBC Driver 17 for SQL Server};SERVER=10.73.148.76,1433;DATABASE=maemi-db;UID=inn@admin;PWD=password
+DATABASE_URL=DRIVER={ODBC Driver 17 for SQL Server};SERVER=10.73.148.76,1433;DATABASE=pochi-db;UID=inn@admin;PWD=password
 HUGGINGFACE_API_TOKEN=hf_your_token_here
 ADMIN_PASSWORD=sdx@admin
 ```
 
+### 3. Deploy (ครั้งแรกเท่านั้น)
+
+```bash
+# Full deployment (setup nginx, copy files, start services)
+python deploy.py
+```
+
+**💡 Important:** `deploy.py` ใช้สำหรับ initial setup เท่านั้น
+
+### 4. Update Code (สำหรับอัพเดทโค้ด)
+
+```bash
+# Update backend code
+python update.py --backend
+
+# Update frontend code
+python update.py --frontend
+
+# Update both
+python update.py --both
+```
+
+**💡 Important:** `update.py` จะไม่ restart nginx → ไม่กระทบโปรเจกต์อื่น
+
 ---
 
 ## 🚀 Commands
+
+### Basic Commands
 
 ```bash
 # Start backend (production with 4 workers)
@@ -48,14 +74,30 @@ python stop.py
 
 # Check status
 python status.py
+```
 
-# Deploy
+
+# ════════════════════════════════════════════════════════════════════════════
+# 🚀 DEPLOYMENT (ครั้งแรกเท่านั้น)
+# ════════════════════════════════════════════════════════════════════════════
+
+# Initial deployment (setup nginx, copy files, start services)
 python deploy.py              # Full (frontend + backend)
 python deploy.py --frontend   # Frontend only
 python deploy.py --backend    # Backend only
 
-# Update (git pull + dependencies + restart)
+# ════════════════════════════════════════════════════════════════════════════
+# 🔄 UPDATES (ใช้สำหรับอัพเดทโค้ด - ไม่ restart nginx)
+# ════════════════════════════════════════════════════════════════════════════
+
+# Update code (interactive mode - choose what to update)
 python update.py
+
+# Update with options (no nginx restart - safe for shared server)
+python update.py --backend          # Backend only (restart backend)
+python update.py --frontend         # Frontend only (rebuild + copy files)
+python update.py --both             # Both backend and frontend
+python update.py --all              # Full update (git pull + deps + restart)
 
 # Force stop all
 python force_stop.py
@@ -67,11 +109,11 @@ python force_stop.py
 
 ## 🌐 Access
 
-- **Frontend**: http://10.73.148.75/maemi-chan/
-- **Admin Panel**: http://10.73.148.75/maemi-chan/sdx-secret
-- **API Docs**: http://localhost:4003/docs
-- **Health Check**: http://localhost:4003/health
-- **Metrics**: http://localhost:4003/metrics
+- **Frontend**: http://10.73.148.75/pochi-kawaii/
+- **Admin Panel**: http://10.73.148.75/pochi-kawaii/sdx-secret
+- **API Docs**: http://localhost:4004/docs
+- **Health Check**: http://localhost:4004/health
+- **Metrics**: http://localhost:4004/metrics
 - **Monitoring**: http://localhost:19999 (after installing Netdata)
 
 ---
@@ -130,7 +172,7 @@ python force_stop.py
 ## 🏗️ Project Structure
 
 ```
-maemi-chan-project/
+pochi-kawaii-project/
 ├── backend/              # FastAPI backend
 │   ├── main.py          # Entry point
 │   ├── config.py        # Configuration

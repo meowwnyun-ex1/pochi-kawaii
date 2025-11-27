@@ -54,11 +54,11 @@ export default defineConfig(({ mode }) => {
           target: backendUrl,
           changeOrigin: true,
         },
-        '/chat': {
+        '/health': {
           target: backendUrl,
           changeOrigin: true,
         },
-        '/health': {
+        '/generate': {
           target: backendUrl,
           changeOrigin: true,
         },

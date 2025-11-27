@@ -19,13 +19,20 @@ class ChibiImageService:
     """Service for generating chibi-style cartoon images from photos"""
 
     # Fixed prompt for consistent chibi style - NEVER changes regardless of input
+    # Using image editing prompt format for eigen-banana-qwen-image-edit
     FIXED_CHIBI_PROMPT = """
-    Create an adorable chibi-style cartoon character based on this photo.
+    Transform this photo into an adorable chibi-style cartoon character.
+    
     Style requirements:
-    - Ultra cute kawaii chibi art style
+    - Cute cartoon style, cheerful and bright expression
+    - Face should look as similar as possible to the original photo
+    - Wear a cream-colored polo shirt
+    - Shirt collar and sleeve cuffs are blue
+    - DENSO logo on the left chest of the shirt, text in red color
+    - Pants same color as the shirt (cream color)
+    - Half-body portrait, pants edge not visible
     - Large sparkling eyes with highlights
     - Small simplified body proportions (head is 1/3 of total height)
-    - Soft pastel colors (pink, lavender, white tones)
     - Japanese anime/manga aesthetic
     - Rounded, simplified features
     - Cheerful, friendly expression
@@ -34,13 +41,13 @@ class ChibiImageService:
     - Professional digital illustration quality
 
     The character should be recognizable from the original photo but transformed into
-    an extremely cute, chibi-style cartoon with exaggerated cuteness.
+    an extremely cute, chibi-style cartoon with the specified uniform and logo.
     """
 
     def __init__(
         self,
         api_token: str,
-        model_name: str = "black-forest-labs/FLUX.1-dev",
+        model_name: str = "eigen-ai-labs/eigen-banana-qwen-image-edit",
         base_url: str = "https://api-inference.huggingface.co/models",
         timeout: int = 120
     ):
@@ -164,20 +171,18 @@ class ChibiImageService:
             # Encode image to base64
             image_b64 = base64.b64encode(processed_image).decode('utf-8')
 
-            # Prepare request payload
+            # Prepare request payload for eigen-banana-qwen-image-edit
+            # This model uses image editing format with prompt and image
             payload = {
-                "inputs": self.FIXED_CHIBI_PROMPT,
+                "inputs": self.FIXED_CHIBI_PROMPT.strip(),
                 "parameters": {
                     "image": image_b64,
-                    "num_inference_steps": 50,
-                    "guidance_scale": 7.5,
-                    "width": 512,
-                    "height": 512,
                 }
             }
 
             # Call HuggingFace API
             logger.info(f"📡 Calling HuggingFace API: {self.api_url}")
+            logger.info(f"   Model: {self.model_name}")
 
             async with httpx.AsyncClient(timeout=self.timeout) as client:
                 response = await client.post(

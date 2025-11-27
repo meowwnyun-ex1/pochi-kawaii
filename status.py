@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Maemi-Chan Medical AI - Status Script
+Pochi! Kawaii ne~ - Status Script
 ตรวจสอบสถานะระบบ
 """
 
@@ -61,7 +61,7 @@ def check_health(port):
         return False, None
 
 def main():
-    print_header("MAEMI-CHAN MEDICAL AI - SYSTEM STATUS")
+    print_header("POCHI! KAWAII NE~ - SYSTEM STATUS")
 
     # Get project root
     project_root = Path(__file__).parent.absolute()
@@ -72,7 +72,7 @@ def main():
         load_dotenv(env_file)
 
     # Get configuration
-    server_port = int(os.getenv("SERVER_PORT", "4003"))
+    server_port = int(os.getenv("SERVER_PORT", "4004"))
     nginx_dir = os.getenv("NGINX_DIR", "D:/nginx")
     app_version = os.getenv("APP_VERSION", "v1")
     environment = os.getenv("ENVIRONMENT", "production")
@@ -156,9 +156,9 @@ def main():
         print(f"Location:       {nginx_dir}")
         print()
         print(f"{Colors.BOLD}URLs:{Colors.END}")
-        print(f"  Frontend:     {Colors.GREEN}http://10.73.148.75/maemi-chan/{Colors.END}")
-        print(f"  Admin:        {Colors.GREEN}http://10.73.148.75/maemi-chan/sdx-secret{Colors.END}")
-        print(f"  Health:       {Colors.GREEN}http://10.73.148.75/maemi-chan/health{Colors.END}")
+        print(f"  Frontend:     {Colors.GREEN}http://10.73.148.75/pochi-kawaii/{Colors.END}")
+        print(f"  Admin:        {Colors.GREEN}http://10.73.148.75/pochi-kawaii/sdx-secret{Colors.END}")
+        print(f"  Health:       {Colors.GREEN}http://10.73.148.75/pochi-kawaii/health{Colors.END}")
     else:
         print(f"Status:         {Colors.RED}FAIL NOT RUNNING{Colors.END}")
         print(f"Port:           80 (Not listening)")
@@ -241,7 +241,7 @@ def main():
     if all_ok:
         print(f"{Colors.GREEN}{Colors.BOLD}OK ALL SYSTEMS OPERATIONAL{Colors.END}")
         print()
-        print(f"Share with friends: {Colors.GREEN}http://10.73.148.75/maemi-chan/{Colors.END}")
+        print(f"Share with friends: {Colors.GREEN}http://10.73.148.75/pochi-kawaii/{Colors.END}")
     else:
         print(f"{Colors.YELLOW}{Colors.BOLD}⚠ SOME SERVICES NOT RUNNING{Colors.END}")
         print()

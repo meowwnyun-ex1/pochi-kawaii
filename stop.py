@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Maemi-Chan Medical AI - Stop Script
+Pochi! Kawaii ne~ - Stop Script
 Stop Backend Server (nginx not affected)
 """
 
@@ -104,7 +104,7 @@ def kill_process_tree(pid):
         return False
 
 def main():
-    print_header("MAEMI-CHAN MEDICAL AI - STOP")
+    print_header("POCHI! KAWAII NE~ - STOP")
 
     # Get project root
     project_root = Path(__file__).parent.absolute()
@@ -116,7 +116,7 @@ def main():
         load_dotenv(env_file)
 
     # Get configuration
-    server_port = int(os.getenv("SERVER_PORT", "4003"))
+    server_port = int(os.getenv("SERVER_PORT", "4004"))
     nginx_dir = os.getenv("NGINX_DIR", "D:/nginx")
 
     print_info(f"Backend Port: {server_port}")
