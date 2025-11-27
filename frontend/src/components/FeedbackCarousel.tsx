@@ -25,7 +25,7 @@ interface CarouselTexts {
   expand_button?: Record<string, string>;
 }
 
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+const API_BASE_URL = import.meta.env.VITE_API_URL || '';
 
 const getAnimalEmoji = (timestamp: string) => {
   const emojis = [
@@ -63,6 +63,7 @@ export default function FeedbackCarousel() {
   const [isLoading, setIsLoading] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [lastFetchTime, setLastFetchTime] = useState<number>(0);
+  const [hasInitialized, setHasInitialized] = useState(false);
 
   const refreshTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
   const loadingRef = useRef(false);
@@ -113,6 +114,10 @@ export default function FeedbackCarousel() {
 
         if (mountedRef.current) {
           setItems(validFeedback);
+          if (!hasInitialized && validFeedback.length > 1) {
+            setIsExpanded(true);
+            setHasInitialized(true);
+          }
         }
       } catch (fetchError) {
         const isAbortError = fetchError instanceof Error && fetchError.name === 'AbortError';
@@ -126,7 +131,7 @@ export default function FeedbackCarousel() {
         loadingRef.current = false;
       }
     },
-    [lastFetchTime]
+    [lastFetchTime, hasInitialized]
   );
 
   useEffect(() => {
@@ -229,12 +234,12 @@ export default function FeedbackCarousel() {
             aria-label={isExpanded ? collapseText : expandText}>
             {isExpanded ? (
               <>
-                <ChevronDown className="h-4 w-4" />
+                <ChevronUp className="h-4 w-4" />
                 <span>{collapseText}</span>
               </>
             ) : (
               <>
-                <ChevronUp className="h-4 w-4" />
+                <ChevronDown className="h-4 w-4" />
                 <span>{expandText}</span>
               </>
             )}

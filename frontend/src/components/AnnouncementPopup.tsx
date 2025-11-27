@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
-import logger from '@/utils/logger';
 
 interface Announcement {
   id: number;
@@ -19,11 +18,12 @@ const AnnouncementPopup = () => {
     const apiBaseUrl = import.meta.env.VITE_API_URL || '';
     const basePath = import.meta.env.VITE_BASE_PATH || '/pochi-kawaii';
     const controller = new AbortController();
-
+    let autoCloseTimer: ReturnType<typeof setTimeout> | null = null;
+    
     const fetchAnnouncements = async () => {
       try {
         const apiPath = apiBaseUrl 
-          ? `${apiBaseUrl}/api/announcements/active`
+          ? `${apiBaseUrl}/api/announcements/active` 
           : `${basePath}/api/announcements/active`;
         const response = await fetch(apiPath, {
           signal: controller.signal,
@@ -42,29 +42,12 @@ const AnnouncementPopup = () => {
           throw new Error('Response is not JSON');
         }
 
-        let data;
-        try {
-          data = await response.json();
-        } catch (jsonError) {
-          throw new Error('Failed to parse JSON response');
-        }
+        const data = await response.json();
         
         if (data && data.announcements && Array.isArray(data.announcements) && data.announcements.length > 0) {
-          // Filter only active announcements with valid image_url
-          const activeAnnouncements = data.announcements.filter((ann: Announcement) => ann?.image_url);
+          const activeAnnouncements = data.announcements.filter((ann: Announcement) => ann.image_url);
           
-          // Filter out announcements that were closed in this session
-          let closedAnnouncements: number[] = [];
-          try {
-            const closedStr = localStorage.getItem('closed_announcements');
-            if (closedStr) {
-              closedAnnouncements = JSON.parse(closedStr);
-            }
-          } catch (parseError) {
-            logger.warn('Failed to parse closed_announcements from localStorage', 'AnnouncementPopup', parseError);
-            localStorage.removeItem('closed_announcements');
-          }
-          
+          const closedAnnouncements = JSON.parse(localStorage.getItem('closed_announcements') || '[]');
           const visibleAnnouncements = activeAnnouncements.filter(
             (ann: Announcement) => !closedAnnouncements.includes(ann.id)
           );
@@ -72,16 +55,15 @@ const AnnouncementPopup = () => {
           if (visibleAnnouncements.length > 0) {
             setAnnouncements(visibleAnnouncements);
             setIsVisible(true);
-            
-            // Auto-close after 20 seconds
+
             autoCloseTimer = setTimeout(() => {
               handleClose();
             }, 20000);
           }
         }
       } catch (err) {
-        if (err instanceof Error && err.name !== 'AbortError') {
-          logger.error('Failed to fetch announcements', 'AnnouncementPopup', err);
+        if (import.meta.env.DEV && err instanceof Error && err.name !== 'AbortError') {
+          console.error('Failed to fetch announcements:', err);
         }
       }
     };
@@ -98,33 +80,20 @@ const AnnouncementPopup = () => {
 
   const handleClose = () => {
     setIsVisible(false);
-    // Store in localStorage to prevent showing again in this session
     try {
-      let closedAnnouncements: number[] = [];
-      const closedStr = localStorage.getItem('closed_announcements');
-      if (closedStr) {
-        try {
-          closedAnnouncements = JSON.parse(closedStr);
-        } catch (parseError) {
-          logger.warn('Failed to parse closed_announcements', 'AnnouncementPopup.handleClose', parseError);
-          closedAnnouncements = [];
-        }
-      }
-      
+      const closedAnnouncements = JSON.parse(localStorage.getItem('closed_announcements') || '[]');
       announcements.forEach(ann => {
         if (ann?.id && !closedAnnouncements.includes(ann.id)) {
           closedAnnouncements.push(ann.id);
         }
       });
-      
       localStorage.setItem('closed_announcements', JSON.stringify(closedAnnouncements));
     } catch (error) {
-      logger.error('Failed to save closed announcements', 'AnnouncementPopup.handleClose', error);
+      console.warn('Failed to save closed announcements:', error);
     }
   };
 
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    // Close only if clicked on backdrop (outside the white card)
     if (e.target === e.currentTarget) {
       handleClose();
     }

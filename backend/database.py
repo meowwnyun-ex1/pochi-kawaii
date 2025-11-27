@@ -1,5 +1,6 @@
 import logging
 import json
+import os
 from pathlib import Path
 from typing import List, Dict, Optional
 from services.connection_pool import ConnectionPool
@@ -248,12 +249,13 @@ class DatabaseManager:
                 results = cursor.fetchall()
                 cursor.close()
 
+            base_path = os.getenv("VITE_BASE_PATH", "/pochi-kawaii")
             announcements = []
             for row in results:
                 announcements.append({
                     "id": row[0],
                     "title": row[1],
-                    "image_url": f"/pochi-kawaii/api/announcements/image/{row[2]}",
+                    "image_url": f"{base_path}/api/announcements/image/{row[2]}",
                     "link_url": row[3],
                     "display_order": row[4],
                 })

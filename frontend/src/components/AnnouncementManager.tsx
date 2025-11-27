@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { showToast } from '@/utils/toast';
-import logger from '@/utils/logger';
 import { Plus, Trash2, Edit, Eye, EyeOff, ZoomIn, X, Upload } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -41,7 +40,7 @@ const AnnouncementManager = ({ token }: AnnouncementManagerProps) => {
 
   const fetchAnnouncements = async () => {
     try {
-      const apiBaseUrl = import.meta.env.VITE_API_URL;
+      const apiBaseUrl = import.meta.env.VITE_API_URL || '';
       const res = await fetch(`${apiBaseUrl}/api/announcements/admin/all`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -53,7 +52,9 @@ const AnnouncementManager = ({ token }: AnnouncementManagerProps) => {
         showToast.error(t('announcement:load_failed'), { icon: '❌' });
       }
     } catch (error) {
-      logger.error('Error fetching announcements', 'AnnouncementManager', error);
+      if (import.meta.env.DEV) {
+        console.error('Error fetching announcements:', error);
+      }
       showToast.error(t('announcement:load_error'), { icon: '⚠️' });
     } finally {
       setLoading(false);
@@ -68,13 +69,11 @@ const AnnouncementManager = ({ token }: AnnouncementManagerProps) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validate file type
     if (!file.type.startsWith('image/')) {
       showToast.warning(t('announcement:invalid_file_type'), { icon: '⚠️' });
       return;
     }
 
-    // Validate file size (5MB)
     if (file.size > 5 * 1024 * 1024) {
       showToast.warning(t('announcement:file_too_large'), { icon: '⚠️' });
       return;
@@ -82,7 +81,6 @@ const AnnouncementManager = ({ token }: AnnouncementManagerProps) => {
 
     setSelectedImage(file);
 
-    // Create preview
     const reader = new FileReader();
     reader.onloadend = () => {
       setImagePreview(reader.result as string);
@@ -95,13 +93,11 @@ const AnnouncementManager = ({ token }: AnnouncementManagerProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate image for new announcements
     if (!selectedImage && !editingId) {
       showToast.warning(t('announcement:no_image') || 'Please select an image', { icon: '⚠️' });
       return;
     }
 
-    // Validate image for updates (if no existing image and no new image)
     if (editingId && !selectedImage && !imagePreview) {
       showToast.warning(t('announcement:no_image') || 'Please select an image', { icon: '⚠️' });
       return;
@@ -110,7 +106,6 @@ const AnnouncementManager = ({ token }: AnnouncementManagerProps) => {
     try {
       const formDataToSend = new FormData();
       
-      // Append form fields
       if (formData.title) {
         formDataToSend.append('title', formData.title);
       }
@@ -119,13 +114,12 @@ const AnnouncementManager = ({ token }: AnnouncementManagerProps) => {
       }
       formDataToSend.append('display_order', formData.display_order.toString());
 
-      // Append image if provided
       if (selectedImage) {
         formDataToSend.append('image', selectedImage);
       }
 
-      const apiBaseUrl = import.meta.env.VITE_API_URL;
-
+      const apiBaseUrl = import.meta.env.VITE_API_URL || '';
+      
       if (editingId) {
         const res = await fetch(`${apiBaseUrl}/api/announcements/admin/${editingId}`, {
           method: 'PUT',
@@ -136,32 +130,20 @@ const AnnouncementManager = ({ token }: AnnouncementManagerProps) => {
         });
 
         if (res.ok) {
-          try {
-            const data = await res.json();
-            showToast.success(t('announcement:update_success') || 'Announcement updated successfully', { icon: '✅' });
-            await fetchAnnouncements();
-            resetForm();
-          } catch (jsonError) {
-            logger.error('Failed to parse update response', 'AnnouncementManager.handleSubmit', jsonError);
-            showToast.error('เกิดข้อผิดพลาดในการอ่านข้อมูล', { icon: '❌' });
-          }
+          const data = await res.json();
+          showToast.success(t('announcement:update_success') || 'Announcement updated successfully', { icon: '✅' });
+          await fetchAnnouncements();
+          resetForm();
         } else {
-          try {
-            const errorData = await res.json();
-            showToast.error(errorData?.detail || t('announcement:update_failed') || 'Failed to update announcement', { icon: '❌', duration: 5000 });
-          } catch (jsonError) {
-            logger.error('Failed to parse error response', 'AnnouncementManager.handleSubmit', jsonError);
-            showToast.error(`เกิดข้อผิดพลาด (HTTP ${res.status})`, { icon: '❌', duration: 5000 });
-          }
+          const errorData = await res.json().catch(() => ({ detail: 'Update failed' }));
+          showToast.error(errorData.detail || t('announcement:update_failed') || 'Failed to update announcement', { icon: '❌', duration: 5000 });
         }
       } else {
-        // Create new announcement
         if (announcements.length >= 3) {
           showToast.warning(t('announcement:max_limit') || 'Maximum 3 announcements allowed', { duration: 3500, icon: '⚠️' });
           return;
         }
 
-        // Ensure image is provided for new announcements
         if (!selectedImage) {
           showToast.warning(t('announcement:no_image') || 'Please select an image', { icon: '⚠️' });
           return;
@@ -176,27 +158,19 @@ const AnnouncementManager = ({ token }: AnnouncementManagerProps) => {
         });
 
         if (res.ok) {
-          try {
-            const data = await res.json();
-            showToast.success(t('announcement:create_success') || 'Announcement created successfully', { icon: '🎉' });
-            await fetchAnnouncements();
-            resetForm();
-          } catch (jsonError) {
-            logger.error('Failed to parse create response', 'AnnouncementManager.handleSubmit', jsonError);
-            showToast.error('เกิดข้อผิดพลาดในการอ่านข้อมูล', { icon: '❌' });
-          }
+          const data = await res.json();
+          showToast.success(t('announcement:create_success') || 'Announcement created successfully', { icon: '🎉' });
+          await fetchAnnouncements();
+          resetForm();
         } else {
-          try {
-            const errorData = await res.json();
-            showToast.error(errorData?.detail || t('announcement:create_failed') || 'Failed to create announcement', { icon: '❌', duration: 5000 });
-          } catch (jsonError) {
-            logger.error('Failed to parse error response', 'AnnouncementManager.handleSubmit', jsonError);
-            showToast.error(`เกิดข้อผิดพลาด (HTTP ${res.status})`, { icon: '❌', duration: 5000 });
-          }
+          const errorData = await res.json().catch(() => ({ detail: 'Create failed' }));
+          showToast.error(errorData.detail || t('announcement:create_failed') || 'Failed to create announcement', { icon: '❌', duration: 5000 });
         }
       }
     } catch (error) {
-      logger.error('Error submitting announcement', 'AnnouncementManager.handleSubmit', error);
+      if (import.meta.env.DEV) {
+        console.error('Error submitting announcement:', error);
+      }
       showToast.error(t('announcement:error') || 'An error occurred', { icon: '❌', duration: 5000 });
     }
   };
@@ -207,7 +181,7 @@ const AnnouncementManager = ({ token }: AnnouncementManagerProps) => {
     }
 
     try {
-      const apiBaseUrl = import.meta.env.VITE_API_URL;
+      const apiBaseUrl = import.meta.env.VITE_API_URL || '';
       const res = await fetch(`${apiBaseUrl}/api/announcements/admin/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
@@ -220,14 +194,16 @@ const AnnouncementManager = ({ token }: AnnouncementManagerProps) => {
         showToast.error(t('announcement:delete_failed'), { icon: '❌' });
       }
     } catch (error) {
-      logger.error('Error deleting announcement', 'AnnouncementManager.handleDelete', error);
+      if (import.meta.env.DEV) {
+        console.error('Error:', error);
+      }
       showToast.error(t('announcement:error'), { icon: '❌' });
     }
   };
 
   const handleToggleActive = async (id: number, currentStatus: boolean) => {
     try {
-      const apiBaseUrl = import.meta.env.VITE_API_URL;
+      const apiBaseUrl = import.meta.env.VITE_API_URL || '';
       const res = await fetch(`${apiBaseUrl}/api/announcements/admin/${id}`, {
         method: 'PUT',
         headers: {
@@ -246,7 +222,9 @@ const AnnouncementManager = ({ token }: AnnouncementManagerProps) => {
         showToast.error(t('announcement:status_update_failed'), { icon: '❌' });
       }
     } catch (error) {
-      logger.error('Error toggling announcement status', 'AnnouncementManager.handleToggleActive', error);
+      if (import.meta.env.DEV) {
+        console.error('Error:', error);
+      }
       showToast.error(t('announcement:error'), { icon: '❌' });
     }
   };
@@ -284,30 +262,29 @@ const AnnouncementManager = ({ token }: AnnouncementManagerProps) => {
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-lg border-2 border-gray-200 p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-          📢 จัดการประกาศ Popup
-        </h2>
+    <div className="w-full">
+      <div className="flex items-center justify-between mb-4">
         {!showForm && announcements.length < 3 && (
           <Button
             onClick={() => setShowForm(true)}
-            className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 font-semibold">
-            <Plus className="h-5 w-5" />
-            เพิ่มประกาศ
+            className="flex items-center gap-2 bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-500 hover:from-blue-600 hover:via-indigo-600 hover:to-blue-600 font-semibold text-sm">
+            <Plus className="h-4 w-4" />
+            {t('announcement:add_new') || 'เพิ่มประกาศ'}
           </Button>
         )}
       </div>
 
-      <div className="mb-4 p-3 bg-blue-50 rounded-lg border-2 border-blue-200">
-        <p className="text-sm font-medium text-blue-700">
-          📊 {t('announcement:no_announcements')}: <span className="font-bold">{announcements.length}</span> / 3
+      <div className="mb-4 p-3 bg-blue-50/50 rounded-lg border border-blue-200/50">
+        <p className="text-xs font-medium text-blue-700">
+          📊 {t('announcement:no_announcements') || 'จำนวนประกาศ'}: <span className="font-bold">{announcements.length}</span> / 3
         </p>
       </div>
 
       {showForm && (
-        <form onSubmit={handleSubmit} className="mb-6 p-6 bg-gradient-to-br from-gray-50 to-blue-50 rounded-xl border-2 border-blue-200 shadow-md">
-          <h3 className="text-xl font-bold mb-4 text-gray-800">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-in zoom-in duration-200 border border-gray-100">
+            <form onSubmit={handleSubmit} className="p-5">
+          <h3 className="text-lg font-bold mb-4 text-gray-800">
             {editingId ? `✏️ ${t('announcement:edit_announcement')}` : `➕ ${t('announcement:add_new')}`}
           </h3>
 
@@ -376,27 +353,29 @@ const AnnouncementManager = ({ token }: AnnouncementManagerProps) => {
           </div>
 
           <div className="flex gap-3 mt-6">
-            <Button type="submit" className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 font-semibold py-3">
+            <Button type="submit" className="flex-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-500 hover:from-blue-600 hover:via-indigo-600 hover:to-blue-600 font-semibold py-2.5 text-sm">
               {editingId ? `💾 ${t('announcement:save')}` : `➕ ${t('announcement:add')}`}
             </Button>
-            <Button type="button" onClick={resetForm} variant="outline" className="flex-1 border-2 font-semibold py-3">
+            <Button type="button" onClick={resetForm} variant="outline" className="flex-1 border font-semibold py-2.5 text-sm">
               ❌ {t('common:cancel')}
             </Button>
           </div>
-        </form>
+            </form>
+          </div>
+        </div>
       )}
 
       <div className="space-y-4">
         {announcements.length === 0 ? (
-          <div className="text-center py-12 text-gray-500 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300">
-            <p className="text-lg font-medium">📭 {t('announcement:no_announcements')}</p>
-            <p className="text-sm mt-1">{t('announcement:click_to_add')}</p>
+          <div className="text-center py-8 text-gray-500 bg-gray-50/50 rounded-xl border border-dashed border-gray-300">
+            <p className="text-sm font-medium">📭 {t('announcement:no_announcements')}</p>
+            <p className="text-xs mt-1">{t('announcement:click_to_add')}</p>
           </div>
         ) : (
           announcements.map((announcement) => (
             <div
               key={announcement.id}
-              className="flex items-center gap-4 p-4 border-2 border-gray-200 rounded-xl hover:shadow-xl hover:border-blue-300 transition-all bg-white">
+              className="flex items-center gap-4 p-4 border border-gray-200 rounded-xl hover:shadow-md hover:border-blue-300 transition-all bg-white/50 mb-3">
               <div className="relative group">
                 <img
                   src={announcement.image_url}

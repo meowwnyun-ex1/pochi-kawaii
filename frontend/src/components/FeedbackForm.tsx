@@ -1,36 +1,28 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Send, Sparkles, Star, Zap, User, MessageSquare } from 'lucide-react';
+import { ArrowLeft, Send, Star, User, MessageSquare } from 'lucide-react';
 import { showToast } from '@/utils/toast';
-import { useLanguage } from '@/contexts/LanguageContext';
 import { Textarea } from '@/components/ui/textarea';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const FeedbackForm = () => {
   const navigate = useNavigate();
-  const { language, config } = useLanguage();
+  const { t } = useLanguage();
   const [name, setName] = useState('');
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const API_BASE_URL = import.meta.env.VITE_API_URL;
-  const feedbackTexts = (config?.feedback_page as Record<string, Record<string, string>> | undefined) || {};
-  const lang = language as 'th' | 'en' | 'jp';
-
-  const getFeedbackText = (key: string, fallback: string) => {
-    const textObj = feedbackTexts[key];
-    if (!textObj) return fallback;
-    return textObj[lang] || textObj.th || textObj.en || fallback;
-  };
+  const API_BASE_URL = import.meta.env.VITE_API_URL || '';
 
   const handleSubmit = async () => {
     if (rating === 0) {
-      showToast.error(getFeedbackText('ratingRequired', 'Please select a rating'));
+      showToast.error(t('feedback:ratingRequired'));
       return;
     }
 
     if (!comment.trim()) {
-      showToast.error(getFeedbackText('commentRequired', 'Please enter a comment'));
+      showToast.error(t('feedback:commentRequired'));
       return;
     }
 
@@ -46,13 +38,12 @@ const FeedbackForm = () => {
           name: name.trim() || 'Anonymous',
           rating,
           comment: comment.trim(),
-          language: lang,
         }),
       });
 
       if (response.ok) {
-        showToast.success(getFeedbackText('successTitle', 'Thank you!'), {
-          description: getFeedbackText('successMessage', 'Your feedback has been submitted successfully'),
+        showToast.success(t('feedback:successTitle'), {
+          description: t('feedback:successMessage'),
           duration: 5000,
         });
         setName('');
@@ -60,118 +51,141 @@ const FeedbackForm = () => {
         setComment('');
         setTimeout(() => navigate('/'), 2000);
       } else {
-        showToast.error(getFeedbackText('errorMessage', 'Failed to submit feedback'));
+        showToast.error(t('feedback:errorMessage'));
       }
     } catch (error) {
-      showToast.error(getFeedbackText('errorMessage', 'Failed to submit feedback'));
+      showToast.error(t('feedback:errorMessage'));
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="flex-1 flex items-center justify-center p-4 relative pt-16">
+    <div className="w-full flex items-center justify-center p-4 relative min-h-full">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-20 w-64 h-64 bg-pink-400/10 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute top-20 left-20 w-64 h-64 bg-blue-200/5 rounded-full blur-3xl animate-pulse" />
         <div
-          className="absolute bottom-20 right-20 w-96 h-96 bg-rose-400/10 rounded-full blur-3xl animate-pulse"
+          className="absolute bottom-20 right-20 w-96 h-96 bg-indigo-200/5 rounded-full blur-3xl animate-pulse"
           style={{ animationDelay: '1s' }}
         />
         <div
-          className="absolute top-1/2 left-1/2 w-80 h-80 bg-pink-300/10 rounded-full blur-3xl animate-pulse"
+          className="absolute top-1/2 left-1/2 w-80 h-80 bg-slate-200/5 rounded-full blur-3xl animate-pulse"
           style={{ animationDelay: '2s' }}
         />
       </div>
 
-      <div className="relative w-full max-w-lg">
-        <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border-2 border-pink-100 overflow-hidden">
-          <div className="relative bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 p-4 text-white">
-            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMzLjMxNCAwIDYgMi42ODYgNiA2cy0yLjY4NiA2LTYgNi02LTIuNjg2LTYtNiAyLjY4Ni02IDYtNiIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIiIG9wYWNpdHk9Ii4xIi8+PC9nPjwvc3ZnPg==')] opacity-20" />
+      <div className="relative w-full max-w-md my-auto -mt-8">
+        <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-xl border border-gray-100/50 overflow-hidden">
+          <div className="relative bg-gradient-to-r from-blue-50 via-indigo-50 to-blue-50 p-5 text-gray-800 border-b border-gray-100">
             <div className="relative flex items-center gap-3">
-              <div className="p-3 bg-white/20 rounded-2xl backdrop-blur-sm shadow-lg">
-                <Sparkles className="h-7 w-7" />
+              <div className="p-2 bg-white rounded-xl shadow-sm">
+                <img src={`${import.meta.env.VITE_BASE_PATH || '/pochi-kawaii'}/ai-avatar.svg`} alt="Logo" className="h-7 w-7" onError={(e) => {
+                  const target = e.currentTarget as HTMLImageElement;
+                  target.style.display = 'none';
+                }} />
               </div>
               <div>
-                <h1 className="text-2xl font-bold mb-1">{getFeedbackText('title', 'Feedback')}</h1>
-                <p className="text-pink-100 text-sm font-medium">{getFeedbackText('subtitle', 'Share your thoughts')}</p>
+                <h1 className="text-xl font-bold mb-0.5">{t('feedback:title')}</h1>
+                <p className="text-gray-600 text-xs font-medium">{t('feedback:subtitle')}</p>
               </div>
             </div>
           </div>
 
           <div className="p-5 space-y-4">
             <div>
-              <label className="flex items-center gap-2 text-sm font-semibold text-pink-700 mb-2">
-                <User className="h-4 w-4" />
-                {getFeedbackText('nameLabel', 'Name')}
+              <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
+                <User className="h-4 w-4 text-blue-500" />
+                {t('feedback:nameLabel')}
               </label>
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder={getFeedbackText('namePlaceholder', 'Your name (optional)')}
-                className="w-full px-4 py-3 text-sm bg-white border-2 border-pink-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-all shadow-sm"
+                placeholder={t('feedback:namePlaceholder')}
+                className="w-full px-3 py-2.5 text-sm bg-white border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400/50 focus:border-blue-400 transition-all shadow-sm hover:border-gray-300"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-pink-700 mb-3 text-center">
-                {getFeedbackText('ratingLabel', 'Rating')}
+              <label className="block text-sm font-semibold text-gray-700 mb-3 text-center">
+                {t('feedback:ratingLabel')}
               </label>
               <div className="flex gap-2 justify-center">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <button
                     key={star}
                     onClick={() => setRating(star)}
-                    className={`group relative p-2 transition-all duration-300 ${
+                    className={`group relative p-1.5 transition-all duration-300 ${
                       rating >= star ? 'scale-110' : 'scale-100 hover:scale-110'
                     }`}>
                     <Star
-                      className={`h-10 w-10 transition-all duration-300 ${
+                      className={`h-7 w-7 transition-all duration-300 ${
                         rating >= star
-                          ? 'fill-yellow-400 text-yellow-400 drop-shadow-lg'
-                          : 'fill-gray-200 text-gray-300 group-hover:fill-yellow-200 group-hover:text-yellow-300'
+                          ? 'fill-amber-400 text-amber-500 drop-shadow-lg'
+                          : 'fill-gray-100 text-gray-300 group-hover:fill-amber-100 group-hover:text-amber-200'
                       }`}
                     />
                     {rating >= star && (
                       <div className="absolute inset-0 animate-ping">
-                        <Star className="h-10 w-10 fill-yellow-400 text-yellow-400 opacity-20" />
+                        <Star className="h-7 w-7 fill-amber-400 text-amber-500 opacity-20" />
                       </div>
                     )}
                   </button>
                 ))}
               </div>
+              {rating > 0 && (
+                <p className="text-center text-xs text-gray-500 mt-2">
+                  {rating === 5 && '⭐⭐⭐⭐⭐'}
+                  {rating === 4 && '⭐⭐⭐⭐'}
+                  {rating === 3 && '⭐⭐⭐'}
+                  {rating === 2 && '⭐⭐'}
+                  {rating === 1 && '⭐'}
+                </p>
+              )}
             </div>
 
             <div>
-              <label className="flex items-center gap-2 text-sm font-semibold text-pink-700 mb-2">
-                <MessageSquare className="h-4 w-4" />
-                {getFeedbackText('commentLabel', 'Comment')}
+              <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
+                <MessageSquare className="h-4 w-4 text-blue-500" />
+                {t('feedback:commentLabel')}
               </label>
               <Textarea
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
-                placeholder={getFeedbackText('commentPlaceholder', 'Enter your feedback...')}
-                className="w-full min-h-[120px] px-4 py-3 text-sm bg-white border-2 border-pink-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-all resize-none shadow-sm"
+                placeholder={t('feedback:commentPlaceholder')}
+                className="w-full min-h-[100px] px-3 py-2.5 text-sm bg-white border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400/50 focus:border-blue-400 transition-all resize-none shadow-sm hover:border-gray-300"
+                maxLength={1000}
               />
+              <div className="flex justify-between items-center mt-1.5">
+                <p className="text-xs text-gray-400">
+                  {t('feedback:commentHint')}
+                </p>
+                <p className={`text-xs font-medium ${
+                  comment.length > 900 ? 'text-red-500' : 
+                  comment.length > 700 ? 'text-amber-500' : 
+                  'text-gray-400'
+                }`}>
+                  {comment.length}/1000
+                </p>
+              </div>
             </div>
 
             <button
               onClick={handleSubmit}
-              disabled={isSubmitting}
-              className="relative w-full group overflow-hidden rounded-2xl shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300">
-              <div className="absolute inset-0 bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500" />
-              <div className="absolute inset-0 bg-gradient-to-r from-pink-500 via-rose-500 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="relative px-6 py-4 flex items-center justify-center gap-3 text-white font-bold text-lg">
+              disabled={isSubmitting || rating === 0 || !comment.trim()}
+              className="relative w-full group overflow-hidden rounded-lg shadow-md hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-md">
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-500" />
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-400 via-indigo-400 to-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="relative px-5 py-3 flex items-center justify-center gap-2 text-white font-semibold text-sm">
                 {isSubmitting ? (
                   <>
                     <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    <span>{getFeedbackText('submitting', 'Sending...')}</span>
+                    <span>{t('feedback:submitting')}</span>
                   </>
                 ) : (
                   <>
                     <Send className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                    <span>{getFeedbackText('submit', 'Submit')}</span>
-                    <Zap className="h-5 w-5 animate-pulse" />
+                    <span>{t('feedback:submit')}</span>
                   </>
                 )}
               </div>
@@ -179,9 +193,9 @@ const FeedbackForm = () => {
 
             <button
               onClick={() => navigate('/')}
-              className="relative mt-4 w-full inline-flex items-center justify-center gap-2 px-4 py-3 bg-white border-2 border-pink-200 hover:bg-pink-50 hover:border-pink-300 rounded-xl transition-all duration-300 text-sm text-pink-700 font-semibold shadow-md hover:shadow-lg hover:scale-105">
-              <ArrowLeft className="h-5 w-5" />
-              {getFeedbackText('backToChat', 'Back to Chat')}
+              className="relative mt-2 w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-white border-2 border-gray-200 hover:bg-gray-50 hover:border-gray-300 rounded-lg transition-all duration-300 text-xs text-gray-700 font-semibold shadow-sm hover:shadow-md">
+              <ArrowLeft className="h-4 w-4" />
+              {t('feedback:backToChat')}
             </button>
           </div>
         </div>
