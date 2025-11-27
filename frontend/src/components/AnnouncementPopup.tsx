@@ -16,12 +16,16 @@ const AnnouncementPopup = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    const apiBaseUrl = import.meta.env.VITE_API_URL;
+    const apiBaseUrl = import.meta.env.VITE_API_URL || '';
+    const basePath = import.meta.env.VITE_BASE_PATH || '/pochi-kawaii';
     const controller = new AbortController();
 
     const fetchAnnouncements = async () => {
       try {
-        const response = await fetch(`${apiBaseUrl}/api/announcements/active`, {
+        const apiPath = apiBaseUrl 
+          ? `${apiBaseUrl}/api/announcements/active`
+          : `${basePath}/api/announcements/active`;
+        const response = await fetch(apiPath, {
           signal: controller.signal,
           headers: {
             'Accept': 'application/json',
