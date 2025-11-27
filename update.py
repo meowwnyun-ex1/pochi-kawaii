@@ -44,11 +44,30 @@ def print_warning(text):
 
 def get_current_branch(cwd):
     try:
+        # Fix Git permission issues before running git commands
+        git_dir = Path(cwd) / ".git"
+        fetch_head = git_dir / "FETCH_HEAD"
+        index_lock = git_dir / "index.lock"
+        
+        # Remove lock files if they exist
+        if fetch_head.exists():
+            try:
+                fetch_head.unlink()
+            except Exception:
+                pass  # Ignore if can't remove
+        
+        if index_lock.exists():
+            try:
+                index_lock.unlink()
+            except Exception:
+                pass  # Ignore if can't remove
+        
         result = subprocess.run(
             ["git", "rev-parse", "--abbrev-ref", "HEAD"],
             cwd=cwd,
             capture_output=True,
-            text=True
+            text=True,
+            timeout=10
         )
         if result.returncode == 0:
             return result.stdout.strip()
@@ -325,11 +344,38 @@ Examples:
 
         if current_branch:
             print_info(f"Current branch: {current_branch}")
+            
+            # Fix Git permission issues before pull
+            git_dir = project_root / ".git"
+            fetch_head = git_dir / "FETCH_HEAD"
+            index_lock = git_dir / "index.lock"
+            
+            if fetch_head.exists():
+                try:
+                    fetch_head.unlink()
+                    print_info("Cleaned up FETCH_HEAD")
+                except Exception as e:
+                    print_warning(f"Could not remove FETCH_HEAD: {e}")
+            
+            if index_lock.exists():
+                try:
+                    index_lock.unlink()
+                    print_info("Cleaned up index.lock")
+                except Exception as e:
+                    print_warning(f"Could not remove index.lock: {e}")
+            
             print_info("Pulling latest code from repository...")
-            if run_command(["git", "pull", "origin", current_branch], cwd=project_root):
-                print_success("Git pull successful")
-            else:
-                print_warning("Git pull failed, continuing anyway...")
+            try:
+                if run_command(["git", "pull", "origin", current_branch], cwd=project_root):
+                    print_success("Git pull successful")
+                else:
+                    print_warning("Git pull failed, continuing anyway...")
+            except PermissionError as e:
+                print_warning(f"Git permission error: {e}")
+                print_warning("Skipping git pull - you may need to fix .git permissions manually")
+                print_info("Try running: Remove-Item .git\\FETCH_HEAD -Force")
+            except Exception as e:
+                print_warning(f"Git pull error: {e}, continuing anyway...")
         else:
             print_warning("Could not detect git branch, skipping git pull")
 
