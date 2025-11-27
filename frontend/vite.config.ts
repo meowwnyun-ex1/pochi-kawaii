@@ -65,7 +65,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     build: {
-      outDir: 'dist-new',
+      outDir: '../dist-temp',
       // Production: clean dist folder before build
       emptyOutDir: true,
       // Production: no sourcemaps for security

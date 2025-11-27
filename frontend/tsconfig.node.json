@@ -17,14 +17,9 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
-    },
-    "types": []
+    }
   },
   "include": [
-    "vite.config.ts",
-    "vitest.config.ts",
-    "cypress.config.ts",
-    "nightwatch.config.ts",
-    "playwright.config.ts"
+    "vite.config.ts"
   ]
 }
