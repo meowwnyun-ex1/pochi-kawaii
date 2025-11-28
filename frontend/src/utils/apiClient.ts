@@ -55,7 +55,7 @@ export async function fetchWithRetry(
     try {
       const response = await fetch(url, {
         ...options,
-        signal: options.signal ? options.signal : (attempt > 0 ? undefined : options.signal), // Don't retry if aborted
+        signal: options.signal ? options.signal : attempt > 0 ? undefined : options.signal, // Don't retry if aborted
       });
 
       // Success or non-retryable error
@@ -65,14 +65,16 @@ export async function fetchWithRetry(
 
       // Retryable error
       lastResponse = response;
-      
+
       if (attempt < maxRetries!) {
         const delay = retryDelay! * Math.pow(2, attempt);
         // Log retry attempts in development only
         if (import.meta.env.DEV) {
           // Using console.warn here is acceptable as it's for retry logic debugging
           console.warn(
-            `API request failed (${response.status}), retrying in ${delay}ms... (attempt ${attempt + 1}/${maxRetries})`
+            `API request failed (${response.status}), retrying in ${delay}ms... (attempt ${
+              attempt + 1
+            }/${maxRetries})`
           );
         }
         await sleep(delay);
@@ -124,7 +126,12 @@ export const apiClient = {
     return fetchWithRetry(url, { ...options, method: 'GET' }, retryOptions);
   },
 
-  post: async (endpoint: string, body?: unknown, options?: RequestInit, retryOptions?: RetryOptions) => {
+  post: async (
+    endpoint: string,
+    body?: unknown,
+    options?: RequestInit,
+    retryOptions?: RetryOptions
+  ) => {
     const url = endpoint.startsWith('http') ? endpoint : `${API_BASE_URL}${endpoint}`;
     const headers = {
       'Content-Type': 'application/json',
@@ -143,9 +150,14 @@ export const apiClient = {
     );
   },
 
-  postFormData: async (endpoint: string, formData: FormData, options?: RequestInit, retryOptions?: RetryOptions) => {
+  postFormData: async (
+    endpoint: string,
+    formData: FormData,
+    options?: RequestInit,
+    retryOptions?: RetryOptions
+  ) => {
     const url = endpoint.startsWith('http') ? endpoint : `${API_BASE_URL}${endpoint}`;
-    
+
     return fetchWithRetry(
       url,
       {

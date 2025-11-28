@@ -117,14 +117,14 @@ def deploy_frontend(project_root, nginx_dir, skip_nginx_restart=False):
         print_step("[1/5] nginx Status", "🌐")
         print_warning("nginx not running - will start after deployment")
 
-    # Clean old build
-    print_step("[2/5] Clean old build", "🧹")
+    # Note: Vite will clean dist automatically if emptyOutDir: true
+    # We don't need to manually delete it
+    print_step("[2/5] Preparing build", "🧹")
     if temp_dist.exists():
-        try:
-            shutil.rmtree(temp_dist)
-            print_success("Removed old temp")
-        except Exception as e:
-            print_warning(f"Could not remove temp: {e}")
+        print_info(f"Existing dist found at: {temp_dist}")
+        print_info("Vite will clean it automatically during build")
+    else:
+        print_info("No existing dist - will create new one")
 
     # Build frontend
     print_step("[3/5] Build frontend", "🔨")
@@ -305,12 +305,21 @@ exit $buildExitCode
         print_error(f"Deploy failed: {e}")
         sys.exit(1)
 
-    # Clean temp
-    try:
-        shutil.rmtree(temp_dist)
-        print_success("Cleaned temp")
-    except:
-        pass
+    print_info("Keeping dist folder for future use")
+    
+    # Suggest reloading nginx
+    if nginx_running:
+        print()
+        print_warning("⚠️ IMPORTANT: Reload nginx to see changes!")
+        print_info("Run this command:")
+        if sys.platform == "win32":
+            print(f"  {Colors.CYAN}cd {nginx_dir}{Colors.END}")
+            print(f"  {Colors.CYAN}nginx.exe -s reload{Colors.END}")
+        else:
+            print(f"  {Colors.CYAN}cd {nginx_dir}{Colors.END}")
+            print(f"  {Colors.CYAN}sudo nginx -s reload{Colors.END}")
+        print()
+        print_info("💡 Or clear browser cache (Ctrl+F5) to see favicon")
 
     # Start nginx only if not running
     print_step("[5/5] nginx Status", "🌐")

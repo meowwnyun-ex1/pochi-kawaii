@@ -60,7 +60,7 @@ export default defineConfig(({ mode }) => {
     },
     build: {
       outDir: 'dist',
-      emptyOutDir: true,
+      emptyOutDir: false, // Keep existing files, don't delete dist
       sourcemap: mode !== 'production',
       minify: mode === 'production' ? 'esbuild' : false,
       target: 'es2015',
