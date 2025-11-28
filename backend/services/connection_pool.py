@@ -1,3 +1,4 @@
+import os
 import pyodbc
 import logging
 import re
@@ -85,8 +86,7 @@ def detect_available_odbc_driver() -> str:
     error_msg = (
         f"❌ No compatible ODBC driver found!\n"
         f"   Available drivers: {available_drivers}\n"
-        f"   Required: ODBC Driver 17 or 18 for SQL Server\n"
-        f"   Download: https://learn.microsoft.com/en-us/sql/connect/odbc/download-odbc-driver-for-sql-server"
+        f"   Required: ODBC Driver 17 or 18 for SQL Server"
     )
     logger.error(error_msg)
     raise RuntimeError(error_msg)

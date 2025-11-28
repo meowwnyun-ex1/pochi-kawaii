@@ -3,6 +3,7 @@
   "active": "ใช้งาน",
   "aiNote": "AI ตอบตามภาษาคำถาม",
   "changedTo": "เปลี่ยนเป็น{{language}}แล้วค่ะ",
+  "changed_success": "เปลี่ยนภาษาเรียบร้อยแล้วค่ะ",
   "changeLanguage": "เปลี่ยนภาษา",
   "currentLanguage": "ภาษาปัจจุบัน",
   "switchTo": "เปลี่ยนเป็น{{language}}",

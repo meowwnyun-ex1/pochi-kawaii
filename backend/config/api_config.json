@@ -45,7 +45,7 @@
     "invalid_file_type": "Invalid file type: {type}. Please upload JPG, PNG, or WEBP",
     "file_too_large": "File too large. Maximum size is 10MB",
     "generation_failed": "Image generation failed - no output received",
-    "payment_required": "Payment required for HuggingFace API. Please check your account subscription.",
+    "payment_required": "Service is currently unavailable. Please contact the administrator to report this issue.",
     "generation_timeout": "Generation timeout - please try again",
     "invalid_api_token": "Invalid API token",
     "rate_limit_exceeded": "Rate limit exceeded, please try again later",
@@ -75,7 +75,7 @@
     "rate_limiting_enabled": "Rate limiting middleware enabled",
     "rate_limiter_not_initialized": "Rate limiter not initialized, middleware not enabled",
     "structured_logging_initialized": "Structured logging initialized",
-    "image_generation_ready": "Image generation service ready! 🎨",
+    "image_generation_ready": "Image generation service ready!",
     "image_service_not_initialized": "Image generation service not initialized",
     "huggingface_model_info": "HuggingFace AI: {model} - Image Generation",
     "starting_server": "Starting server on {host}:{port}"

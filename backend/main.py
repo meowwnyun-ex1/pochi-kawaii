@@ -144,7 +144,9 @@ async def lifespan(app: FastAPI):
 
     logger.info("=" * 60)
     app_name = config.api_config.get("app_info", {}).get("name", "")
-    server_protocol = os.getenv("SERVER_PROTOCOL", "http")
+    server_protocol = os.getenv("SERVER_PROTOCOL")
+    if not server_protocol:
+        server_protocol = "http"
     ready_msg = startup_msgs.get("server_ready", "Application ready on {protocol}://{host}:{port}")
     if app_name:
         logger.info(f"✅ {app_name} - {ready_msg.format(protocol=server_protocol, host=config.server_host, port=config.server_port)}")
@@ -177,8 +179,10 @@ async def lifespan(app: FastAPI):
 try:
     from backend import __version__ as app_version, __description__ as app_description
 except (ImportError, ModuleNotFoundError, AttributeError):
-    app_version = os.getenv("APP_VERSION", "v1")
-    app_description = os.getenv("APP_DESCRIPTION", "")
+    app_version = os.getenv("APP_VERSION")
+    if not app_version:
+        app_version = "v1"
+    app_description = os.getenv("APP_DESCRIPTION")
 
 
 class backend_info:
@@ -278,14 +282,15 @@ async def request_middleware(request: Request, call_next):
     # Restrict browser features
     response.headers["Permissions-Policy"] = "geolocation=(), microphone=(), camera=(), payment=(), usb=()"
 
-    csp_connect_src = os.getenv("CSP_CONNECT_SRC", "https://router.huggingface.co https://api-inference.huggingface.co")
+    csp_connect_src = os.getenv("CSP_CONNECT_SRC")
+    connect_src_part = f"connect-src 'self' {csp_connect_src};" if csp_connect_src else "connect-src 'self';"
     response.headers["Content-Security-Policy"] = (
         "default-src 'self'; "
         "script-src 'self' 'unsafe-inline' 'unsafe-eval'; "
         "style-src 'self' 'unsafe-inline'; "
         "img-src 'self' data: https: blob:; "
         "font-src 'self' data:; "
-        f"connect-src 'self' {csp_connect_src}; "
+        f"{connect_src_part} "
         "frame-ancestors 'self'; "
         "base-uri 'self'; "
         "form-action 'self';"

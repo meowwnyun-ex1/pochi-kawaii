@@ -81,10 +81,11 @@ def main():
         load_dotenv(env_file)
 
     # Get configuration
-    server_port = int(os.getenv("SERVER_PORT", "4004"))
-    nginx_dir = os.getenv("NGINX_DIR", "D:/nginx")
-    app_version = os.getenv("APP_VERSION", "v1")
-    environment = os.getenv("ENVIRONMENT", "production")
+    server_port_str = os.getenv("SERVER_PORT")
+    server_port = int(server_port_str) if server_port_str else 4004
+    nginx_dir = os.getenv("NGINX_DIR")
+    app_version = os.getenv("APP_VERSION")
+    environment = os.getenv("ENVIRONMENT")
 
     # Show system info
     print(f"{Colors.BOLD}System Information:{Colors.END}")
@@ -138,9 +139,6 @@ def main():
             print(f"Health:         {Colors.YELLOW}⚠ NO RESPONSE{Colors.END}")
 
         print()
-        print(f"{Colors.BOLD}URLs:{Colors.END}")
-        print(f"  Health:       {Colors.CYAN}http://localhost:{server_port}/health{Colors.END}")
-        print(f"  API Docs:     {Colors.CYAN}http://localhost:{server_port}/docs{Colors.END}")
     else:
         print(f"Status:         {Colors.RED}FAIL NOT RUNNING{Colors.END}")
         print(f"Port:           {server_port} (Not listening)")
@@ -164,10 +162,6 @@ def main():
         print(f"Port:           80 (LISTENING)")
         print(f"Location:       {nginx_dir}")
         print()
-        print(f"{Colors.BOLD}URLs:{Colors.END}")
-        print(f"  Frontend:     {Colors.GREEN}http://10.73.148.75/pochi-kawaii/{Colors.END}")
-        print(f"  Admin:        {Colors.GREEN}http://10.73.148.75/pochi-kawaii/sdx-secret{Colors.END}")
-        print(f"  Health:       {Colors.GREEN}http://10.73.148.75/pochi-kawaii/health{Colors.END}")
     else:
         print(f"Status:         {Colors.RED}FAIL NOT RUNNING{Colors.END}")
         print(f"Port:           80 (Not listening)")
@@ -250,7 +244,6 @@ def main():
     if all_ok:
         print(f"{Colors.GREEN}{Colors.BOLD}OK ALL SYSTEMS OPERATIONAL{Colors.END}")
         print()
-        print(f"Share with friends: {Colors.GREEN}http://10.73.148.75/pochi-kawaii/{Colors.END}")
     else:
         print(f"{Colors.YELLOW}{Colors.BOLD}⚠ SOME SERVICES NOT RUNNING{Colors.END}")
         print()

@@ -134,7 +134,8 @@ def restart_backend(project_root):
     """Restart backend server"""
     print_header("[Backend] Restarting Backend Server")
     
-    server_port = int(os.getenv("SERVER_PORT", "4004"))
+    server_port_str = os.getenv("SERVER_PORT")
+    server_port = int(server_port_str) if server_port_str else 4004
     
     # Stop backend
     stop_script = project_root / "stop.py"
@@ -171,7 +172,8 @@ def restart_backend(project_root):
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.settimeout(1)
             try:
-                result = sock.connect_ex(('127.0.0.1', server_port))
+                server_host = os.getenv("SERVER_HOST")
+                result = sock.connect_ex((server_host, server_port))
                 sock.close()
                 if result == 0:
                     print_success("Backend restarted successfully!")
@@ -200,7 +202,8 @@ def rebuild_frontend(project_root):
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.settimeout(1)
-        result = sock.connect_ex(('127.0.0.1', 80))
+        nginx_host = os.getenv("NGINX_HOST")
+        result = sock.connect_ex((nginx_host, 80))
         sock.close()
         nginx_running = result == 0
     except:
@@ -224,7 +227,7 @@ def rebuild_frontend(project_root):
         return False
     
     # Copy to nginx
-    nginx_dir = os.getenv("NGINX_DIR", "D:/nginx")
+    nginx_dir = os.getenv("NGINX_DIR")
     nginx_html = Path(nginx_dir) / "html" / "pochi-kawaii"
     build_output = frontend_dir / "dist-new"
     
@@ -413,7 +416,18 @@ Examples:
         if update_frontend:
             print_header("Step 3: Update Frontend Dependencies")
             frontend_dir = project_root / "frontend"
+            
+            if not check_npm_available():
+                print_warning("npm is not available or not in PATH")
+                print_warning("Frontend dependencies update skipped")
+            else:
             print_info("Installing frontend dependencies...")
+                if sys.platform == "win32":
+                    if run_command("npm install", cwd=frontend_dir, shell=True):
+                        print_success("Frontend dependencies updated")
+                    else:
+                        print_warning("Frontend dependencies update failed, continuing...")
+                else:
             if run_command(["npm", "install"], cwd=frontend_dir):
                 print_success("Frontend dependencies updated")
             else:
@@ -520,7 +534,7 @@ Examples:
     print_header("Step 5: Check nginx")
 
     if sys.platform == "win32":
-        nginx_dir = os.getenv("NGINX_DIR", "D:/nginx")
+        nginx_dir = os.getenv("NGINX_DIR")
         if Path(nginx_dir).exists():
             # Check if nginx is running
             result = subprocess.run("tasklist | findstr nginx", shell=True, capture_output=True)
@@ -542,15 +556,14 @@ Examples:
 
     print_header("Update Complete!")
 
-    server_port = os.getenv("SERVER_PORT", "4004")
+    server_port_str = os.getenv("SERVER_PORT")
+    server_port = server_port_str if server_port_str else "4004"
 
     print()
     print(f"{Colors.GREEN}{Colors.BOLD}✓ System updated successfully!{Colors.END}")
     print()
     print(f"{Colors.BOLD}Next steps:{Colors.END}")
     print(f"  1. Check backend logs: tail -f .cache/logs/backend.log")
-    print(f"  2. Test health endpoint: curl http://localhost:{server_port}/health")
-    print(f"  3. Open browser: http://10.73.148.75/pochi-kawaii/")
     print()
     print(f"{Colors.YELLOW}If you encounter any issues, check the logs for errors{Colors.END}")
     print()

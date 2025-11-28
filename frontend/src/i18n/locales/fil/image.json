@@ -9,11 +9,16 @@
   "error": {
     "http_error": "May naganap na error",
     "network_error": "Hindi makakonekta",
-    "timeout": "⏱️ Timeout - masyadong matagal ang AI\n\nMangyaring subukan muli",
+    "timeout": "Timeout - masyadong matagal ang AI\n\nMangyaring subukan muli",
     "please_try_again": "Mangyaring subukan muli",
     "no_image": "Mangyaring mag-upload ng larawan muna",
     "invalid_format": "Hindi wasto ang format ng file. Mangyaring gumamit ng JPG, PNG o WEBP",
-    "file_too_large": "Masyadong malaki ang file (max 10MB)"
+    "file_too_large": "Masyadong malaki ang file (max 10MB)",
+    "payment_required": "Paumanhin, ang serbisyong ito ay kasalukuyang hindi available\n\nMangyaring makipag-ugnayan sa administrator para i-report ang problemang ito",
+    "server_error": "May naganap na server error\n\nMangyaring subukan muli mamaya",
+    "rate_limit": "Masyadong maraming request\n\nMangyaring maghintay ng sandali at subukan muli",
+    "bad_request": "Hindi wasto ang data ng request\n\nMangyaring suriin ang iyong data at subukan muli",
+    "unauthorized": "Hindi awtorisadong access\n\nMangyaring makipag-ugnayan sa administrator"
   },
   "stage_analyzing": "Sinusuri ang iyong larawan",
   "stage_thinking": "Pinoproseso ang larawan",

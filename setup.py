@@ -81,7 +81,7 @@ def main():
             print_success(f"Python found: {result.stdout.strip()}")
     else:
         print_error("Python not found!")
-        print_info("Download from: https://www.python.org/downloads/")
+        print_info("Please install Python from official website")
         sys.exit(1)
 
     # Check pip
@@ -98,7 +98,7 @@ def main():
             print_success(f"Node.js found: {result.stdout.strip()}")
     else:
         print_error("Node.js not found!")
-        print_info("Download from: https://nodejs.org/")
+        print_info("Please install Node.js from official website")
         sys.exit(1)
 
     # Check npm
@@ -241,9 +241,17 @@ def main():
     if node_modules.exists():
         print_success("node_modules found, skipping install...")
     else:
+        if not check_command("npm"):
+            print_error("npm not found!")
+            print_info("Please install Node.js which includes npm")
+            sys.exit(1)
+        
         print_info("Installing npm packages...")
+        if sys.platform == "win32":
+            result = run_command("npm install", shell=True, cwd=frontend_dir)
+        else:
         result = run_command(["npm", "install"], cwd=frontend_dir)
-        if result is not None:
+        if result is not None and result.returncode == 0:
             print_success("npm packages installed")
         else:
             print_error("npm install failed")
@@ -322,9 +330,6 @@ def main():
     print()
     print("3. Check status:")
     print(f"   {Colors.GREEN}python status.py{Colors.END}")
-    print()
-    print("4. Open application:")
-    print(f"   {Colors.CYAN}http://10.73.148.75/pochi-kawaii/{Colors.END}")
     print()
 
 if __name__ == "__main__":

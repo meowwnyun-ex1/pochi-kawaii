@@ -9,11 +9,16 @@
   "error": {
     "http_error": "Terjadi kesalahan",
     "network_error": "Tidak dapat terhubung",
-    "timeout": "⏱️ Waktu habis - AI memakan waktu terlalu lama\n\nSilakan coba lagi",
+    "timeout": "Waktu habis - AI memakan waktu terlalu lama\n\nSilakan coba lagi",
     "please_try_again": "Silakan coba lagi",
     "no_image": "Silakan unggah gambar terlebih dahulu",
     "invalid_format": "Format file tidak valid. Silakan gunakan JPG, PNG atau WEBP",
-    "file_too_large": "File terlalu besar (maks 10MB)"
+    "file_too_large": "File terlalu besar (maks 10MB)",
+    "payment_required": "Maaf, layanan ini saat ini tidak tersedia\n\nSilakan hubungi administrator untuk melaporkan masalah ini",
+    "server_error": "Terjadi kesalahan server\n\nSilakan coba lagi nanti",
+    "rate_limit": "Terlalu banyak permintaan\n\nSilakan tunggu sebentar dan coba lagi",
+    "bad_request": "Data permintaan tidak valid\n\nSilakan periksa data Anda dan coba lagi",
+    "unauthorized": "Akses tidak diizinkan\n\nSilakan hubungi administrator"
   },
   "stage_analyzing": "Menganalisis gambar Anda",
   "stage_thinking": "Memproses gambar",

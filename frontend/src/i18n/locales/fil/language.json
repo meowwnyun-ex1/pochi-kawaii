@@ -3,6 +3,7 @@
   "active": "Aktibo",
   "aiNote": "Ang AI ay tumutugon sa wika ng tanong",
   "changedTo": "Binago sa {{language}}",
+  "changed_success": "Matagumpay na napalitan ang wika",
   "changeLanguage": "Palitan ang wika",
   "currentLanguage": "Kasalukuyang wika",
   "switchTo": "Lumipat sa {{language}}",

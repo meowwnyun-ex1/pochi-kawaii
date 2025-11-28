@@ -145,15 +145,34 @@ const ImageGenerator = () => {
       } else {
         try {
           const errorData = await response.json();
-          const errorMsg = errorData?.detail;
-          if (!errorMsg) {
-            showToast.error(t('image:error.http_error'));
+          const errorMsg = errorData?.detail || errorData?.message;
+          const statusCode = response.status;
+          
+          let displayMessage = '';
+          
+          if (statusCode === 402 || errorMsg?.toLowerCase().includes('payment_required') || errorMsg?.toLowerCase().includes('payment required')) {
+            displayMessage = t('image:error.payment_required');
+          } else if (statusCode === 500 || statusCode === 502 || statusCode === 503 || statusCode === 504) {
+            displayMessage = t('image:error.server_error');
+          } else if (statusCode === 429) {
+            displayMessage = t('image:error.rate_limit');
+          } else if (statusCode === 400) {
+            displayMessage = t('image:error.bad_request');
+          } else if (statusCode === 401 || statusCode === 403) {
+            displayMessage = t('image:error.unauthorized');
           } else {
-            showToast.error(errorMsg);
+            displayMessage = t('image:error.http_error');
           }
+          
+          showToast.error(displayMessage, { duration: 5000 });
         } catch (jsonError) {
           logger.error('Failed to parse error response', 'ImageGenerator.handleGenerate', jsonError);
-          showToast.error(t('image:http_error_format', { status: response.status }));
+          const statusCode = response.status;
+          if (statusCode === 500 || statusCode === 502 || statusCode === 503 || statusCode === 504) {
+            showToast.error(t('image:error.server_error'), { duration: 5000 });
+          } else {
+            showToast.error(t('image:http_error_format', { status: statusCode }), { duration: 5000 });
+          }
         }
       }
     } catch (error) {
@@ -318,12 +337,32 @@ const ImageGenerator = () => {
           
           <div className="flex items-center justify-center min-h-[250px] max-h-[400px] overflow-auto">
             {isGenerating ? (
-              <div className="text-center">
-                <div className="w-12 h-12 border-3 border-pink-500 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-                <p className="text-pink-600 font-medium text-sm mb-2">{processingMessage ? processingMessage : t('image:generating')}</p>
-                <div className="flex items-center justify-center gap-2 text-xs text-pink-500">
-                  <RefreshCw className="w-3 h-3 animate-spin" />
-                  <span>{t('image:time_used', { time: elapsedTime })}</span>
+              <div className="w-full text-center space-y-5 px-4 py-6">
+                <div className="relative">
+                  <div className="w-20 h-20 border-4 border-pink-200 border-t-pink-600 rounded-full animate-spin mx-auto" />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-12 h-12 border-2 border-pink-300 border-r-pink-500 rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '0.8s' }} />
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <p className="text-pink-700 font-bold text-lg">{processingMessage ? processingMessage : t('image:generating')}</p>
+                  <div className="w-full bg-pink-100 rounded-full h-4 overflow-hidden shadow-inner border border-pink-200">
+                    <div 
+                      className="h-full bg-gradient-to-r from-pink-500 via-rose-500 to-pink-600 rounded-full transition-all duration-500 relative overflow-hidden"
+                      style={{ 
+                        width: `${Math.min(95, 15 + (elapsedTime * 4))}%` 
+                      }}
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer" />
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-center gap-3 bg-gradient-to-r from-pink-50 to-rose-50 px-6 py-3 rounded-xl border-2 border-pink-200 shadow-sm">
+                    <RefreshCw className="w-5 h-5 text-pink-600 animate-spin" />
+                    <div className="flex items-baseline gap-1">
+                      <span className="font-black text-2xl text-pink-700">{elapsedTime}</span>
+                      <span className="text-sm font-semibold text-pink-600">{t('image:time_sec')}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             ) : generatedImageUrl ? (

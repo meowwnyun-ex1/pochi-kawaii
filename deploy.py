@@ -114,6 +114,12 @@ def deploy_frontend(project_root, nginx_dir, skip_nginx_restart=False):
 
     # Build frontend
     print_header("[3/5] Build frontend")
+    
+    if shutil.which("npm") is None:
+        print_error("npm is not available or not in PATH")
+        print_info("Please install Node.js which includes npm")
+        sys.exit(1)
+    
     print_info("Running: npm run build")
     print()
 
@@ -222,11 +228,6 @@ def deploy_frontend(project_root, nginx_dir, skip_nginx_restart=False):
     print()
     print_header("FRONTEND DEPLOYED")
     print()
-    print(f"{Colors.BOLD}URLs:{Colors.END}")
-    print(f"  Network: {Colors.CYAN}http://10.73.148.75/pochi-kawaii/{Colors.END}")
-    print(
-        f"  Admin:   {Colors.CYAN}http://10.73.148.75/pochi-kawaii/sdx-secret{Colors.END}"
-    )
     print()
     print(f"{Colors.BOLD}Note:{Colors.END}")
     print(f"  - nginx was NOT restarted (other projects unaffected)")
@@ -240,7 +241,8 @@ def deploy_backend(project_root):
     print_header("DEPLOY BACKEND")
 
     # Check if backend is running
-    server_port = int(os.getenv("SERVER_PORT", "4004"))
+    server_port_str = os.getenv("SERVER_PORT")
+    server_port = int(server_port_str) if server_port_str else 4004
     if is_port_open(server_port):
         print_warning(f"Backend already running on port {server_port}")
         print_info("Stopping backend first...")
@@ -279,7 +281,7 @@ def main():
     if env_file.exists():
         load_dotenv(env_file)
 
-    nginx_dir = os.getenv("NGINX_DIR", "D:/nginx")
+    nginx_dir = os.getenv("NGINX_DIR")
 
     # Parse arguments
     args = sys.argv[1:]
@@ -321,13 +323,6 @@ def main():
             print()
             print(f"{Colors.GREEN}✓ Full deployment successful!{Colors.END}")
             print()
-            print(f"{Colors.BOLD}Access:{Colors.END}")
-            print(
-                f"  Frontend: {Colors.CYAN}http://10.73.148.75/pochi-kawaii/{Colors.END}"
-            )
-            print(
-                f"  Admin:    {Colors.CYAN}http://10.73.148.75/pochi-kawaii/sdx-secret{Colors.END}"
-            )
             print()
             print(f"{Colors.BOLD}Next Steps:{Colors.END}")
             print(

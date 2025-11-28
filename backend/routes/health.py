@@ -13,12 +13,17 @@ router = APIRouter()
 def setup_health_routes(
     app, config, db_manager, image_service
 ):
-    config_dir_str = os.getenv("CONFIG_DIR", "config")
-    config_dir = Path(config_dir_str) if config_dir_str else Path("config")
+    config_dir_str = os.getenv("CONFIG_DIR")
+    if config_dir_str:
+        config_dir = Path(config_dir_str)
+    else:
+        config_dir = Path("config")
     if not config_dir.is_absolute():
         config_dir = Path(__file__).parent.parent.parent / config_dir
 
-    api_config_file = os.getenv("API_CONFIG_FILE", "api_config.json")
+    api_config_file = os.getenv("API_CONFIG_FILE")
+    if not api_config_file:
+        api_config_file = "api_config.json"
     api_config_path = config_dir / api_config_file
 
     try:

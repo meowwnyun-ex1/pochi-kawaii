@@ -9,11 +9,16 @@
   "error": {
     "http_error": "오류가 발생했습니다",
     "network_error": "연결할 수 없습니다",
-    "timeout": "⏱️ 시간 초과 - AI가 너무 오래 걸렸습니다\n\n다시 시도하세요",
+    "timeout": "시간 초과 - AI가 너무 오래 걸렸습니다\n\n다시 시도하세요",
     "please_try_again": "다시 시도하세요",
     "no_image": "먼저 이미지를 업로드하세요",
     "invalid_format": "잘못된 파일 형식입니다. JPG, PNG 또는 WEBP를 사용하세요",
-    "file_too_large": "파일이 너무 큽니다 (최대 10MB)"
+    "file_too_large": "파일이 너무 큽니다 (최대 10MB)",
+    "payment_required": "죄송합니다. 이 서비스는 현재 사용할 수 없습니다\n\n관리자에게 문의하여 문제를 보고하세요",
+    "server_error": "서버 오류가 발생했습니다\n\n나중에 다시 시도하세요",
+    "rate_limit": "요청이 너무 많습니다\n\n잠시 기다린 후 다시 시도하세요",
+    "bad_request": "잘못된 요청 데이터입니다\n\n데이터를 확인하고 다시 시도하세요",
+    "unauthorized": "인증되지 않은 액세스\n\n관리자에게 문의하세요"
   },
   "stage_analyzing": "이미지 분석 중",
   "stage_thinking": "이미지 처리 중",

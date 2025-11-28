@@ -78,8 +78,9 @@ def main():
     load_dotenv(env_file)
 
     # Get configuration
-    server_port = int(os.getenv("SERVER_PORT", "4004"))
-    nginx_dir = os.getenv("NGINX_DIR", "D:/nginx")
+    server_port_str = os.getenv("SERVER_PORT")
+    server_port = int(server_port_str) if server_port_str else 4004
+    nginx_dir = os.getenv("NGINX_DIR")
 
     print_info(f"Project: {project_root}")
     print_info(f"Backend Port: {server_port}")
@@ -150,7 +151,7 @@ def main():
     # ========================================================================
     print_header("[3/5] Starting Backend Server")
 
-    server_host = os.getenv("SERVER_HOST", "127.0.0.1")
+                server_host = os.getenv("SERVER_HOST")
 
     print_info(f"Starting backend on {server_host}:{server_port} with 4 workers...")
     print_info("This will take 10-15 seconds...")
@@ -300,14 +301,6 @@ cd /d "{backend_dir}"
         print(f"  nginx:    {Colors.YELLOW}○ NOT RUNNING{Colors.END}")
 
     print()
-    print(f"{Colors.BOLD}URLs:{Colors.END}")
-    print(f"  Backend:  {Colors.CYAN}http://localhost:{server_port}{Colors.END}")
-    print(f"  Health:   {Colors.CYAN}http://localhost:{server_port}/health{Colors.END}")
-    print(f"  Docs:     {Colors.CYAN}http://localhost:{server_port}/docs{Colors.END}")
-
-    if is_port_open(80):
-        print(f"  Frontend: {Colors.GREEN}http://10.73.148.75/pochi-kawaii/{Colors.END}")
-        print(f"  Admin:    {Colors.GREEN}http://10.73.148.75/pochi-kawaii/sdx-secret{Colors.END}")
 
     print()
     print(f"{Colors.BOLD}Logs:{Colors.END}")

@@ -249,7 +249,7 @@ class DatabaseManager:
                 results = cursor.fetchall()
                 cursor.close()
 
-            base_path = os.getenv("VITE_BASE_PATH", "/pochi-kawaii")
+            base_path = os.getenv("VITE_BASE_PATH")
             announcements = []
             for row in results:
                 announcements.append({

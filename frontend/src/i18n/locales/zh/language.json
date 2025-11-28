@@ -3,6 +3,7 @@
   "active": "活跃",
   "aiNote": "AI用问题语言回答",
   "changedTo": "已更改为{{language}}",
+  "changed_success": "语言更改成功",
   "changeLanguage": "更改语言",
   "currentLanguage": "当前语言",
   "switchTo": "切换到{{language}}",

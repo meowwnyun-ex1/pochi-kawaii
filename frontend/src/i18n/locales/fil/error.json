@@ -2,6 +2,7 @@
   "title": "May nangyaring error",
   "description": "Paumanhin, may hindi inaasahang error na naganap",
   "details": "Mga detalye ng error",
+  "error_type": "Uri ng Error",
   "reset": "Subukan muli",
   "reload": "I-reload ang pahina",
   "goHome": "Bumalik sa home",

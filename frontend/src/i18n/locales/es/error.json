@@ -2,6 +2,7 @@
   "title": "Algo salió mal",
   "description": "Lo siento, ocurrió un error inesperado",
   "details": "Detalles del error",
+  "error_type": "Tipo de error",
   "reset": "Intentar de nuevo",
   "reload": "Recargar página",
   "goHome": "Ir a inicio",

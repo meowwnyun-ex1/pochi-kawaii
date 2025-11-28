@@ -9,11 +9,16 @@
   "error": {
     "http_error": "An error occurred",
     "network_error": "Cannot connect",
-    "timeout": "⏱️ Timeout - AI took too long\n\nPlease try again",
+    "timeout": "Timeout - AI took too long\n\nPlease try again",
     "please_try_again": "Please try again",
     "no_image": "Please upload an image first",
     "invalid_format": "Invalid file format. Please use JPG, PNG or WEBP",
-    "file_too_large": "File too large (max 10MB)"
+    "file_too_large": "File too large (max 10MB)",
+    "payment_required": "Sorry, this service is currently unavailable\n\nPlease contact the administrator to report this issue",
+    "server_error": "Server error occurred\n\nPlease try again later",
+    "rate_limit": "Too many requests\n\nPlease wait a moment and try again",
+    "bad_request": "Invalid request data\n\nPlease check your data and try again",
+    "unauthorized": "Unauthorized access\n\nPlease contact the administrator"
   },
   "stage_analyzing": "Analyzing your image",
   "stage_thinking": "Processing image",

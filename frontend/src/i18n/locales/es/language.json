@@ -3,6 +3,7 @@
   "active": "Activo",
   "aiNote": "AI responde en el idioma de la pregunta",
   "changedTo": "Cambiado a {{language}}",
+  "changed_success": "Idioma cambiado exitosamente",
   "changeLanguage": "Cambiar idioma",
   "currentLanguage": "Idioma actual",
   "switchTo": "Cambiar a {{language}}",

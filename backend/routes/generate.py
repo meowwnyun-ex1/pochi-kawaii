@@ -75,8 +75,21 @@ def setup_generate_routes(app, image_generation_service, config=None):
             )
             if error:
                 logger.error(f"❌ Generation failed: {error}")
+                error_lower = error.lower()
+                if "payment_required" in error_lower or "payment required" in error_lower or "402" in error:
+                    status_code = 402
+                elif "timeout" in error_lower or "504" in error:
+                    status_code = 504
+                elif "unauthorized" in error_lower or "invalid_api_token" in error_lower or "401" in error:
+                    status_code = 401
+                elif "rate_limit" in error_lower or "rate limit" in error_lower or "429" in error:
+                    status_code = 429
+                elif "model_loading" in error_lower or "loading" in error_lower or "503" in error:
+                    status_code = 503
+                else:
+                    status_code = 500
                 raise HTTPException(
-                    status_code=500,
+                    status_code=status_code,
                     detail=error
                 )
             if not generated_image:

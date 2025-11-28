@@ -52,7 +52,11 @@ class Config:
         if env_file.exists():
             load_env_file(env_file)
         else:
-            environment = os.getenv("ENVIRONMENT", "development").lower()
+            environment = os.getenv("ENVIRONMENT")
+            if environment:
+                environment = environment.lower()
+            else:
+                environment = "development"
             if environment == "production":
                 error_msg = (
                     f"❌ CRITICAL: .env file not found at {env_file}\n"
@@ -70,12 +74,12 @@ class Config:
         self._validate_required_env_vars()
         self._security_checks()
 
-        self.config_dir = self._validate_dir(os.getenv("CONFIG_DIR", ""))
-        self.backend_dir = self._validate_dir(os.getenv("BACKEND_DIR", ""))
-        self.frontend_dir = self._validate_dir(os.getenv("FRONTEND_DIR", ""))
-        self.logs_dir = self._validate_dir(os.getenv("LOGS_DIR", ""))
-        self.cache_dir = self._validate_dir(os.getenv("CACHE_DIR", ".cache"))
-        self.temp_dir = self._validate_dir(os.getenv("TEMP_DIR", ".cache/temp"))
+        self.config_dir = self._validate_dir(os.getenv("CONFIG_DIR"))
+        self.backend_dir = self._validate_dir(os.getenv("BACKEND_DIR"))
+        self.frontend_dir = self._validate_dir(os.getenv("FRONTEND_DIR"))
+        self.logs_dir = self._validate_dir(os.getenv("LOGS_DIR"))
+        self.cache_dir = self._validate_dir(os.getenv("CACHE_DIR"))
+        self.temp_dir = self._validate_dir(os.getenv("TEMP_DIR"))
 
         self.config_dir.mkdir(parents=True, exist_ok=True)
         self.logs_dir.mkdir(parents=True, exist_ok=True)
@@ -118,7 +122,7 @@ class Config:
     def _security_checks(self) -> None:
         warnings: List[str] = []
 
-        jwt_secret = os.getenv("JWT_SECRET", "")
+        jwt_secret = os.getenv("JWT_SECRET")
         insecure_jwt_patterns = [
             "CHANGE_THIS",
             "STRONG_JWT_SECRET_KEY_CHANGE_THIS_IN_PRODUCTION",
@@ -138,7 +142,7 @@ class Config:
                 "⚠️  JWT_SECRET appears to be using a default/insecure value"
             )
 
-        admin_password = os.getenv("ADMIN_PASSWORD", "")
+        admin_password = os.getenv("ADMIN_PASSWORD")
         if admin_password in [
             "admin",
             "password",
@@ -154,7 +158,7 @@ class Config:
                 "⚠️  ADMIN_PASSWORD is too short (minimum 12 characters recommended)"
             )
 
-        hf_token = os.getenv("HUGGINGFACE_API_TOKEN", "")
+        hf_token = os.getenv("HUGGINGFACE_API_TOKEN")
         if not hf_token:
             warnings.append("⚠️  HUGGINGFACE_API_TOKEN is missing or not set")
         elif not hf_token.startswith("hf_"):
@@ -164,13 +168,23 @@ class Config:
         elif "YOUR_HF" in hf_token or "YOUR_HUGGING" in hf_token:
             warnings.append("⚠️  HUGGINGFACE_API_TOKEN contains placeholder value")
 
-        cors_allow_all = os.getenv("CORS_ALLOW_ALL", "false").lower()
-        environment = os.getenv("ENVIRONMENT", "production")
+        cors_allow_all = os.getenv("CORS_ALLOW_ALL")
+        if cors_allow_all:
+            cors_allow_all = cors_allow_all.lower()
+        else:
+            cors_allow_all = "false"
+        environment = os.getenv("ENVIRONMENT")
+        if not environment:
+            environment = "production"
         if cors_allow_all == "true" and environment == "production":
             warnings.append("⚠️  CORS_ALLOW_ALL=true in production is a security risk!")
 
         # Validate DATABASE_URL format - improved validation
-        database_url = os.getenv("DATABASE_URL", "").strip().strip('"').strip("'")
+        database_url = os.getenv("DATABASE_URL")
+        if database_url:
+            database_url = database_url.strip().strip('"').strip("'")
+        else:
+            database_url = ""
         if not database_url:
             warnings.append("⚠️  DATABASE_URL is missing")
         elif (
@@ -197,7 +211,8 @@ class Config:
 
         # Validate server port is a valid number
         try:
-            port = int(os.getenv("SERVER_PORT", "4004"))
+            port_str = os.getenv("SERVER_PORT")
+            port = int(port_str) if port_str else 4004
             if port < 1 or port > 65535:
                 warnings.append(
                     f"⚠️  SERVER_PORT ({port}) is outside valid range (1-65535)"
@@ -207,7 +222,8 @@ class Config:
 
         # Validate rate limiting values
         try:
-            rate_per_min = int(os.getenv("RATE_LIMIT_PER_MINUTE", "30"))
+            rate_per_min_str = os.getenv("RATE_LIMIT_PER_MINUTE")
+            rate_per_min = int(rate_per_min_str) if rate_per_min_str else 30
             if rate_per_min < 1 or rate_per_min > 1000:
                 warnings.append(
                     f"⚠️  RATE_LIMIT_PER_MINUTE ({rate_per_min}) seems unusual"
@@ -216,7 +232,8 @@ class Config:
             warnings.append("⚠️  RATE_LIMIT_PER_MINUTE is not a valid number")
 
         try:
-            rate_per_hour = int(os.getenv("RATE_LIMIT_PER_HOUR", "500"))
+            rate_per_hour_str = os.getenv("RATE_LIMIT_PER_HOUR")
+            rate_per_hour = int(rate_per_hour_str) if rate_per_hour_str else 500
             if rate_per_hour < 1 or rate_per_hour > 100000:
                 warnings.append(
                     f"⚠️  RATE_LIMIT_PER_HOUR ({rate_per_hour}) seems unusual"
@@ -225,7 +242,7 @@ class Config:
             warnings.append("⚠️  RATE_LIMIT_PER_HOUR is not a valid number")
 
         # Check for suspicious patterns in CORS_ORIGINS
-        cors_origins = os.getenv("CORS_ORIGINS", "")
+        cors_origins = os.getenv("CORS_ORIGINS")
         if "*" in cors_origins and environment == "production":
             warnings.append(
                 "⚠️  CORS_ORIGINS contains wildcard (*) in production - security risk!"
@@ -264,7 +281,8 @@ class Config:
 
     @property
     def environment(self) -> str:
-        return os.getenv("ENVIRONMENT", "production")
+        env = os.getenv("ENVIRONMENT")
+        return env if env else "production"
 
     @property
     def database_url(self) -> str:
@@ -272,7 +290,11 @@ class Config:
         Get DATABASE_URL from environment with validation
         Note: ConnectionPool will auto-fix special characters (@ - in UID, DATABASE, PWD)
         """
-        url = os.getenv("DATABASE_URL", "").strip().strip('"').strip("'")
+        url = os.getenv("DATABASE_URL")
+        if url:
+            url = url.strip().strip('"').strip("'")
+        else:
+            url = ""
 
         # Debug logging เพื่อช่วย troubleshoot
         if not url:
@@ -303,7 +325,8 @@ class Config:
     @property
     def database_pool_size(self) -> int:
         try:
-            size = int(os.getenv("DATABASE_POOL_SIZE", "10"))
+            size_str = os.getenv("DATABASE_POOL_SIZE")
+            size = int(size_str) if size_str else 10
             if size <= 0 or size > 100:
                 logger.warning(f"Invalid pool size {size}, using default 10")
                 return 10
@@ -315,7 +338,8 @@ class Config:
     @property
     def database_max_overflow(self) -> int:
         try:
-            overflow = int(os.getenv("DATABASE_MAX_OVERFLOW", "20"))
+            overflow_str = os.getenv("DATABASE_MAX_OVERFLOW")
+            overflow = int(overflow_str) if overflow_str else 20
             if overflow < 0 or overflow > 200:
                 logger.warning(f"Invalid max overflow {overflow}, using default 20")
                 return 20
@@ -326,32 +350,38 @@ class Config:
 
     @property
     def huggingface_api_token(self) -> str:
-        return os.getenv("HUGGINGFACE_API_TOKEN", "")
+        return os.getenv("HUGGINGFACE_API_TOKEN")
 
     @property
     def huggingface_base_url(self) -> str:
         url = os.getenv("HUGGINGFACE_BASE_URL")
-        default_url = os.getenv("HUGGINGFACE_DEFAULT_URL", "https://router.huggingface.co/fal-ai/fal-ai/qwen-image-edit")
+        default_url = os.getenv("HUGGINGFACE_DEFAULT_URL")
+        if not url and not default_url:
+            logger.warning("⚠️  HUGGINGFACE_BASE_URL and HUGGINGFACE_DEFAULT_URL are not set")
+            return ""
         if not url:
             url = default_url
-        if "api-inference.huggingface.co" in url:
-            logger.warning(
-                f"⚠️  HUGGINGFACE_BASE_URL is set to deprecated endpoint ({url}). "
-                f"Overriding to new fal-ai endpoint: {default_url}"
-            )
-            return default_url
+        if url and "api-inference.huggingface.co" in url:
+            if default_url:
+                logger.warning(
+                    f"⚠️  HUGGINGFACE_BASE_URL is set to deprecated endpoint ({url}). "
+                    f"Overriding to configured endpoint: {default_url}"
+                )
+                return default_url
         if url and ("/v1/chat/completions" in url or "/chat/completions" in url):
-            logger.warning(
-                f"⚠️  HUGGINGFACE_BASE_URL is set to a chat completions endpoint ({url}). "
-                f"Overriding to fal-ai image endpoint: {default_url}"
-            )
-            return default_url
+            if default_url:
+                logger.warning(
+                    f"⚠️  HUGGINGFACE_BASE_URL is set to a chat completions endpoint ({url}). "
+                    f"Overriding to configured endpoint: {default_url}"
+                )
+                return default_url
         if url and "/models" in url and "/fal-ai" not in url:
-            logger.warning(
-                f"⚠️  HUGGINGFACE_BASE_URL is set to /models endpoint ({url}). "
-                f"Overriding to fal-ai endpoint: {default_url}"
-            )
-            return default_url
+            if default_url:
+                logger.warning(
+                    f"⚠️  HUGGINGFACE_BASE_URL is set to /models endpoint ({url}). "
+                    f"Overriding to configured endpoint: {default_url}"
+                )
+                return default_url
         return url
 
     @property
@@ -378,20 +408,22 @@ class Config:
 
     @property
     def admin_password(self) -> str:
-        return os.getenv("ADMIN_PASSWORD", "")
+        return os.getenv("ADMIN_PASSWORD")
 
     @property
     def jwt_secret(self) -> str:
-        return os.getenv("JWT_SECRET", "")
+        return os.getenv("JWT_SECRET")
 
     @property
     def server_host(self) -> str:
-        return os.getenv("SERVER_HOST", "127.0.0.1")
+        host = os.getenv("SERVER_HOST")
+        return host if host else "127.0.0.1"
 
     @property
     def server_port(self) -> int:
         try:
-            port = int(os.getenv("SERVER_PORT", "4004"))
+            port_str = os.getenv("SERVER_PORT")
+            port = int(port_str) if port_str else 4004
             if port <= 0 or port > 65535:
                 return 4004
             return port
@@ -400,40 +432,51 @@ class Config:
 
     @property
     def log_level(self) -> str:
-        level = os.getenv("LOG_LEVEL", "info").upper()
+        level_str = os.getenv("LOG_LEVEL")
+        level = (level_str or "info").upper()
         valid_levels = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
         return level if level in valid_levels else "INFO"
 
     @property
     def cors_origins(self) -> List[str]:
-        allow_all = os.getenv("CORS_ALLOW_ALL", "false").lower() == "true"
+        allow_all_str = os.getenv("CORS_ALLOW_ALL")
+        allow_all = (allow_all_str or "false").lower() == "true"
 
         if allow_all:
             return ["*"]
 
         origins = []
 
-        cors_origins_env = os.getenv("CORS_ORIGINS", "")
+        cors_origins_env = os.getenv("CORS_ORIGINS")
         if cors_origins_env:
             origins.extend(
                 [o.strip() for o in cors_origins_env.split(",") if o.strip()]
             )
 
-        additional = os.getenv("CORS_ADDITIONAL_ORIGINS", "")
+        additional = os.getenv("CORS_ADDITIONAL_ORIGINS")
         if additional:
             origins.extend([o.strip() for o in additional.split(",") if o.strip()])
 
-        return list(set(origins)) if origins else ["http://localhost"]
+        default_origin = os.getenv("CORS_DEFAULT_ORIGIN")
+        if origins:
+            return list(set(origins))
+        elif default_origin:
+            return [default_origin]
+        else:
+            return []
 
     @property
     def enable_debug(self) -> bool:
-        debug_str = os.getenv("ENABLE_DEBUG", "false")
+        debug_str = os.getenv("ENABLE_DEBUG")
+        if not debug_str:
+            debug_str = "false"
         return debug_str.lower() in ["true", "1", "yes"]
 
     @property
     def database_timeout(self) -> int:
         try:
-            timeout = int(os.getenv("DATABASE_TIMEOUT", "30"))
+            timeout_str = os.getenv("DATABASE_TIMEOUT")
+            timeout = int(timeout_str) if timeout_str else 30
             if timeout <= 0 or timeout > 300:
                 return 30
             return timeout
@@ -442,12 +485,14 @@ class Config:
 
     @property
     def admin_path(self) -> str:
-        return os.getenv("ADMIN_PATH", "/sdx-secret")
+        path = os.getenv("ADMIN_PATH")
+        return path if path else "/sdx-secret"
 
     @property
     def rate_limit_per_minute(self) -> int:
         try:
-            limit = int(os.getenv("RATE_LIMIT_PER_MINUTE", "30"))
+            limit_str = os.getenv("RATE_LIMIT_PER_MINUTE")
+            limit = int(limit_str) if limit_str else 30
             return max(1, min(limit, 1000))
         except (ValueError, TypeError):
             return 30
@@ -455,7 +500,8 @@ class Config:
     @property
     def rate_limit_per_hour(self) -> int:
         try:
-            limit = int(os.getenv("RATE_LIMIT_PER_HOUR", "500"))
+            limit_str = os.getenv("RATE_LIMIT_PER_HOUR")
+            limit = int(limit_str) if limit_str else 500
             return max(10, min(limit, 10000))
         except (ValueError, TypeError):
             return 500
@@ -463,7 +509,8 @@ class Config:
     @property
     def jwt_token_expiry_hours(self) -> int:
         try:
-            hours = int(os.getenv("JWT_TOKEN_EXPIRY_HOURS", "8"))
+            hours_str = os.getenv("JWT_TOKEN_EXPIRY_HOURS")
+            hours = int(hours_str) if hours_str else 8
             return max(1, min(hours, 24))
         except (ValueError, TypeError):
             return 8
@@ -505,7 +552,9 @@ class Config:
             return {}
 
     def _load_api_config(self) -> Dict[str, Any]:
-        filename = os.getenv("API_CONFIG_FILE", "api_config.json")
+        filename = os.getenv("API_CONFIG_FILE")
+        if not filename:
+            filename = "api_config.json"
         config = self._load_config_file(filename)
         if not config:
             return self._get_minimal_api_config()
@@ -514,17 +563,11 @@ class Config:
     def _get_minimal_api_config(self) -> Dict[str, Any]:
         return {
             "app_info": {
-                "name": os.getenv("APP_NAME", "Pochi! Kawaii ne~"),
-                "version": os.getenv("APP_VERSION", "v1"),
-                "description": os.getenv(
-                    "APP_DESCRIPTION", "DENSO AI Cartoon Avatar Generator"
-                ),
-                "developer": os.getenv(
-                    "APP_DEVELOPER", "Thammaphon Chittasuwanna (SDM)"
-                ),
-                "company": os.getenv(
-                    "APP_COMPANY", "SIAM DENSO MANUFACTURING CO., LTD."
-                ),
+                "name": os.getenv("APP_NAME"),
+                "version": os.getenv("APP_VERSION"),
+                "description": os.getenv("APP_DESCRIPTION"),
+                "developer": os.getenv("APP_DEVELOPER"),
+                "company": os.getenv("APP_COMPANY"),
                 "supported_languages": [
                     "th",
                     "en",

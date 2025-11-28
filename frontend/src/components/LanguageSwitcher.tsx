@@ -7,6 +7,7 @@ const LanguageSwitcher = () => {
   const { language, setLanguage, t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [isChanging, setIsChanging] = useState(false);
+  const [pendingLangChange, setPendingLangChange] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const languages = [
@@ -38,23 +39,30 @@ const LanguageSwitcher = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    if (pendingLangChange && language === pendingLangChange) {
+      const toastMessage = t('language:changed_success');
+      showToast.success(toastMessage, {
+        duration: 2000,
+      });
+      setPendingLangChange(null);
+      setIsChanging(false);
+    }
+  }, [language, pendingLangChange, t]);
+
   const handleLanguageChange = (langCode: string) => {
     const selectedLang = languages.find((l) => l.code === langCode);
     if (!selectedLang) return;
 
+    if (language === langCode) {
+      setIsOpen(false);
+      return;
+    }
+
     setIsChanging(true);
+    setPendingLangChange(langCode);
     setLanguage(langCode);
     setIsOpen(false);
-
-    const langName = t(`language:languages.${langCode}`);
-    if (!langName) return;
-    const toastMessage = `${selectedLang.flag} ${t('language:changedTo', { language: langName })}`;
-
-    showToast.success(toastMessage, {
-      duration: 2000,
-    });
-
-    setTimeout(() => setIsChanging(false), 500);
   };
 
   return (

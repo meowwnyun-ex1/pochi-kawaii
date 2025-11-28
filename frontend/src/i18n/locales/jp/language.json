@@ -3,6 +3,7 @@
   "active": "使用中",
   "aiNote": "AIは質問の言語で回答",
   "changedTo": "{{language}}に変更しました",
+  "changed_success": "言語の変更が完了しました",
   "changeLanguage": "言語を変更",
   "currentLanguage": "現在の言語",
   "switchTo": "{{language}}に切り替え",

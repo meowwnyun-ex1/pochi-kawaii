@@ -9,11 +9,16 @@
   "error": {
     "http_error": "エラーが発生しました",
     "network_error": "接続できません",
-    "timeout": "⏱️ タイムアウト - AIの処理に時間がかかりすぎました\n\nもう一度お試しください",
+    "timeout": "タイムアウト - AIの処理に時間がかかりすぎました\n\nもう一度お試しください",
     "please_try_again": "もう一度お試しください",
     "no_image": "まず画像をアップロードしてください",
     "invalid_format": "無効なファイル形式です。JPG、PNG、WEBPを使用してください",
-    "file_too_large": "ファイルが大きすぎます（最大10MB）"
+    "file_too_large": "ファイルが大きすぎます（最大10MB）",
+    "payment_required": "申し訳ございませんが、このサービスは現在利用できません\n\n管理者にお問い合わせください",
+    "server_error": "サーバーエラーが発生しました\n\n後でもう一度お試しください",
+    "rate_limit": "リクエストが多すぎます\n\nしばらく待ってからもう一度お試しください",
+    "bad_request": "無効なリクエストデータです\n\nデータを確認してもう一度お試しください",
+    "unauthorized": "認証されていません\n\n管理者にお問い合わせください"
   },
   "stage_analyzing": "画像を分析中",
   "stage_thinking": "画像を処理中",

@@ -3,6 +3,7 @@
   "active": "सक्रिय",
   "aiNote": "AI प्रश्न की भाषा में जवाब देता है",
   "changedTo": "{{language}} में बदल गया",
+  "changed_success": "भाषा सफलतापूर्वक बदल गई",
   "changeLanguage": "भाषा बदलें",
   "currentLanguage": "वर्तमान भाषा",
   "switchTo": "{{language}} में स्विच करें",

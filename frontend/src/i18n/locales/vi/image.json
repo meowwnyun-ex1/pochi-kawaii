@@ -9,11 +9,16 @@
   "error": {
     "http_error": "Đã xảy ra lỗi",
     "network_error": "Không thể kết nối",
-    "timeout": "⏱️ Hết thời gian - AI mất quá nhiều thời gian\n\nVui lòng thử lại",
+    "timeout": "Hết thời gian - AI mất quá nhiều thời gian\n\nVui lòng thử lại",
     "please_try_again": "Vui lòng thử lại",
     "no_image": "Vui lòng tải lên hình ảnh trước",
     "invalid_format": "Định dạng tệp không hợp lệ. Vui lòng sử dụng JPG, PNG hoặc WEBP",
-    "file_too_large": "Tệp quá lớn (tối đa 10MB)"
+    "file_too_large": "Tệp quá lớn (tối đa 10MB)",
+    "payment_required": "Xin lỗi, dịch vụ này hiện không khả dụng\n\nVui lòng liên hệ quản trị viên để báo cáo vấn đề này",
+    "server_error": "Đã xảy ra lỗi máy chủ\n\nVui lòng thử lại sau",
+    "rate_limit": "Quá nhiều yêu cầu\n\nVui lòng đợi một chút rồi thử lại",
+    "bad_request": "Dữ liệu yêu cầu không hợp lệ\n\nVui lòng kiểm tra dữ liệu và thử lại",
+    "unauthorized": "Truy cập không được phép\n\nVui lòng liên hệ quản trị viên"
   },
   "stage_analyzing": "Đang phân tích hình ảnh của bạn",
   "stage_thinking": "Đang xử lý hình ảnh",

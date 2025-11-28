@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Menu } from 'lucide-react';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
@@ -8,9 +9,62 @@ interface AppHeaderProps {
   onMenuClick?: () => void;
 }
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || '';
+const BASE_PATH = import.meta.env.VITE_BASE_PATH || '/pochi-kawaii';
+
 const AppHeader = ({ onMenuClick }: AppHeaderProps) => {
   const navigate = useNavigate();
   const { t } = useLanguage();
+  const [status, setStatus] = useState<'healthy' | 'unhealthy' | 'checking'>('checking');
+
+  useEffect(() => {
+    const checkHealth = async () => {
+      try {
+        const healthUrl = API_BASE_URL 
+          ? `${API_BASE_URL}/health`
+          : `${BASE_PATH}/health`;
+        
+        const response = await fetch(healthUrl, {
+          method: 'GET',
+          headers: {
+            'Cache-Control': 'no-cache',
+          },
+          signal: AbortSignal.timeout(5000),
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          if (data.status === 'healthy') {
+            setStatus('healthy');
+          } else {
+            setStatus('unhealthy');
+          }
+        } else {
+          setStatus('unhealthy');
+        }
+      } catch (error) {
+        setStatus('unhealthy');
+      }
+    };
+
+    checkHealth();
+    const interval = setInterval(checkHealth, 30000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const getStatusColor = () => {
+    switch (status) {
+      case 'healthy':
+        return 'bg-green-500';
+      case 'unhealthy':
+        return 'bg-red-500';
+      case 'checking':
+        return 'bg-yellow-500';
+      default:
+        return 'bg-pink-500';
+    }
+  };
 
   return (
     <header className="bg-white/90 backdrop-blur-xl border-b border-pink-200/50 shadow-lg flex-shrink-0 fixed top-0 left-0 right-0 z-30">
@@ -28,7 +82,7 @@ const AppHeader = ({ onMenuClick }: AppHeaderProps) => {
               <button onClick={() => navigate('/')} className="flex items-center space-x-3 hover:opacity-90 transition-opacity group">
               <div className="relative">
               <AvatarImage size="small" />
-                <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-pink-500 rounded-full border-2 border-white"></div>
+                <div className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 ${getStatusColor()} rounded-full border-2 border-white transition-colors duration-300`}></div>
               </div>
               <div>
                 <h1 className="text-base font-bold bg-gradient-to-r from-pink-500 via-rose-500 to-pink-600 bg-clip-text text-transparent group-hover:from-pink-600 group-hover:via-rose-600 group-hover:to-pink-700 transition-all">

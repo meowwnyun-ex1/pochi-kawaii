@@ -9,11 +9,16 @@
   "error": {
     "http_error": "Ocurrió un error",
     "network_error": "No se puede conectar",
-    "timeout": "⏱️ Tiempo agotado - AI tardó demasiado\n\nPor favor intente de nuevo",
+    "timeout": "Tiempo agotado - AI tardó demasiado\n\nPor favor intente de nuevo",
     "please_try_again": "Por favor intente de nuevo",
     "no_image": "Por favor suba una imagen primero",
     "invalid_format": "Formato de archivo inválido. Por favor use JPG, PNG o WEBP",
-    "file_too_large": "Archivo demasiado grande (máx 10MB)"
+    "file_too_large": "Archivo demasiado grande (máx 10MB)",
+    "payment_required": "Lo sentimos, este servicio no está disponible actualmente\n\nPor favor contacte al administrador para reportar este problema",
+    "server_error": "Ocurrió un error del servidor\n\nPor favor intente de nuevo más tarde",
+    "rate_limit": "Demasiadas solicitudes\n\nPor favor espere un momento e intente de nuevo",
+    "bad_request": "Datos de solicitud inválidos\n\nPor favor verifique sus datos e intente de nuevo",
+    "unauthorized": "Acceso no autorizado\n\nPor favor contacte al administrador"
   },
   "stage_analyzing": "Analizando su imagen",
   "stage_thinking": "Procesando imagen",

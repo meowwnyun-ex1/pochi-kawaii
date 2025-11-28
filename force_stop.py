@@ -56,7 +56,8 @@ def main():
     if env_file.exists():
         load_dotenv(env_file)
 
-    server_port = int(os.getenv("SERVER_PORT", "4004"))
+    server_port_str = os.getenv("SERVER_PORT")
+    server_port = int(server_port_str) if server_port_str else 4004
 
     print_warning("THIS IS A LAST RESORT - Only use if normal stop.py fails!")
     print_info("This will change the port number to avoid zombie processes")
@@ -89,7 +90,7 @@ def main():
         print()
         print_warning("Important notes:")
         print_info("  1. Update nginx config to point to new port")
-        print_info(f"     proxy_pass http://127.0.0.1:{new_port}/;")
+        print_info(f"     proxy_pass configured for port {new_port}")
         print_info("  2. Run: nginx -s reload")
         print_info("  3. Run: python start.py")
         print()

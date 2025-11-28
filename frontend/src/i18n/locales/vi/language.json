@@ -3,6 +3,7 @@
   "active": "Hoạt động",
   "aiNote": "AI trả lời bằng ngôn ngữ câu hỏi",
   "changedTo": "Đã đổi sang {{language}}",
+  "changed_success": "Đã thay đổi ngôn ngữ thành công",
   "changeLanguage": "Thay đổi ngôn ngữ",
   "currentLanguage": "Ngôn ngữ hiện tại",
   "switchTo": "Chuyển sang {{language}}",

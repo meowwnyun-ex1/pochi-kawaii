@@ -61,10 +61,10 @@ class ImageService:
         self.timeout = timeout
         self.api_config = api_config
         self.client = InferenceClient(
-            provider="auto",
             api_key=api_token,
         )
         logger.info(f"✅ ImageService initialized with model: {model_name}")
+        logger.info(f"   Using HuggingFace Inference API (free tier)")
 
     def _get_error_message(self, key: str, **kwargs) -> str:
         if self.api_config:

@@ -135,13 +135,8 @@ const AnnouncementManager = ({ token }: AnnouncementManagerProps) => {
           await fetchAnnouncements();
           resetForm();
         } else {
-          const errorData = await res.json().catch(() => ({ detail: t('announcement:update_failed') }));
-          const errorMsg = errorData.detail;
-          if (errorMsg) {
-            showToast.error(errorMsg, { icon: '❌', duration: 5000 });
-          } else {
+          await res.json().catch(() => ({}));
             showToast.error(t('announcement:update_failed'), { icon: '❌', duration: 5000 });
-          }
         }
       } else {
         if (announcements.length >= 3) {
@@ -168,13 +163,8 @@ const AnnouncementManager = ({ token }: AnnouncementManagerProps) => {
           await fetchAnnouncements();
           resetForm();
         } else {
-          const errorData = await res.json().catch(() => ({ detail: t('announcement:create_failed') }));
-          const errorMsg = errorData.detail;
-          if (errorMsg) {
-            showToast.error(errorMsg, { icon: '❌', duration: 5000 });
-          } else {
+          await res.json().catch(() => ({}));
             showToast.error(t('announcement:create_failed'), { icon: '❌', duration: 5000 });
-          }
         }
       }
     } catch (error) {

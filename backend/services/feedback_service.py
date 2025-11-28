@@ -13,13 +13,15 @@ logger = logging.getLogger(__name__)
 class FeedbackService:
     def __init__(self, database_manager: "DatabaseManager"):
         self.db = database_manager
-        config_dir_str = os.getenv("CONFIG_DIR", "")
+        config_dir_str = os.getenv("CONFIG_DIR")
         if config_dir_str:
             config_dir = Path(config_dir_str)
         else:
             config_dir = Path(__file__).parent.parent / "config"
 
-        api_config_file = os.getenv("API_CONFIG_FILE", "api_config.json")
+        api_config_file = os.getenv("API_CONFIG_FILE")
+        if not api_config_file:
+            api_config_file = "api_config.json"
         api_config_path = config_dir / api_config_file
 
         try:

@@ -2,6 +2,7 @@
   "title": "Terjadi kesalahan",
   "description": "Maaf, terjadi kesalahan yang tidak terduga",
   "details": "Detail kesalahan",
+  "error_type": "Jenis Kesalahan",
   "reset": "Coba lagi",
   "reload": "Muat ulang halaman",
   "goHome": "Kembali ke beranda",

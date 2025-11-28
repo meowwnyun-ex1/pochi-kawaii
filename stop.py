@@ -125,8 +125,9 @@ def main():
         load_dotenv(env_file)
 
     # Get configuration
-    server_port = int(os.getenv("SERVER_PORT", "4004"))
-    nginx_dir = os.getenv("NGINX_DIR", "D:/nginx")
+    server_port_str = os.getenv("SERVER_PORT")
+    server_port = int(server_port_str) if server_port_str else 4004
+    nginx_dir = os.getenv("NGINX_DIR")
 
     print_info(f"Backend Port: {server_port}")
     print_info(f"nginx: {nginx_dir}")

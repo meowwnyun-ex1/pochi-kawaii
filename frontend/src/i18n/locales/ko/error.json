@@ -2,6 +2,7 @@
   "title": "오류가 발생했습니다",
   "description": "죄송합니다. 예상치 못한 오류가 발생했습니다",
   "details": "오류 세부 정보",
+  "error_type": "오류 유형",
   "reset": "다시 시도",
   "reload": "페이지 새로고침",
   "goHome": "홈으로 이동",

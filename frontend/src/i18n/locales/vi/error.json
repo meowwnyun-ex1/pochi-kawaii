@@ -2,6 +2,7 @@
   "title": "Đã xảy ra lỗi",
   "description": "Xin lỗi, đã xảy ra lỗi không mong muốn",
   "details": "Chi tiết lỗi",
+  "error_type": "Loại lỗi",
   "reset": "Thử lại",
   "reload": "Tải lại trang",
   "goHome": "Về trang chủ",

@@ -109,7 +109,7 @@ const ErrorFallback: React.FC<ErrorFallbackProps> = ({ error, onReset, onReload,
                 {t('error:details')}
               </summary>
               <div className="mt-2 text-sm text-pink-700 font-mono bg-pink-50 p-3 rounded-lg border border-pink-200 overflow-auto max-h-48">
-                <div className="font-bold text-pink-800 mb-2">{error.name}: {error.message}</div>
+                <div className="font-bold text-pink-800 mb-2">{t('error:error_type')}: {error.name} - {error.message}</div>
                 {error.stack && (
                   <pre className="text-xs whitespace-pre-wrap break-words">
                     {error.stack}

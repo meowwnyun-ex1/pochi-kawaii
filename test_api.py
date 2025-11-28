@@ -72,7 +72,7 @@ if not base_url:
 # Remove trailing slash if present
 base_url = base_url.rstrip("/")
 
-print(f"🔍 Testing API connection to: {base_url}\n")
+print("🔍 Testing API connection\n")
 
 # Test endpoints
 endpoints = [
@@ -147,7 +147,6 @@ if fail_count > 0:
     print("     → Default port is 4004 (from SERVER_PORT in .env)")
     print("     → Or check your .env file for SERVER_PORT")
     print("   - Set VITE_API_URL or API_URL environment variable if needed")
-    print(f"   - Current base URL: {base_url}")
     print("\n📝 To start the server:")
     print("   python start.py")
     sys.exit(1)

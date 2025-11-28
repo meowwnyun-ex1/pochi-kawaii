@@ -2,6 +2,7 @@
   "title": "Something went wrong",
   "description": "Sorry, an unexpected error occurred",
   "details": "Error details",
+  "error_type": "Error Type",
   "reset": "Try again",
   "reload": "Reload page",
   "goHome": "Go home",

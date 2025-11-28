@@ -3,6 +3,7 @@
   "active": "Aktif",
   "aiNote": "AI merespons dalam bahasa pertanyaan",
   "changedTo": "Berubah ke {{language}}",
+  "changed_success": "Bahasa berhasil diubah",
   "changeLanguage": "Ubah bahasa",
   "currentLanguage": "Bahasa saat ini",
   "switchTo": "Beralih ke {{language}}",
