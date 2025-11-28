@@ -250,7 +250,7 @@ def main():
         if sys.platform == "win32":
             result = run_command("npm install", shell=True, cwd=frontend_dir)
         else:
-        result = run_command(["npm", "install"], cwd=frontend_dir)
+            result = run_command(["npm", "install"], cwd=frontend_dir)
         if result is not None and result.returncode == 0:
             print_success("npm packages installed")
         else:
