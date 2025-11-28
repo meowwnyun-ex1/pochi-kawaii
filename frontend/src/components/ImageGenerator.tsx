@@ -235,14 +235,14 @@ const ImageGenerator = () => {
 
   return (
     <div className="w-full flex items-center justify-center p-4 py-8">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 max-w-7xl w-full">
-        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-4 border-2 border-pink-100 flex flex-col">
-          <div className="flex items-center gap-2 mb-3">
-            <ImageIcon className="w-4 h-4 text-pink-600" />
-            <h2 className="text-lg font-bold text-pink-700">{t('image:select_style')}</h2>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-7xl w-full">
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 border-2 border-pink-100 flex flex-col">
+          <div className="flex items-center gap-2 mb-4">
+            <ImageIcon className="w-5 h-5 text-pink-600" />
+            <h2 className="text-xl font-bold text-pink-700">{t('image:select_style')}</h2>
           </div>
           
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-3">
             {styles.map((style) => (
               <button
                 key={style.id}
@@ -253,7 +253,7 @@ const ImageGenerator = () => {
                   }
                 }}
                 disabled={!style.available || isGenerating}
-                className={`w-full px-4 py-3 rounded-lg text-left transition-all border-2 ${
+                className={`w-full px-5 py-4 rounded-lg text-left transition-all border-2 ${
                   selectedStyle === style.id
                     ? 'bg-pink-100 border-pink-400 shadow-md'
                     : 'bg-white border-pink-200 hover:border-pink-300'
@@ -262,14 +262,14 @@ const ImageGenerator = () => {
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <span className="font-semibold text-pink-700 flex items-center gap-2">
+                  <span className="font-semibold text-base text-pink-700 flex items-center gap-2">
                     {style.name}
                     {!style.available && (
-                      <Lock className="w-4 h-4 text-pink-400" />
+                      <Lock className="w-5 h-5 text-pink-400" />
                     )}
                   </span>
                   {!style.available && (
-                    <span className="text-xs text-pink-400 font-normal">
+                    <span className="text-sm text-pink-400 font-normal">
                       {t('image:style_locked')}
                     </span>
                   )}
@@ -279,10 +279,10 @@ const ImageGenerator = () => {
           </div>
         </div>
 
-        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-4 border-2 border-pink-100 flex flex-col">
-          <div className="flex items-center gap-2 mb-3">
-            <ImageIcon className="w-4 h-4 text-pink-600" />
-            <h2 className="text-lg font-bold text-pink-700">{t('image:input_image')}</h2>
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 border-2 border-pink-100 flex flex-col">
+          <div className="flex items-center gap-2 mb-4">
+            <ImageIcon className="w-5 h-5 text-pink-600" />
+            <h2 className="text-xl font-bold text-pink-700">{t('image:input_image')}</h2>
           </div>
           
           <div className="flex flex-col w-full">
@@ -329,10 +329,10 @@ const ImageGenerator = () => {
         </div>
 
         {/* Result Panel */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-4 border-2 border-pink-100 flex flex-col">
-          <div className="flex items-center gap-2 mb-3">
-            <ImageIcon className="w-4 h-4 text-pink-600" />
-            <h2 className="text-lg font-bold text-pink-700">{t('image:result')}</h2>
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 border-2 border-pink-100 flex flex-col">
+          <div className="flex items-center gap-2 mb-4">
+            <ImageIcon className="w-5 h-5 text-pink-600" />
+            <h2 className="text-xl font-bold text-pink-700">{t('image:result')}</h2>
           </div>
           
           <div className="flex items-center justify-center min-h-[250px] max-h-[400px] overflow-auto">

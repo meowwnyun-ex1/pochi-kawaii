@@ -23,25 +23,36 @@ class Colors:
     GREEN = '\033[92m'
     YELLOW = '\033[93m'
     RED = '\033[91m'
+    MAGENTA = '\033[95m'
+    PURPLE = '\033[35m'
     END = '\033[0m'
     BOLD = '\033[1m'
+    DIM = '\033[2m'
 
 def print_header(text):
-    print(f"\n{Colors.BOLD}{Colors.BLUE}{'='*80}{Colors.END}")
-    print(f"{Colors.BOLD}{Colors.BLUE}{text.center(80)}{Colors.END}")
-    print(f"{Colors.BOLD}{Colors.BLUE}{'='*80}{Colors.END}\n")
+    print(f"\n{Colors.BOLD}{Colors.MAGENTA}{'═'*80}{Colors.END}")
+    print(f"{Colors.BOLD}{Colors.CYAN}{'✨ ' + text.center(76) + ' ✨'}{Colors.END}")
+    print(f"{Colors.BOLD}{Colors.MAGENTA}{'═'*80}{Colors.END}\n")
+
+def print_header_emoji(text, emoji="🔄"):
+    print(f"\n{Colors.BOLD}{Colors.MAGENTA}{'═'*80}{Colors.END}")
+    print(f"{Colors.BOLD}{Colors.CYAN}{emoji + ' ' + text.center(74) + ' ' + emoji}{Colors.END}")
+    print(f"{Colors.BOLD}{Colors.MAGENTA}{'═'*80}{Colors.END}\n")
 
 def print_success(text):
-    print(f"{Colors.GREEN}✓ {text}{Colors.END}")
+    print(f"{Colors.GREEN}{Colors.BOLD}✓{Colors.END} {Colors.GREEN}{text}{Colors.END}")
 
 def print_error(text):
-    print(f"{Colors.RED}✗ {text}{Colors.END}")
+    print(f"{Colors.RED}{Colors.BOLD}✗{Colors.END} {Colors.RED}{text}{Colors.END}")
 
 def print_info(text):
-    print(f"{Colors.BLUE}→ {text}{Colors.END}")
+    print(f"{Colors.CYAN}{Colors.BOLD}→{Colors.END} {Colors.CYAN}{text}{Colors.END}")
 
 def print_warning(text):
-    print(f"{Colors.YELLOW}! {text}{Colors.END}")
+    print(f"{Colors.YELLOW}{Colors.BOLD}⚠{Colors.END} {Colors.YELLOW}{text}{Colors.END}")
+
+def print_step(text, emoji="📋"):
+    print(f"{Colors.BOLD}{Colors.BLUE}{emoji} [{text}]{Colors.END}")
 
 def get_current_branch(cwd):
     try:
@@ -89,6 +100,13 @@ def check_npm_available():
 
 def run_command(cmd, cwd=None, shell=False):
     try:
+        if sys.platform == "win32" and isinstance(cmd, list) and cmd[0] == "npm":
+            if cwd:
+                cwd_path = str(cwd)
+                cmd_str = ' '.join(cmd)
+                cmd = f'powershell -NoProfile -Command "Set-Location -LiteralPath \'{cwd_path}\'; {cmd_str}"'
+                shell = True
+                cwd = None
         if shell:
             result = subprocess.run(cmd, shell=True, cwd=cwd, capture_output=True, text=True, encoding='utf-8', errors='replace')
         else:
@@ -132,7 +150,7 @@ def kill_backend(project_root):
 
 def restart_backend(project_root):
     """Restart backend server"""
-    print_header("[Backend] Restarting Backend Server")
+    print_header_emoji("[Backend] Restarting Backend Server", "⚙️")
     
     server_port_str = os.getenv("SERVER_PORT")
     server_port = int(server_port_str) if server_port_str else 4004
@@ -189,7 +207,7 @@ def restart_backend(project_root):
 
 def rebuild_frontend(project_root):
     """Rebuild frontend and deploy to nginx (no nginx restart)"""
-    print_header("[Frontend] Rebuilding Frontend")
+    print_header_emoji("[Frontend] Rebuilding Frontend", "🎨")
     
     frontend_dir = project_root / "frontend"
     if not frontend_dir.exists():
@@ -229,7 +247,7 @@ def rebuild_frontend(project_root):
     # Copy to nginx
     nginx_dir = os.getenv("NGINX_DIR")
     nginx_html = Path(nginx_dir) / "html" / "pochi-kawaii"
-    build_output = frontend_dir / "dist-new"
+    build_output = frontend_dir / "dist"
     
     if Path(nginx_dir).exists() and build_output.exists():
         print_info("Deploying to nginx directory...")
@@ -255,7 +273,7 @@ def rebuild_frontend(project_root):
         print_info("💡 nginx will serve new files automatically (no restart needed)")
         print_info("💡 Clear browser cache (Ctrl+F5) if you see old files")
     else:
-        print_warning("nginx directory not found, build output saved to dist-new")
+        print_warning("nginx directory not found, build output saved to dist")
     
     return True
 
@@ -384,7 +402,7 @@ Examples:
             print_warning("Could not detect git branch, skipping git pull")
 
         if update_backend:
-            print_header("Step 2: Update Backend Dependencies")
+            print_header_emoji("Step 2: Update Backend Dependencies", "📦")
             print_info("Installing/updating Python packages...")
 
             venv_python = project_root / ".venv" / "bin" / "python"
@@ -414,40 +432,40 @@ Examples:
                 sys.exit(1)
 
         if update_frontend:
-            print_header("Step 3: Update Frontend Dependencies")
+            print_header_emoji("Step 3: Update Frontend Dependencies", "📦")
             frontend_dir = project_root / "frontend"
             
             if not check_npm_available():
                 print_warning("npm is not available or not in PATH")
                 print_warning("Frontend dependencies update skipped")
             else:
-            print_info("Installing frontend dependencies...")
+                print_info("Installing frontend dependencies...")
                 if sys.platform == "win32":
                     if run_command("npm install", cwd=frontend_dir, shell=True):
                         print_success("Frontend dependencies updated")
                     else:
                         print_warning("Frontend dependencies update failed, continuing...")
                 else:
-            if run_command(["npm", "install"], cwd=frontend_dir):
-                print_success("Frontend dependencies updated")
-            else:
-                print_warning("Frontend dependencies update failed, continuing...")
+                    if run_command(["npm", "install"], cwd=frontend_dir):
+                        print_success("Frontend dependencies updated")
+                    else:
+                        print_warning("Frontend dependencies update failed, continuing...")
 
     # Update backend
     if update_backend:
         if not full_update:
-            print_header("Updating Backend")
+            print_header_emoji("Updating Backend", "⚙️")
         restart_backend(project_root)
 
     # Update frontend
     if update_frontend:
         if not full_update:
-            print_header("Updating Frontend")
+            print_header_emoji("Updating Frontend", "🎨")
         rebuild_frontend(project_root)
 
     # Done
     print()
-    print_header("UPDATE COMPLETE")
+    print_header_emoji("UPDATE COMPLETE", "✅")
     print_success("Update completed successfully!")
     print()
     print(f"{Colors.BOLD}Summary:{Colors.END}")
@@ -462,111 +480,6 @@ Examples:
     print(f"  - Other services were NOT affected")
     if update_frontend:
         print(f"  - Frontend changes: Clear browser cache (Ctrl+F5) if needed")
-
-    print_header("Step 2: Update Backend Dependencies")
-    print_info("Installing/updating Python packages...")
-
-    venv_python = project_root / ".venv" / "bin" / "python"
-    venv_pip = project_root / ".venv" / "bin" / "pip"
-
-    if sys.platform == "win32":
-        venv_python = project_root / ".venv" / "Scripts" / "python.exe"
-        venv_pip = project_root / ".venv" / "Scripts" / "pip.exe"
-
-    if not venv_python.exists():
-        print_error(f"Virtual environment not found at {venv_python}")
-        print_info("Please create virtual environment first:")
-        print(f"  python -m venv .venv")
-        sys.exit(1)
-
-    print_info(f"Using pip: {venv_pip}")
-
-    requirements_path = project_root / "requirements.txt"
-    if not requirements_path.exists():
-        print_error(f"requirements.txt not found at: {requirements_path}")
-        sys.exit(1)
-
-    if run_command([str(venv_pip), "install", "-r", str(requirements_path), "--upgrade"]):
-        print_success("Backend dependencies updated")
-    else:
-        print_error("Failed to update backend dependencies")
-        sys.exit(1)
-
-    print_header("Step 3: Update Frontend Dependencies (Optional)")
-    frontend_dir = project_root / "frontend"
-
-    print_info("Skipping frontend update to avoid nginx conflicts")
-    print_info("💡 To update frontend manually:")
-    print_info(f"   1. cd {frontend_dir}")
-    print_info("   2. npm install")
-    print_info("   3. Stop nginx: nginx -s stop")
-    print_info("   4. npm run build")
-    print_info("   5. Start nginx: nginx")
-    print_warning("Frontend is served by nginx - avoid rebuilding while nginx is running")
-
-    print_header("Step 4: Restart Backend")
-    kill_backend(project_root)
-
-    print_info("Starting backend server...")
-
-    if sys.platform == "win32":
-        subprocess.Popen(
-            [str(venv_python), "start.py"],
-            cwd=project_root,
-            creationflags=subprocess.CREATE_NEW_CONSOLE
-        )
-    else:
-        log_file = project_root / ".cache" / "logs" / "startup.log"
-        log_file.parent.mkdir(parents=True, exist_ok=True)
-
-        with open(log_file, "w") as f:
-            subprocess.Popen(
-                [str(venv_python), "start.py"],
-                cwd=project_root,
-                stdout=f,
-                stderr=f
-            )
-
-    print_success("Backend server started")
-    print_info("Waiting for server to initialize...")
-    time.sleep(3)
-
-    print_header("Step 5: Check nginx")
-
-    if sys.platform == "win32":
-        nginx_dir = os.getenv("NGINX_DIR")
-        if Path(nginx_dir).exists():
-            # Check if nginx is running
-            result = subprocess.run("tasklist | findstr nginx", shell=True, capture_output=True)
-            if result.returncode == 0:
-                print_success("nginx is running")
-                print_info("💡 nginx will continue serving frontend without interruption")
-            else:
-                print_warning("nginx is not running")
-                print_info(f"💡 Start nginx: cd {nginx_dir} && nginx")
-        else:
-            print_warning("nginx not found, skipping")
-    else:
-        result = subprocess.run("pgrep nginx", shell=True, capture_output=True)
-        if result.returncode == 0:
-            print_success("nginx is running")
-        else:
-            print_warning("nginx is not running")
-            print_info("💡 Start nginx: sudo systemctl start nginx")
-
-    print_header("Update Complete!")
-
-    server_port_str = os.getenv("SERVER_PORT")
-    server_port = server_port_str if server_port_str else "4004"
-
-    print()
-    print(f"{Colors.GREEN}{Colors.BOLD}✓ System updated successfully!{Colors.END}")
-    print()
-    print(f"{Colors.BOLD}Next steps:{Colors.END}")
-    print(f"  1. Check backend logs: tail -f .cache/logs/backend.log")
-    print()
-    print(f"{Colors.YELLOW}If you encounter any issues, check the logs for errors{Colors.END}")
-    print()
 
 if __name__ == "__main__":
     try:

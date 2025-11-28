@@ -21,25 +21,36 @@ class Colors:
     GREEN = '\033[92m'
     YELLOW = '\033[93m'
     RED = '\033[91m'
+    MAGENTA = '\033[95m'
+    PURPLE = '\033[35m'
     END = '\033[0m'
     BOLD = '\033[1m'
+    DIM = '\033[2m'
 
 def print_header(text):
-    print(f"\n{Colors.BOLD}{Colors.BLUE}{'='*80}{Colors.END}")
-    print(f"{Colors.BOLD}{Colors.CYAN}{text.center(80)}{Colors.END}")
-    print(f"{Colors.BOLD}{Colors.BLUE}{'='*80}{Colors.END}\n")
+    print(f"\n{Colors.BOLD}{Colors.MAGENTA}{'═'*80}{Colors.END}")
+    print(f"{Colors.BOLD}{Colors.CYAN}{'✨ ' + text.center(76) + ' ✨'}{Colors.END}")
+    print(f"{Colors.BOLD}{Colors.MAGENTA}{'═'*80}{Colors.END}\n")
+
+def print_header_emoji(text, emoji="🚀"):
+    print(f"\n{Colors.BOLD}{Colors.MAGENTA}{'═'*80}{Colors.END}")
+    print(f"{Colors.BOLD}{Colors.CYAN}{emoji + ' ' + text.center(74) + ' ' + emoji}{Colors.END}")
+    print(f"{Colors.BOLD}{Colors.MAGENTA}{'═'*80}{Colors.END}\n")
 
 def print_success(text):
-    print(f"{Colors.GREEN}[OK] {text}{Colors.END}")
+    print(f"{Colors.GREEN}{Colors.BOLD}✓{Colors.END} {Colors.GREEN}{text}{Colors.END}")
 
 def print_error(text):
-    print(f"{Colors.RED}[FAIL] {text}{Colors.END}")
+    print(f"{Colors.RED}{Colors.BOLD}✗{Colors.END} {Colors.RED}{text}{Colors.END}")
 
 def print_info(text):
-    print(f"{Colors.CYAN}> {text}{Colors.END}")
+    print(f"{Colors.CYAN}{Colors.BOLD}→{Colors.END} {Colors.CYAN}{text}{Colors.END}")
 
 def print_warning(text):
-    print(f"{Colors.YELLOW}! {text}{Colors.END}")
+    print(f"{Colors.YELLOW}{Colors.BOLD}⚠{Colors.END} {Colors.YELLOW}{text}{Colors.END}")
+
+def print_step(text, emoji="📋"):
+    print(f"{Colors.BOLD}{Colors.BLUE}{emoji} [{text}]{Colors.END}")
 
 def is_port_open(port, host='127.0.0.1'):
     """Check if port is open"""
@@ -62,7 +73,7 @@ def wait_for_port(port, timeout=30, host='127.0.0.1'):
     return False
 
 def main():
-    print_header("POCHI! KAWAII NE~ - START PRODUCTION")
+    print_header_emoji("POCHI! KAWAII NE~ - START PRODUCTION", "🚀")
 
     # Get project root
     project_root = Path(__file__).parent.absolute()
@@ -112,7 +123,7 @@ def main():
     # ========================================================================
     # STEP 1: Check Prerequisites
     # ========================================================================
-    print_header("[1/5] Checking Prerequisites")
+    print_step("[1/5] Checking Prerequisites", "🔍")
 
     # Check virtual environment
     venv_dir = project_root / ".venv"
@@ -140,7 +151,7 @@ def main():
     # ========================================================================
     # STEP 2: Create Log Directories
     # ========================================================================
-    print_header("[2/5] Creating Directories")
+    print_step("[2/5] Creating Directories", "📁")
 
     log_dir = project_root / ".cache" / "logs"
     log_dir.mkdir(parents=True, exist_ok=True)
@@ -149,9 +160,9 @@ def main():
     # ========================================================================
     # STEP 3: Start Backend
     # ========================================================================
-    print_header("[3/5] Starting Backend Server")
+    print_step("[3/5] Starting Backend Server", "⚙️")
 
-                server_host = os.getenv("SERVER_HOST")
+    server_host = os.getenv("SERVER_HOST")
 
     print_info(f"Starting backend on {server_host}:{server_port} with 4 workers...")
     print_info("This will take 10-15 seconds...")
@@ -251,7 +262,7 @@ cd /d "{backend_dir}"
     # ========================================================================
     # STEP 4: Check nginx
     # ========================================================================
-    print_header("[4/5] Checking nginx")
+    print_step("[4/5] Checking nginx", "🌐")
 
     nginx_path = Path(nginx_dir)
     nginx_exe = nginx_path / "nginx.exe" if sys.platform == "win32" else nginx_path / "nginx"
@@ -290,27 +301,28 @@ cd /d "{backend_dir}"
     # ========================================================================
     # STEP 5: Show Status
     # ========================================================================
-    print_header("[5/5] System Status")
+    print_step("[5/5] System Status", "📊")
 
-    print(f"{Colors.BOLD}Services:{Colors.END}")
-    print(f"  Backend:  {Colors.GREEN}[OK] RUNNING{Colors.END} (port {server_port})")
+    print(f"{Colors.BOLD}{Colors.CYAN}Services:{Colors.END}")
+    if is_port_open(server_port):
+        print(f"  {Colors.GREEN}{Colors.BOLD}●{Colors.END} {Colors.GREEN}Backend:{Colors.END}  {Colors.GREEN}{Colors.BOLD}RUNNING{Colors.END} {Colors.DIM}(port {server_port}){Colors.END}")
+    else:
+        print(f"  {Colors.RED}{Colors.BOLD}○{Colors.END} {Colors.RED}Backend:{Colors.END}  {Colors.RED}{Colors.BOLD}NOT RUNNING{Colors.END}")
 
     if is_port_open(80):
-        print(f"  nginx:    {Colors.GREEN}[OK] RUNNING{Colors.END} (port 80)")
+        print(f"  {Colors.GREEN}{Colors.BOLD}●{Colors.END} {Colors.GREEN}nginx:{Colors.END}    {Colors.GREEN}{Colors.BOLD}RUNNING{Colors.END} {Colors.DIM}(port 80){Colors.END}")
     else:
-        print(f"  nginx:    {Colors.YELLOW}○ NOT RUNNING{Colors.END}")
+        print(f"  {Colors.YELLOW}{Colors.BOLD}○{Colors.END} {Colors.YELLOW}nginx:{Colors.END}    {Colors.YELLOW}{Colors.BOLD}NOT RUNNING{Colors.END}")
 
     print()
+    print(f"{Colors.BOLD}{Colors.CYAN}Logs:{Colors.END}")
+    print(f"  {Colors.DIM}Backend:{Colors.END}  {Colors.CYAN}{backend_log}{Colors.END}")
 
     print()
-    print(f"{Colors.BOLD}Logs:{Colors.END}")
-    print(f"  Backend:  {backend_log}")
-
-    print()
-    print(f"{Colors.BOLD}Commands:{Colors.END}")
-    print(f"  Status:   {Colors.GREEN}python status.py{Colors.END}")
-    print(f"  Stop:     {Colors.GREEN}python stop.py{Colors.END}")
-    print(f"  Update:   {Colors.GREEN}python update.py{Colors.END}")
+    print(f"{Colors.BOLD}{Colors.CYAN}Commands:{Colors.END}")
+    print(f"  {Colors.DIM}Status:{Colors.END}   {Colors.GREEN}python status.py{Colors.END}")
+    print(f"  {Colors.DIM}Stop:{Colors.END}     {Colors.GREEN}python stop.py{Colors.END}")
+    print(f"  {Colors.DIM}Update:{Colors.END}   {Colors.GREEN}python update.py{Colors.END}")
 
     print()
     print_success("Backend started successfully!")

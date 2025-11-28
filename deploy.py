@@ -23,30 +23,44 @@ class Colors:
     GREEN = "\033[92m"
     YELLOW = "\033[93m"
     RED = "\033[91m"
+    MAGENTA = "\033[95m"
+    PURPLE = "\033[35m"
     END = "\033[0m"
     BOLD = "\033[1m"
+    DIM = "\033[2m"
 
 
 def print_header(text):
-    print(f"\n{Colors.BOLD}{Colors.BLUE}{'='*80}{Colors.END}")
+    print(f"\n{Colors.BOLD}{Colors.MAGENTA}{'='*80}{Colors.END}")
     print(f"{Colors.BOLD}{Colors.CYAN}{text.center(80)}{Colors.END}")
-    print(f"{Colors.BOLD}{Colors.BLUE}{'='*80}{Colors.END}\n")
+    print(f"{Colors.BOLD}{Colors.MAGENTA}{'='*80}{Colors.END}\n")
+
+def print_header_emoji(text, emoji=""):
+    print(f"\n{Colors.BOLD}{Colors.MAGENTA}{'='*80}{Colors.END}")
+    print(f"{Colors.BOLD}{Colors.CYAN}{text.center(80)}{Colors.END}")
+    print(f"{Colors.BOLD}{Colors.MAGENTA}{'='*80}{Colors.END}\n")
 
 
 def print_success(text):
-    print(f"{Colors.GREEN}[OK] {text}{Colors.END}")
+    print(f"{Colors.GREEN}{Colors.BOLD}OK{Colors.END} {Colors.GREEN}{text}{Colors.END}")
 
 
 def print_error(text):
-    print(f"{Colors.RED}[FAIL] {text}{Colors.END}")
+    print(f"{Colors.RED}{Colors.BOLD}ERROR{Colors.END} {Colors.RED}{text}{Colors.END}")
 
 
 def print_info(text):
-    print(f"{Colors.CYAN}> {text}{Colors.END}")
+    print(f"{Colors.CYAN}{Colors.BOLD}INFO{Colors.END} {Colors.CYAN}{text}{Colors.END}")
 
 
 def print_warning(text):
-    print(f"{Colors.YELLOW}[WARN] {text}{Colors.END}")
+    print(f"{Colors.YELLOW}{Colors.BOLD}WARNING{Colors.END} {Colors.YELLOW}{text}{Colors.END}")
+
+def print_step(text, emoji=""):
+    if emoji:
+        print(f"{Colors.BOLD}{Colors.BLUE}[{text}]{Colors.END}")
+    else:
+        print(f"{Colors.BOLD}{Colors.BLUE}[{text}]{Colors.END}")
 
 
 def is_port_open(port, host="127.0.0.1"):
@@ -62,11 +76,11 @@ def is_port_open(port, host="127.0.0.1"):
 
 def deploy_frontend(project_root, nginx_dir, skip_nginx_restart=False):
     """Deploy frontend to nginx"""
-    print_header("DEPLOY FRONTEND")
+    print_step("DEPLOY FRONTEND", "🎨")
 
     nginx_html = Path(nginx_dir) / "html" / "pochi-kawaii"
     frontend_dir = project_root / "frontend"
-    temp_dist = project_root / "dist-temp"
+    temp_dist = frontend_dir / "dist"
     nginx_exe = Path(nginx_dir) / "nginx.exe"
 
     print_info(f"Frontend: {frontend_dir}")
@@ -78,7 +92,7 @@ def deploy_frontend(project_root, nginx_dir, skip_nginx_restart=False):
 
     # Stop nginx only if not running and not skipping restart
     if not skip_nginx_restart and not nginx_running:
-        print_header("[1/5] Start nginx (if needed)")
+        print_step("[1/5] Start nginx (if needed)", "🌐")
         if nginx_exe.exists():
             try:
                 if sys.platform == "win32":
@@ -96,15 +110,15 @@ def deploy_frontend(project_root, nginx_dir, skip_nginx_restart=False):
         else:
             print_warning("nginx.exe not found, skipping nginx start")
     elif nginx_running:
-        print_header("[1/5] nginx Status")
+        print_step("[1/5] nginx Status", "🌐")
         print_success("nginx already running - will NOT restart")
         print_info("💡 Files will be updated without restarting nginx")
     else:
-        print_header("[1/5] nginx Status")
+        print_step("[1/5] nginx Status", "🌐")
         print_warning("nginx not running - will start after deployment")
 
     # Clean old build
-    print_header("[2/5] Clean old build")
+    print_step("[2/5] Clean old build", "🧹")
     if temp_dist.exists():
         try:
             shutil.rmtree(temp_dist)
@@ -113,7 +127,7 @@ def deploy_frontend(project_root, nginx_dir, skip_nginx_restart=False):
             print_warning(f"Could not remove temp: {e}")
 
     # Build frontend
-    print_header("[3/5] Build frontend")
+    print_step("[3/5] Build frontend", "🔨")
     
     if shutil.which("npm") is None:
         print_error("npm is not available or not in PATH")
@@ -125,26 +139,129 @@ def deploy_frontend(project_root, nginx_dir, skip_nginx_restart=False):
 
     try:
         if sys.platform == "win32":
-            cmd = f'cmd /c "cd /d {frontend_dir} && npm run build -- --outDir=../dist-temp"'
+            frontend_path = str(frontend_dir)
+            # Use PowerShell directly for UNC paths
+            if frontend_path.startswith('\\\\'):
+                # UNC path - use PowerShell with proper escaping
+                ps_cmd = f'''
+$ErrorActionPreference = 'Stop'
+$frontendPath = '{frontend_path}'
+Push-Location -LiteralPath $frontendPath
+if (-not (Test-Path 'index.html')) {{
+    Write-Error 'index.html not found in frontend directory'
+    exit 1
+}}
+Write-Host "Building from: $(Get-Location)"
+npm run build
+$buildExitCode = $LASTEXITCODE
+Pop-Location
+exit $buildExitCode
+'''
+                cmd = f'powershell -NoProfile -ExecutionPolicy Bypass -Command "{ps_cmd}"'
+            else:
+                # Regular path
+                cmd = f'powershell -NoProfile -ExecutionPolicy Bypass -Command "Set-Location -LiteralPath \'{frontend_path}\'; npm run build"'
+            
             result = subprocess.run(
-                cmd, shell=True, capture_output=True, text=True, timeout=120
+                cmd,
+                shell=True,
+                capture_output=True,
+                text=True,
+                encoding='utf-8',
+                errors='replace',
+                timeout=300,  # Increased timeout for build
             )
         else:
             result = subprocess.run(
-                ["npm", "run", "build", "--", f"--outDir=../dist-temp"],
-                cwd=frontend_dir,
+                ["npm", "run", "build"],
+                cwd=str(frontend_dir),
                 capture_output=True,
                 text=True,
-                timeout=120,
+                timeout=300,
             )
 
         if result.returncode != 0:
             print_error("Build failed!")
-            print(result.stdout)
-            print(result.stderr)
+            if result.stdout:
+                print(result.stdout)
+            if result.stderr:
+                print(result.stderr)
             sys.exit(1)
 
-        print_success("Build successful")
+        # Check build output
+        if result.stdout:
+            print_info("Build output:")
+            try:
+                output_lines = result.stdout.strip().split('\n')
+                for line in output_lines[-5:]:
+                    if line.strip():
+                        clean_line = line.encode('ascii', 'ignore').decode('ascii')
+                        print(f"  {Colors.DIM}{clean_line}{Colors.END}")
+            except:
+                print_info("Build completed (output contains non-ASCII characters)")
+        
+        if result.returncode != 0:
+            print_error("Build failed!")
+            if result.stdout:
+                print(result.stdout)
+            if result.stderr:
+                print(result.stderr)
+            sys.exit(1)
+
+        try:
+            print_success("Build successful")
+        except:
+            print("Build successful")
+
+        import time
+        time.sleep(1)
+        
+        if temp_dist.exists():
+            try:
+                print_info(f"Build output found at: {temp_dist}")
+            except:
+                print(f"Build output found at: {temp_dist}")
+            # Count files in dist
+            try:
+                dist_files = list(temp_dist.rglob('*'))
+                file_count = len([f for f in dist_files if f.is_file()])
+                print_info(f"📦 Found {file_count} files in dist directory")
+            except Exception as e:
+                print_warning(f"Could not count files: {e}")
+        else:
+            print_warning(f"⚠️ Build output not found at: {temp_dist}")
+            print_info("🔍 Checking frontend directory...")
+            try:
+                frontend_list = list(frontend_dir.iterdir())
+                dirs = [f.name for f in frontend_list if f.is_dir()]
+                files = [f.name for f in frontend_list if f.is_file()]
+                print_info(f"📁 Directories: {', '.join(dirs)}")
+                
+                # Check if dist exists with different case or path
+                dist_variants = [
+                    frontend_dir / "dist",
+                    frontend_dir / "DIST",
+                    frontend_dir / "Dist",
+                    project_root / "dist",
+                    project_root / "dist-temp",
+                ]
+                found_dist = False
+                for variant in dist_variants:
+                    if variant.exists():
+                        print_warning(f"⚠️ Found dist at different location: {variant}")
+                        print_info(f"💡 Updating temp_dist to: {variant}")
+                        temp_dist = variant
+                        found_dist = True
+                        break
+                
+                if not found_dist:
+                    print_error("❌ dist directory not found anywhere!")
+                    print_info("💡 Possible issues:")
+                    print_info("   1. Build may have failed silently")
+                    print_info("   2. Check npm output above for errors")
+                    print_info("   3. Try running manually: cd frontend && npm run build")
+            except Exception as e:
+                print_error(f"Failed to check frontend directory: {e}")
     except subprocess.TimeoutExpired:
         print_error("Build timed out")
         sys.exit(1)
@@ -153,7 +270,7 @@ def deploy_frontend(project_root, nginx_dir, skip_nginx_restart=False):
         sys.exit(1)
 
     # Deploy to nginx
-    print_header("[4/5] Deploy to nginx")
+    print_step("[4/5] Deploy to nginx", "📦")
     if not temp_dist.exists():
         print_error("Build output not found!")
         sys.exit(1)
@@ -196,7 +313,7 @@ def deploy_frontend(project_root, nginx_dir, skip_nginx_restart=False):
         pass
 
     # Start nginx only if not running
-    print_header("[5/5] nginx Status")
+    print_step("[5/5] nginx Status", "🌐")
     if not nginx_running:
         if nginx_exe.exists():
             try:
@@ -226,7 +343,7 @@ def deploy_frontend(project_root, nginx_dir, skip_nginx_restart=False):
         print_info("💡 New files are now being served automatically")
 
     print()
-    print_header("FRONTEND DEPLOYED")
+    print_header_emoji("FRONTEND DEPLOYED", "✅")
     print()
     print()
     print(f"{Colors.BOLD}Note:{Colors.END}")
@@ -238,7 +355,7 @@ def deploy_frontend(project_root, nginx_dir, skip_nginx_restart=False):
 
 def deploy_backend(project_root):
     """Start backend server"""
-    print_header("DEPLOY BACKEND")
+    print_header_emoji("DEPLOY BACKEND", "⚙️")
 
     # Check if backend is running
     server_port_str = os.getenv("SERVER_PORT")
@@ -309,7 +426,7 @@ def main():
             sys.exit(1)
     else:
         # Full deployment (initial setup)
-        print_header("FULL DEPLOYMENT (Initial Setup)")
+        print_header_emoji("FULL DEPLOYMENT (Initial Setup)", "🚀")
         print_info("This is the initial deployment")
         print_info("For future updates, use: python update.py")
         print()
@@ -319,7 +436,7 @@ def main():
 
         if deploy_backend(project_root):
             print()
-            print_header("DEPLOYMENT COMPLETE")
+            print_header_emoji("DEPLOYMENT COMPLETE", "✅")
             print()
             print(f"{Colors.GREEN}✓ Full deployment successful!{Colors.END}")
             print()

@@ -30,25 +30,36 @@ class Colors:
     GREEN = '\033[92m'
     YELLOW = '\033[93m'
     RED = '\033[91m'
+    MAGENTA = '\033[95m'
+    PURPLE = '\033[35m'
     END = '\033[0m'
     BOLD = '\033[1m'
+    DIM = '\033[2m'
 
 def print_header(text):
-    print(f"\n{Colors.BOLD}{Colors.BLUE}{'='*80}{Colors.END}")
-    print(f"{Colors.BOLD}{Colors.CYAN}{text.center(80)}{Colors.END}")
-    print(f"{Colors.BOLD}{Colors.BLUE}{'='*80}{Colors.END}\n")
+    print(f"\n{Colors.BOLD}{Colors.MAGENTA}{'═'*80}{Colors.END}")
+    print(f"{Colors.BOLD}{Colors.CYAN}{'✨ ' + text.center(76) + ' ✨'}{Colors.END}")
+    print(f"{Colors.BOLD}{Colors.MAGENTA}{'═'*80}{Colors.END}\n")
+
+def print_header_emoji(text, emoji="🛑"):
+    print(f"\n{Colors.BOLD}{Colors.MAGENTA}{'═'*80}{Colors.END}")
+    print(f"{Colors.BOLD}{Colors.CYAN}{emoji + ' ' + text.center(74) + ' ' + emoji}{Colors.END}")
+    print(f"{Colors.BOLD}{Colors.MAGENTA}{'═'*80}{Colors.END}\n")
 
 def print_success(text):
-    print(f"{Colors.GREEN}[OK] {text}{Colors.END}")
+    print(f"{Colors.GREEN}{Colors.BOLD}✓{Colors.END} {Colors.GREEN}{text}{Colors.END}")
 
 def print_error(text):
-    print(f"{Colors.RED}[FAIL] {text}{Colors.END}")
+    print(f"{Colors.RED}{Colors.BOLD}✗{Colors.END} {Colors.RED}{text}{Colors.END}")
 
 def print_info(text):
-    print(f"{Colors.CYAN}> {text}{Colors.END}")
+    print(f"{Colors.CYAN}{Colors.BOLD}→{Colors.END} {Colors.CYAN}{text}{Colors.END}")
 
 def print_warning(text):
-    print(f"{Colors.YELLOW}[WARN] {text}{Colors.END}")
+    print(f"{Colors.YELLOW}{Colors.BOLD}⚠{Colors.END} {Colors.YELLOW}{text}{Colors.END}")
+
+def print_step(text):
+    print(f"{Colors.BOLD}{Colors.BLUE}[{text}]{Colors.END}")
 
 def is_port_open(port, host='127.0.0.1'):
     """Check if port is open"""
@@ -113,7 +124,7 @@ def kill_process_tree(pid):
         return False
 
 def main():
-    print_header("POCHI! KAWAII NE~ - STOP")
+    print_header_emoji("POCHI! KAWAII NE~ - STOP", "🛑")
 
     # Get project root
     project_root = Path(__file__).parent.absolute()
