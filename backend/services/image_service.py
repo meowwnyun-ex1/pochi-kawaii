@@ -61,7 +61,7 @@ class ImageService:
         self.timeout = timeout
         self.api_config = api_config
         self.client = InferenceClient(
-            provider="fal-ai",
+            provider="auto",
             api_key=api_token,
         )
         logger.info(f"✅ ImageService initialized with model: {model_name}")

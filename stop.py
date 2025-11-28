@@ -9,9 +9,18 @@ import sys
 import subprocess
 import time
 import socket
-import psutil
 from pathlib import Path
+from typing import TYPE_CHECKING
 from dotenv import load_dotenv
+
+if TYPE_CHECKING:
+    import psutil
+else:
+    try:
+        import psutil
+    except ImportError:
+        print("Error: psutil is required. Install it with: pip install psutil")
+        sys.exit(1)
 
 # Colors
 class Colors:

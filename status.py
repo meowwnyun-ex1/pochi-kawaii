@@ -8,10 +8,19 @@ import os
 import sys
 import socket
 import subprocess
-import requests
 from pathlib import Path
+from typing import TYPE_CHECKING
 from dotenv import load_dotenv
 from datetime import datetime
+
+if TYPE_CHECKING:
+    import requests
+else:
+    try:
+        import requests
+    except ImportError:
+        print("Error: requests is required. Install it with: pip install requests")
+        sys.exit(1)
 
 # Colors
 class Colors:

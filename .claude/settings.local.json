@@ -23,7 +23,8 @@
       "Bash(cmd.exe /c \"type nul > test.txt && echo success\")",
       "Bash(cmd /c \"type \\\\10.73.148.75\\d\\GitHub\\Project\\pochi-kawaii\\START.bat\")",
       "Bash(powershell -Command \"New-Item -ItemType Directory -Force -Path ''\\\\10.73.148.75\\d\\GitHub\\Project\\pochi-kawaii\\.cache\\python''; New-Item -ItemType Directory -Force -Path ''\\\\10.73.148.75\\d\\GitHub\\Project\\pochi-kawaii\\.cache\\logs''; New-Item -ItemType Directory -Force -Path ''\\\\10.73.148.75\\d\\GitHub\\Project\\pochi-kawaii\\.cache\\temp''; Write-Host ''Cache directories created''\")",
-      "Bash(powershell -Command \"Get-Location; Get-ChildItem ''\\10.73.148.75\\d\\GitHub\\Project\\pochi-kawaii'' | Select-Object -First 5\")"
+      "Bash(powershell -Command \"Get-Location; Get-ChildItem ''\\10.73.148.75\\d\\GitHub\\Project\\pochi-kawaii'' | Select-Object -First 5\")",
+      "Bash(powershell -Command:*)"
     ],
     "deny": [],
     "ask": []
