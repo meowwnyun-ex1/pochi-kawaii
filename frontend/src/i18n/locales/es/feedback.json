@@ -1,0 +1,19 @@
+{
+  "title": "Comentarios",
+  "subtitle": "Comparte tus pensamientos",
+  "nameLabel": "Nombre",
+  "namePlaceholder": "Tu nombre (opcional)",
+  "ratingLabel": "Calificación",
+  "commentLabel": "Comentario",
+  "commentPlaceholder": "Ingresa tus comentarios...",
+  "submit": "Enviar",
+  "submitting": "Enviando...",
+  "backToChat": "Volver al Chat",
+  "ratingRequired": "Por favor selecciona una calificación",
+  "commentRequired": "Por favor ingresa un comentario",
+  "successTitle": "¡Gracias!",
+  "successMessage": "Tus comentarios han sido enviados exitosamente",
+  "errorMessage": "Error al enviar comentarios",
+  "commentHint": "Por favor ingresa tus comentarios (máx 1000 caracteres)"
+}
+

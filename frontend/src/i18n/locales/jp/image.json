@@ -12,7 +12,8 @@
     "timeout": "⏱️ タイムアウト - AIの処理に時間がかかりすぎました\n\nもう一度お試しください",
     "please_try_again": "もう一度お試しください",
     "no_image": "まず画像をアップロードしてください",
-    "invalid_format": "無効なファイル形式です。JPG、PNG、WEBPを使用してください"
+    "invalid_format": "無効なファイル形式です。JPG、PNG、WEBPを使用してください",
+    "file_too_large": "ファイルが大きすぎます（最大10MB）"
   },
   "stage_analyzing": "画像を分析中",
   "stage_thinking": "画像を処理中",
@@ -22,6 +23,31 @@
   "time_sec": "秒",
   "download": "画像をダウンロード",
   "generate_again": "再生成",
-  "warning_delete_on_close": "⚠️ 警告: アップロードした画像は、このウェブサイトを閉じた直後に削除されます"
+  "warning_delete_on_close": "⚠️ 警告: アップロードした画像は、このウェブサイトを閉じた直後に削除されます",
+  "care_message": "💕 ご注意: アップロードした画像は、ウェブサイトを閉じた後に削除されます。プライバシー保護のためです",
+  "input_image": "画像をアップロード",
+  "result": "結果",
+  "result_placeholder": "生成された画像がここに表示されます",
+  "success": "✨ ちび画像が正常に作成されました！",
+  "no_image_url": "画像データが見つかりません",
+  "read_error": "サーバーからのデータ読み取りエラー",
+  "download_success": "画像のダウンロードに成功しました！🎉",
+  "download_error": "画像のダウンロードエラー",
+  "http_error_format": "エラー (HTTP {status})",
+  "filename_prefix": "image",
+  "upload_or": "または",
+  "upload_click": "クリックしてファイルを選択",
+  "generated_chibi": "生成されたちび画像",
+  "clear_image": "画像をクリア",
+  "preview": "プレビュー",
+  "select_style": "スタイルを選択",
+  "style_anime": "🌈 Anime Style",
+  "style_anime_desc": "Create a cartoon-style portrait: Keep the same outfit and pose as in the original image. Use a clean white background. The style should be semi-realistic or stylized cartoon, but the facial features and clothing must closely resemble the original photo.",
+  "style_watercolor": "🎨 Watercolor Style",
+  "style_watercolor_desc": "Paint a new portrait in a watercolor cartoon style, keeping the facial and outfits structure similar to the original. Use soft, gentle colors and a white background.",
+  "style_developing": "開発中",
+  "style_locked": "🔒 開発中",
+  "time_used": "使用時間: {time} 秒",
+  "elapsed_time": "⏱️ 経過時間: {time} 秒"
 }
 

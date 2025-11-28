@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface LoadingSkeletonProps {
   className?: string;
@@ -13,6 +14,7 @@ export const LoadingSkeleton: React.FC<LoadingSkeletonProps> = ({
   width,
   height,
 }) => {
+  const { t } = useLanguage();
   const baseClasses = 'animate-pulse bg-gray-200 rounded';
   
   const variantClasses = {
@@ -29,7 +31,7 @@ export const LoadingSkeleton: React.FC<LoadingSkeletonProps> = ({
     <div
       className={cn(baseClasses, variantClasses[variant], className)}
       style={style}
-      aria-label="Loading..."
+      aria-label={t('common:loading')}
       role="status"
     />
   );

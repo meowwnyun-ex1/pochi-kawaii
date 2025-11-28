@@ -2,11 +2,9 @@ import { Check } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useState, useRef, useEffect } from 'react';
 import { showToast } from '@/utils/toast';
-import { useTranslation } from 'react-i18next';
 
 const LanguageSwitcher = () => {
-  const { language, setLanguage } = useLanguage();
-  const { t } = useTranslation(['language']);
+  const { language, setLanguage, t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [isChanging, setIsChanging] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -24,9 +22,10 @@ const LanguageSwitcher = () => {
     { code: 'hi', flag: '🇮🇳', fallback: 'hi' },
   ];
 
-  const currentLang = languages.find((lang) => lang.code === language) || languages[0];
-  const currentLangName =
-    t(`languages.${currentLang.code}`, { ns: 'language' }) || currentLang.code.toUpperCase();
+  const foundLang = languages.find((lang) => lang.code === language);
+  const currentLang = foundLang ? foundLang : languages[0];
+  const langName = t(`language:languages.${currentLang.code}`);
+  const currentLangName = langName ? langName : currentLang.code;
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -47,12 +46,12 @@ const LanguageSwitcher = () => {
     setLanguage(langCode);
     setIsOpen(false);
 
-    const langName = t(`languages.${langCode}`, { ns: 'language' }) || langCode.toUpperCase();
-    const toastMessage = `✅ ${t('changedTo', { language: langName, ns: 'language' })}`;
+    const langName = t(`language:languages.${langCode}`);
+    if (!langName) return;
+    const toastMessage = `${selectedLang.flag} ${t('language:changedTo', { language: langName })}`;
 
     showToast.success(toastMessage, {
       duration: 2000,
-      icon: selectedLang.flag,
     });
 
     setTimeout(() => setIsChanging(false), 500);
@@ -63,9 +62,7 @@ const LanguageSwitcher = () => {
       <button
         onClick={() => setIsOpen(!isOpen)}
         disabled={isChanging}
-        aria-label={`${t('changeLanguage', { ns: 'language' })}. ${t('currentLanguage', {
-          ns: 'language',
-        })}: ${currentLangName}`}
+        aria-label={`${t('language:changeLanguage')}. ${t('language:currentLanguage')}: ${currentLangName}`}
         aria-expanded={isOpen}
         aria-haspopup="true"
         className={`
@@ -78,7 +75,7 @@ const LanguageSwitcher = () => {
           ${isOpen ? 'ring-2 ring-sky-500 ring-offset-2 border-sky-400' : ''}
         `}>
         <span className="text-xl" role="img" aria-label={currentLangName} title={currentLangName}>
-          {currentLang.flag || currentLang.fallback || '🌐'}
+          {currentLang.flag ?? currentLang.fallback ?? '🌐'}
         </span>
         <svg
           className={`w-3 h-3 text-gray-500 transition-transform duration-200 ${
@@ -103,10 +100,11 @@ const LanguageSwitcher = () => {
                 key={lang.code}
                 onClick={() => handleLanguageChange(lang.code)}
                 role="menuitem"
-                aria-label={t('switchTo', {
-                  language:
-                    t(`languages.${lang.code}`, { ns: 'language' }) || lang.code.toUpperCase(),
-                  ns: 'language',
+                aria-label={t('language:switchTo', {
+                  language: (() => {
+                    const name = t(`language:languages.${lang.code}`);
+                    return name ? name : lang.code;
+                  })(),
                 })}
                 className={`
                   w-full flex items-center gap-3 px-4 py-3
@@ -120,13 +118,17 @@ const LanguageSwitcher = () => {
                 <span
                   className="text-xl"
                   role="img"
-                  aria-label={
-                    t(`languages.${lang.code}`, { ns: 'language' }) || lang.code.toUpperCase()
-                  }>
-                  {lang.flag || lang.fallback || '🌐'}
+                  aria-label={(() => {
+                    const name = t(`language:languages.${lang.code}`);
+                    return name ? name : lang.code;
+                  })()}>
+                  {lang.flag ?? lang.fallback ?? '🌐'}
                 </span>
                 <span className="flex-1 text-left text-sm font-medium">
-                  {t(`languages.${lang.code}`, { ns: 'language' }) || lang.code.toUpperCase()}
+                  {(() => {
+                    const name = t(`language:languages.${lang.code}`);
+                    return name ? name : lang.code;
+                  })()}
                 </span>
                 {language === lang.code && (
                   <Check className="h-4 w-4 text-sky-600" aria-hidden="true" />
@@ -135,7 +137,7 @@ const LanguageSwitcher = () => {
             ))}
           </div>
           <div className="px-4 py-3 bg-gradient-to-r from-sky-50/50 to-indigo-50/50 text-xs text-gray-600 text-center border-t-2 border-gray-200 font-medium">
-            {t('aiNote', { ns: 'language' })}
+            {t('language:aiNote')}
           </div>
         </div>
       )}

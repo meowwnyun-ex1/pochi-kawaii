@@ -14,8 +14,13 @@
   "next": "Selanjutnya",
   "previous": "Sebelumnya",
   "copyright": "© 2025 Pochi! Kawaii ne~ | Developed by Thammaphon Chittasuwanna (SDM)",
-  "items": "item",
   "recommended": "disarankan",
   "optional": "opsional",
-  "contextualSuggestions": "Pertanyaan yang mungkin membantu"
+  "anonymous": "Anonim",
+  "contextualSuggestions": "Pertanyaan yang mungkin membantu",
+  "connectionError": "Kesalahan koneksi",
+  "feedback_from_users": "Umpan Balik dari Pengguna",
+  "ai_fallback": "AI",
+  "title": "Judul",
+  "waiting_feedback": "Menunggu umpan balik..."
 }

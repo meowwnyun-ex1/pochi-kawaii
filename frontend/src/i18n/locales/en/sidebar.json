@@ -3,12 +3,15 @@
   "appSubtitle": "AI Chibi Cartoon Generator",
   "home": "Home",
   "newChat": "Generate New",
-  "newStyle": "New Style",
-  "styleClassic": "Classic Style",
-  "styleAnime": "Anime Style",
-  "styleCute": "Cute Style",
-  "styleFantasy": "Fantasy Style",
+  "discover": "Discover",
+  "aboutUs": "About Us",
+  "manual": "Manual",
+  "styleClassic": "✨ Classic Style",
+  "styleAnime": "🌈 Anime Style",
+  "styleCute": "💕 Cute Style",
+  "styleFantasy": "🌟 Fantasy Style",
   "developing": "In Development...",
   "userAnonymous": "User",
-  "userPlan": "Free Plan"
+  "userPlan": "Free Plan",
+  "close": "Close menu"
 }

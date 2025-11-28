@@ -1,14 +1,17 @@
 {
   "appName": "Pochi! Kawaii ne~",
-  "appSubtitle": "AI สร้างภาพการ์ตูนจิบิ",
+  "appSubtitle": "AI สร้างภาพการ์ตูน",
   "home": "หน้าหลัก",
   "newChat": "สร้างภาพใหม่",
-  "newStyle": "New Style",
-  "styleClassic": "สไตล์คลาสสิก",
-  "styleAnime": "สไตล์อนิเมะ",
-  "styleCute": "สไตล์น่ารัก",
-  "styleFantasy": "สไตล์แฟนตาซี",
+  "discover": "Discover",
+  "aboutUs": "About Us",
+  "manual": "Manual",
+  "styleClassic": "✨ Classic Style",
+  "styleAnime": "🌈 Anime Style",
+  "styleCute": "💕 Cute Style",
+  "styleFantasy": "🌟 Fantasy Style",
   "developing": "กำลังพัฒนา...",
   "userAnonymous": "ผู้ใช้งาน",
-  "userPlan": "แผนฟรี"
+  "userPlan": "แผนฟรี",
+  "close": "ปิดเมนู"
 }

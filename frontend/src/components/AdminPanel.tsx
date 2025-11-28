@@ -15,7 +15,7 @@ interface AdminFeedback {
   timestamp: string;
 }
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || '';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const AdminPanel = () => {
   const { t, language } = useLanguage();
@@ -50,7 +50,7 @@ const AdminPanel = () => {
         body: JSON.stringify({ password }),
       });
 
-      if (!response.ok) throw new Error('Invalid password');
+      if (!response.ok) throw new Error(t('admin:invalidPassword'));
 
       const data = await response.json();
       const token = data.access_token;
@@ -79,12 +79,12 @@ const AdminPanel = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      if (!response.ok) throw new Error('Failed to load feedback');
+      if (!response.ok) throw new Error(t('admin:loadFailed'));
 
       const data = await response.json();
-      setFeedback(data.feedback || []);
+      setFeedback(data.feedback ? data.feedback : []);
     } catch (error) {
-      showToast.error(t('common:connectionError') || 'Connection error!', { icon: '⚠️' });
+      showToast.error(t('common:connectionError'), { icon: '⚠️' });
     }
   };
 
@@ -97,7 +97,7 @@ const AdminPanel = () => {
         headers: { Authorization: `Bearer ${authToken}` },
       });
 
-      if (!response.ok) throw new Error('Failed to delete feedback');
+      if (!response.ok) throw new Error(t('admin:deleteError'));
 
       showToast.success(t('admin:deleteSuccess'), {
         duration: 2000,
@@ -161,25 +161,25 @@ const AdminPanel = () => {
 
   if (!isLoggedIn) {
     return (
-      <div className="w-full flex items-center justify-center p-4 relative min-h-full">
+      <div className="w-full flex items-center justify-center p-4 relative min-h-screen">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-20 left-20 w-64 h-64 bg-blue-200/5 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute top-20 left-20 w-64 h-64 bg-pink-200/5 rounded-full blur-3xl animate-pulse" />
           <div
-            className="absolute bottom-20 right-20 w-96 h-96 bg-indigo-200/5 rounded-full blur-3xl animate-pulse"
+            className="absolute bottom-20 right-20 w-96 h-96 bg-rose-200/5 rounded-full blur-3xl animate-pulse"
             style={{ animationDelay: '1s' }}
           />
           <div
-            className="absolute top-1/2 left-1/2 w-80 h-80 bg-slate-200/5 rounded-full blur-3xl animate-pulse"
+            className="absolute top-1/2 left-1/2 w-80 h-80 bg-pink-100/5 rounded-full blur-3xl animate-pulse"
             style={{ animationDelay: '2s' }}
           />
         </div>
 
-        <div className="relative w-full max-w-md my-auto">
+        <div className="relative w-full max-w-md mx-auto">
           <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-xl border border-gray-100/50 overflow-hidden">
-            <div className="relative bg-gradient-to-r from-blue-50 via-indigo-50 to-blue-50 p-5 text-gray-800 border-b border-gray-100">
+            <div className="relative bg-gradient-to-r from-pink-50 via-rose-50 to-pink-50 p-5 text-gray-800 border-b border-gray-100">
               <div className="relative flex items-center gap-3">
                 <div className="p-2 bg-white rounded-xl shadow-sm">
-                  <img src={`${import.meta.env.VITE_BASE_PATH || '/pochi-kawaii'}/ai-avatar.svg`} alt="Logo" className="h-7 w-7" onError={(e) => {
+                  <img src={`${import.meta.env.VITE_BASE_PATH}/logo.svg`} alt={t('common:appName')} className="h-7 w-7" onError={(e) => {
                     const target = e.currentTarget as HTMLImageElement;
                     target.style.display = 'none';
                   }} />
@@ -201,7 +201,7 @@ const AdminPanel = () => {
                   <label
                     htmlFor="admin-password"
                     className="flex items-center gap-1.5 text-xs font-semibold text-gray-700 mb-1.5">
-                    <Lock className="h-3.5 w-3.5 text-blue-500" />
+                    <Lock className="h-3.5 w-3.5 text-pink-500" />
                     {t('admin:passwordLabel')}
                   </label>
                   <input
@@ -210,7 +210,7 @@ const AdminPanel = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder={t('admin:passwordPlaceholder')}
-                    className="w-full px-3 py-2 text-sm bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-400/50 focus:border-blue-400 transition-all shadow-sm"
+                    className="w-full px-3 py-2 text-sm bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-pink-400/50 focus:border-pink-400 transition-all shadow-sm"
                     disabled={isLoading}
                     required
                   />
@@ -220,8 +220,8 @@ const AdminPanel = () => {
                   type="submit"
                   disabled={isLoading || !password}
                   className="relative w-full group overflow-hidden rounded-lg shadow-sm hover:shadow-md transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-400 via-indigo-400 to-blue-400" />
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-300 via-indigo-300 to-blue-300 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-pink-400 via-rose-400 to-pink-400" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-pink-300 via-rose-300 to-pink-300 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   <div className="relative px-5 py-2.5 flex items-center justify-center gap-2 text-white font-semibold text-sm">
                     {isLoading ? (
                       <>
@@ -239,7 +239,10 @@ const AdminPanel = () => {
               </form>
 
               <button
-                onClick={() => (window.location.href = '/')}
+                onClick={() => {
+                  const basePath = import.meta.env.VITE_BASE_PATH;
+                  window.location.href = basePath ? basePath : '/';
+                }}
                 className="relative mt-2 w-full inline-flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-200 hover:bg-gray-50 hover:border-gray-300 rounded-lg transition-all duration-300 text-xs text-gray-700 font-semibold shadow-sm hover:shadow-md">
                 <ArrowLeft className="h-4 w-4" />
                 <span>{t('admin:backToHome')}</span>
@@ -252,20 +255,20 @@ const AdminPanel = () => {
   }
 
   return (
-    <div className="w-full flex items-center justify-center p-4 relative min-h-full">
+    <div className="w-full flex items-center justify-center p-4 relative min-h-screen">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-20 w-64 h-64 bg-blue-200/5 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute top-20 left-20 w-64 h-64 bg-pink-200/5 rounded-full blur-3xl animate-pulse" />
         <div
-          className="absolute bottom-20 right-20 w-96 h-96 bg-indigo-200/5 rounded-full blur-3xl animate-pulse"
+          className="absolute bottom-20 right-20 w-96 h-96 bg-rose-200/5 rounded-full blur-3xl animate-pulse"
           style={{ animationDelay: '1s' }}
         />
         <div
-          className="absolute top-1/2 left-1/2 w-80 h-80 bg-slate-200/5 rounded-full blur-3xl animate-pulse"
+          className="absolute top-1/2 left-1/2 w-80 h-80 bg-pink-100/5 rounded-full blur-3xl animate-pulse"
           style={{ animationDelay: '2s' }}
         />
       </div>
 
-      <div className="relative w-full max-w-7xl my-auto -mt-8">
+      <div className="relative w-full max-w-7xl mx-auto">
         <div className="bg-white/90 backdrop-blur-xl rounded-xl shadow-md border border-gray-100/50 p-3 mb-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div className="flex items-center gap-3">
@@ -276,7 +279,7 @@ const AdminPanel = () => {
                 </div>
               </div>
               <div>
-                <h1 className="text-xl font-bold bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-500 bg-clip-text text-transparent flex items-center gap-2">
+                <h1 className="text-xl font-bold bg-gradient-to-r from-pink-500 via-rose-500 to-pink-500 bg-clip-text text-transparent flex items-center gap-2">
                   {t('admin:panelTitle')}
                 </h1>
                 <p className="text-gray-600 mt-0.5 text-xs">
@@ -296,18 +299,18 @@ const AdminPanel = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-xl border border-gray-100/50 overflow-hidden">
-            <div className="relative bg-gradient-to-r from-blue-50 via-indigo-50 to-blue-50 p-5 text-gray-800 border-b border-gray-100">
+            <div className="relative bg-gradient-to-r from-pink-50 via-rose-50 to-pink-50 p-5 text-gray-800 border-b border-gray-100">
               <h2 className="text-xl font-bold">
-                {t('admin:manageAnnouncements') || 'จัดการประกาศ Popup'}
+                {t('admin:manageAnnouncements')}
               </h2>
             </div>
-            <div className="p-5">
+            <div className="p-5 max-h-[750px] overflow-y-auto">
               {authToken && <AnnouncementManager token={authToken} />}
             </div>
           </div>
 
           <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-xl border border-gray-100/50 overflow-hidden">
-            <CardHeader className="border-b border-gray-100/50 pb-3 pt-3 bg-gradient-to-r from-blue-50 via-indigo-50 to-blue-50">
+            <CardHeader className="border-b border-gray-100/50 pb-3 pt-3 bg-gradient-to-r from-pink-50 via-rose-50 to-pink-50">
               <div className="flex items-center justify-between mb-3">
                 <CardTitle className="text-xl font-bold text-gray-800">
                   {t('admin:feedbackList')}
@@ -316,7 +319,7 @@ const AdminPanel = () => {
                   onClick={() => authToken && loadFeedback(authToken)}
                   variant="outline"
                   size="sm"
-                  className="border border-gray-200 hover:border-blue-300 hover:bg-blue-50 rounded-lg transition-all text-xs px-2 py-1">
+                  className="border border-gray-200 hover:border-pink-300 hover:bg-pink-50 rounded-lg transition-all text-xs px-2 py-1">
                   <span className="mr-1.5">🔄</span>
                   {t('admin:refresh')}
                 </Button>
@@ -330,20 +333,20 @@ const AdminPanel = () => {
                     setSearchQuery(e.target.value);
                     setCurrentPage(1);
                   }}
-                  placeholder={t('admin:searchPlaceholder') || 'ค้นหา...'}
-                  className="w-full pl-10 pr-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400/50 focus:border-blue-400 transition-all"
+                  placeholder={t('admin:searchPlaceholder')}
+                  className="w-full pl-10 pr-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400/50 focus:border-pink-400 transition-all"
                 />
               </div>
               {searchQuery && (
                 <p className="text-xs text-gray-500 mt-2">
-                  {t('admin:searchResults') || 'ผลลัพธ์'}: {filteredFeedback.length} {t('admin:items') || 'รายการ'}
+                  {t('admin:searchResults')}: {filteredFeedback.length} {t('common:items')}
                 </p>
               )}
             </CardHeader>
             <CardContent className="p-0">
-              <div className="overflow-x-auto max-h-[600px]">
+              <div className="overflow-x-auto max-h-[700px]">
                 <table className="w-full">
-                  <thead className="bg-gradient-to-r from-gray-50 via-blue-50/30 to-gray-50 border-b border-gray-200 sticky top-0">
+                  <thead className="bg-gradient-to-r from-gray-50 via-pink-50/30 to-gray-50 border-b border-gray-200 sticky top-0">
                     <tr>
                       <th className="text-left p-2.5 font-semibold text-gray-700 text-xs">ID</th>
                       <th className="text-left p-2.5 font-semibold text-gray-700 text-xs">
@@ -370,7 +373,7 @@ const AdminPanel = () => {
                               <span className="text-2xl">📭</span>
                             </div>
                             <p className="text-gray-500 font-medium text-xs">
-                              {searchQuery ? (t('admin:noSearchResults') || 'ไม่พบผลลัพธ์') : t('admin:noFeedback')}
+                              {searchQuery ? t('admin:noSearchResults') : t('admin:noFeedback')}
                             </p>
                           </div>
                         </td>
@@ -379,7 +382,7 @@ const AdminPanel = () => {
                       paginatedFeedback.map((item, index) => (
                         <tr
                           key={item.id}
-                          className={`border-b border-gray-100 hover:bg-gradient-to-r hover:from-blue-50/30 hover:to-indigo-50/30 transition-all duration-200 ${
+                          className={`border-b border-gray-100 hover:bg-gradient-to-r hover:from-pink-50/30 hover:to-rose-50/30 transition-all duration-200 ${
                             index % 2 === 0 ? 'bg-white' : 'bg-gray-50/30'
                           }`}>
                           <td className="p-2.5 font-mono text-xs font-semibold text-gray-700">
@@ -423,7 +426,7 @@ const AdminPanel = () => {
               {totalPages > 1 && (
                 <div className="flex items-center justify-between p-3 border-t border-gray-200 bg-gray-50/50">
                   <div className="text-xs text-gray-600">
-                    {t('admin:showing') || 'แสดง'} {(currentPage - 1) * itemsPerPage + 1} - {Math.min(currentPage * itemsPerPage, filteredFeedback.length)} {t('admin:of') || 'จาก'} {filteredFeedback.length}
+                    {t('admin:showing')} {(currentPage - 1) * itemsPerPage + 1} - {Math.min(currentPage * itemsPerPage, filteredFeedback.length)} {t('admin:of')} {filteredFeedback.length}
                   </div>
                   <div className="flex items-center gap-2">
                     <Button
@@ -431,9 +434,9 @@ const AdminPanel = () => {
                       disabled={currentPage === 1}
                       variant="outline"
                       size="sm"
-                      className="border border-gray-200 hover:border-blue-300 hover:bg-blue-50 rounded-lg transition-all text-xs px-2 py-1 disabled:opacity-50 disabled:cursor-not-allowed">
+                      className="border border-gray-200 hover:border-pink-300 hover:bg-pink-50 rounded-lg transition-all text-xs px-2 py-1 disabled:opacity-50 disabled:cursor-not-allowed">
                       <ChevronLeft className="h-3.5 w-3.5" />
-                      {t('admin:previous') || 'ก่อนหน้า'}
+                      {t('admin:previous')}
                     </Button>
                     <span className="text-xs text-gray-600 font-medium">
                       {currentPage} / {totalPages}
@@ -443,8 +446,8 @@ const AdminPanel = () => {
                       disabled={currentPage === totalPages}
                       variant="outline"
                       size="sm"
-                      className="border border-gray-200 hover:border-blue-300 hover:bg-blue-50 rounded-lg transition-all text-xs px-2 py-1 disabled:opacity-50 disabled:cursor-not-allowed">
-                      {t('admin:next') || 'ถัดไป'}
+                      className="border border-gray-200 hover:border-pink-300 hover:bg-pink-50 rounded-lg transition-all text-xs px-2 py-1 disabled:opacity-50 disabled:cursor-not-allowed">
+                      {t('admin:next')}
                       <ChevronRight className="h-3.5 w-3.5 ml-1" />
                     </Button>
                   </div>
@@ -484,7 +487,7 @@ const AdminPanel = () => {
                   onClick={() => setDeleteConfirm({ show: false, id: 0, text: '' })}
                   variant="outline"
                   className="flex-1 border rounded-lg py-2 text-sm">
-                  {t('common:cancel') || 'Cancel'}
+                  {t('common:cancel')}
                 </Button>
                 <Button
                   onClick={() => deleteFeedback(deleteConfirm.id)}

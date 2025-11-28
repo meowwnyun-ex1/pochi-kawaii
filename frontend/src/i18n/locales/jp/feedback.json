@@ -6,6 +6,7 @@
   "ratingLabel": "評価",
   "commentLabel": "コメント",
   "commentPlaceholder": "フィードバックを入力...",
+  "commentHint": "フィードバックを入力してください（最大1000文字）",
   "submit": "送信",
   "submitting": "送信中...",
   "backToChat": "チャットに戻る",

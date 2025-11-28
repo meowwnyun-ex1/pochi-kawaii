@@ -1,0 +1,19 @@
+{
+  "title": "Umpan Balik",
+  "subtitle": "Bagikan pendapat Anda",
+  "nameLabel": "Nama",
+  "namePlaceholder": "Nama Anda (opsional)",
+  "ratingLabel": "Penilaian",
+  "commentLabel": "Komentar",
+  "commentPlaceholder": "Masukkan umpan balik Anda...",
+  "submit": "Kirim",
+  "submitting": "Mengirim...",
+  "backToChat": "Kembali ke Chat",
+  "ratingRequired": "Silakan pilih penilaian",
+  "commentRequired": "Silakan masukkan komentar",
+  "successTitle": "Terima kasih!",
+  "successMessage": "Umpan balik Anda telah berhasil dikirim",
+  "errorMessage": "Gagal mengirim umpan balik",
+  "commentHint": "Silakan masukkan umpan balik Anda (maks 1000 karakter)"
+}
+

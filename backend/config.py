@@ -330,22 +330,44 @@ class Config:
 
     @property
     def huggingface_base_url(self) -> str:
-        url = os.getenv(
-            "HUGGINGFACE_BASE_URL", "https://router.huggingface.co/hf-inference/models"
-        )
+        url = os.getenv("HUGGINGFACE_BASE_URL")
+        default_url = os.getenv("HUGGINGFACE_DEFAULT_URL", "https://router.huggingface.co/fal-ai/fal-ai/qwen-image-edit")
+        if not url:
+            url = default_url
+        if "api-inference.huggingface.co" in url:
+            logger.warning(
+                f"⚠️  HUGGINGFACE_BASE_URL is set to deprecated endpoint ({url}). "
+                f"Overriding to new fal-ai endpoint: {default_url}"
+            )
+            return default_url
+        if url and ("/v1/chat/completions" in url or "/chat/completions" in url):
+            logger.warning(
+                f"⚠️  HUGGINGFACE_BASE_URL is set to a chat completions endpoint ({url}). "
+                f"Overriding to fal-ai image endpoint: {default_url}"
+            )
+            return default_url
+        if url and "/models" in url and "/fal-ai" not in url:
+            logger.warning(
+                f"⚠️  HUGGINGFACE_BASE_URL is set to /models endpoint ({url}). "
+                f"Overriding to fal-ai endpoint: {default_url}"
+            )
+            return default_url
         return url
 
     @property
     def huggingface_model(self) -> str:
-        model = os.getenv(
-            "HUGGINGFACE_MODEL", "eigen-ai-labs/eigen-banana-qwen-image-edit"
-        )
+        model = os.getenv("HUGGINGFACE_MODEL")
+        if not model:
+            model = "Qwen/Qwen-Image-Edit"
         return model
 
     @property
     def huggingface_timeout(self) -> int:
         try:
-            timeout = int(os.getenv("HUGGINGFACE_TIMEOUT", "60"))
+            timeout_str = os.getenv("HUGGINGFACE_TIMEOUT")
+            if not timeout_str:
+                timeout_str = "60"
+            timeout = int(timeout_str)
             if timeout <= 0 or timeout > 300:
                 logger.warning(f"Invalid timeout {timeout}, using default 60")
                 return 60

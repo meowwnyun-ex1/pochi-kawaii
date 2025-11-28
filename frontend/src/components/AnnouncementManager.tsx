@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { showToast } from '@/utils/toast';
 import { Plus, Trash2, Edit, Eye, EyeOff, ZoomIn, X, Upload } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface Announcement {
   id: number;
@@ -20,7 +20,7 @@ interface AnnouncementManagerProps {
 }
 
 const AnnouncementManager = ({ token }: AnnouncementManagerProps) => {
-  const { t } = useTranslation(['announcement', 'common']);
+  const { t } = useLanguage();
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -40,14 +40,14 @@ const AnnouncementManager = ({ token }: AnnouncementManagerProps) => {
 
   const fetchAnnouncements = async () => {
     try {
-      const apiBaseUrl = import.meta.env.VITE_API_URL || '';
+      const apiBaseUrl = import.meta.env.VITE_API_URL;
       const res = await fetch(`${apiBaseUrl}/api/announcements/admin/all`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
       if (res.ok) {
         const data = await res.json();
-        setAnnouncements(data.announcements || []);
+        setAnnouncements(data.announcements ? data.announcements : []);
       } else {
         showToast.error(t('announcement:load_failed'), { icon: '❌' });
       }
@@ -94,12 +94,12 @@ const AnnouncementManager = ({ token }: AnnouncementManagerProps) => {
     e.preventDefault();
 
     if (!selectedImage && !editingId) {
-      showToast.warning(t('announcement:no_image') || 'Please select an image', { icon: '⚠️' });
+      showToast.warning(t('announcement:no_image'), { icon: '⚠️' });
       return;
     }
 
     if (editingId && !selectedImage && !imagePreview) {
-      showToast.warning(t('announcement:no_image') || 'Please select an image', { icon: '⚠️' });
+      showToast.warning(t('announcement:no_image'), { icon: '⚠️' });
       return;
     }
 
@@ -118,7 +118,7 @@ const AnnouncementManager = ({ token }: AnnouncementManagerProps) => {
         formDataToSend.append('image', selectedImage);
       }
 
-      const apiBaseUrl = import.meta.env.VITE_API_URL || '';
+      const apiBaseUrl = import.meta.env.VITE_API_URL;
       
       if (editingId) {
         const res = await fetch(`${apiBaseUrl}/api/announcements/admin/${editingId}`, {
@@ -131,21 +131,26 @@ const AnnouncementManager = ({ token }: AnnouncementManagerProps) => {
 
         if (res.ok) {
           const data = await res.json();
-          showToast.success(t('announcement:update_success') || 'Announcement updated successfully', { icon: '✅' });
+          showToast.success(t('announcement:update_success'), { icon: '✅' });
           await fetchAnnouncements();
           resetForm();
         } else {
-          const errorData = await res.json().catch(() => ({ detail: 'Update failed' }));
-          showToast.error(errorData.detail || t('announcement:update_failed') || 'Failed to update announcement', { icon: '❌', duration: 5000 });
+          const errorData = await res.json().catch(() => ({ detail: t('announcement:update_failed') }));
+          const errorMsg = errorData.detail;
+          if (errorMsg) {
+            showToast.error(errorMsg, { icon: '❌', duration: 5000 });
+          } else {
+            showToast.error(t('announcement:update_failed'), { icon: '❌', duration: 5000 });
+          }
         }
       } else {
         if (announcements.length >= 3) {
-          showToast.warning(t('announcement:max_limit') || 'Maximum 3 announcements allowed', { duration: 3500, icon: '⚠️' });
+          showToast.warning(t('announcement:max_limit'), { duration: 3500, icon: '⚠️' });
           return;
         }
 
         if (!selectedImage) {
-          showToast.warning(t('announcement:no_image') || 'Please select an image', { icon: '⚠️' });
+          showToast.warning(t('announcement:no_image'), { icon: '⚠️' });
           return;
         }
 
@@ -159,19 +164,24 @@ const AnnouncementManager = ({ token }: AnnouncementManagerProps) => {
 
         if (res.ok) {
           const data = await res.json();
-          showToast.success(t('announcement:create_success') || 'Announcement created successfully', { icon: '🎉' });
+          showToast.success(t('announcement:create_success'), { icon: '🎉' });
           await fetchAnnouncements();
           resetForm();
         } else {
-          const errorData = await res.json().catch(() => ({ detail: 'Create failed' }));
-          showToast.error(errorData.detail || t('announcement:create_failed') || 'Failed to create announcement', { icon: '❌', duration: 5000 });
+          const errorData = await res.json().catch(() => ({ detail: t('announcement:create_failed') }));
+          const errorMsg = errorData.detail;
+          if (errorMsg) {
+            showToast.error(errorMsg, { icon: '❌', duration: 5000 });
+          } else {
+            showToast.error(t('announcement:create_failed'), { icon: '❌', duration: 5000 });
+          }
         }
       }
     } catch (error) {
       if (import.meta.env.DEV) {
         console.error('Error submitting announcement:', error);
       }
-      showToast.error(t('announcement:error') || 'An error occurred', { icon: '❌', duration: 5000 });
+      showToast.error(t('announcement:error'), { icon: '❌', duration: 5000 });
     }
   };
 
@@ -181,7 +191,7 @@ const AnnouncementManager = ({ token }: AnnouncementManagerProps) => {
     }
 
     try {
-      const apiBaseUrl = import.meta.env.VITE_API_URL || '';
+      const apiBaseUrl = import.meta.env.VITE_API_URL;
       const res = await fetch(`${apiBaseUrl}/api/announcements/admin/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
@@ -203,7 +213,7 @@ const AnnouncementManager = ({ token }: AnnouncementManagerProps) => {
 
   const handleToggleActive = async (id: number, currentStatus: boolean) => {
     try {
-      const apiBaseUrl = import.meta.env.VITE_API_URL || '';
+      const apiBaseUrl = import.meta.env.VITE_API_URL;
       const res = await fetch(`${apiBaseUrl}/api/announcements/admin/${id}`, {
         method: 'PUT',
         headers: {
@@ -232,8 +242,8 @@ const AnnouncementManager = ({ token }: AnnouncementManagerProps) => {
   const handleEdit = (announcement: Announcement) => {
     setEditingId(announcement.id);
     setFormData({
-      title: announcement.title || '',
-      link_url: announcement.link_url || '',
+      title: announcement.title ?? '',
+      link_url: announcement.link_url ?? '',
       display_order: announcement.display_order,
     });
     setImagePreview(announcement.image_url);
@@ -249,14 +259,14 @@ const AnnouncementManager = ({ token }: AnnouncementManagerProps) => {
   };
 
   const openImageModal = (url: string, title: string) => {
-    setImageModal({ show: true, url, title: title || 'Announcement Image' });
+    setImageModal({ show: true, url, title: title ? title : t('announcement:title_placeholder') });
   };
 
   if (loading) {
     return (
       <div className="text-center py-8">
-        <div className="inline-block w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-        <p className="mt-2 text-gray-600">Loading...</p>
+        <div className="inline-block w-8 h-8 border-4 border-pink-600 border-t-transparent rounded-full animate-spin"></div>
+        <p className="mt-2 text-gray-600">{t('common:loading')}</p>
       </div>
     );
   }
@@ -267,16 +277,16 @@ const AnnouncementManager = ({ token }: AnnouncementManagerProps) => {
         {!showForm && announcements.length < 3 && (
           <Button
             onClick={() => setShowForm(true)}
-            className="flex items-center gap-2 bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-500 hover:from-blue-600 hover:via-indigo-600 hover:to-blue-600 font-semibold text-sm">
+            className="flex items-center gap-2 bg-gradient-to-r from-pink-500 via-rose-500 to-pink-500 hover:from-pink-600 hover:via-rose-600 hover:to-pink-600 font-semibold text-sm">
             <Plus className="h-4 w-4" />
-            {t('announcement:add_new') || 'เพิ่มประกาศ'}
+            {t('announcement:add_new')}
           </Button>
         )}
       </div>
 
-      <div className="mb-4 p-3 bg-blue-50/50 rounded-lg border border-blue-200/50">
-        <p className="text-xs font-medium text-blue-700">
-          📊 {t('announcement:no_announcements') || 'จำนวนประกาศ'}: <span className="font-bold">{announcements.length}</span> / 3
+      <div className="mb-4 p-3 bg-pink-50/50 rounded-lg border border-pink-200/50">
+        <p className="text-xs font-medium text-pink-700">
+          📊 {t('announcement:no_announcements')}: <span className="font-bold">{announcements.length}</span> / 3
         </p>
       </div>
 
@@ -290,26 +300,26 @@ const AnnouncementManager = ({ token }: AnnouncementManagerProps) => {
 
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-semibold mb-2 text-gray-700">{t('announcement:title_placeholder')} ({t('common:optional') || 'optional'})</label>
+              <label className="block text-sm font-semibold mb-2 text-gray-700">{t('announcement:title_placeholder')} ({t('common:optional')})</label>
               <input
                 type="text"
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-all"
                 placeholder={t('announcement:title_placeholder')}
               />
             </div>
 
             <div>
               <label className="block text-sm font-semibold mb-2 text-gray-700">
-                {t('announcement:image_selected')} (800x800px {t('common:recommended') || 'recommended'}) {!editingId && <span className="text-red-600">*</span>}
+                {t('announcement:image_selected')} (800x800px {t('common:recommended')}) {!editingId && <span className="text-red-600">*</span>}
               </label>
               <div className="relative">
                 <input
                   type="file"
                   accept="image/*"
                   onChange={handleImageChange}
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition-all"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-pink-50 file:text-pink-700 hover:file:bg-pink-100 transition-all"
                   required={!editingId}
                 />
               </div>
@@ -321,9 +331,9 @@ const AnnouncementManager = ({ token }: AnnouncementManagerProps) => {
                 <div className="mt-3">
                   <img
                     src={imagePreview}
-                    alt="Preview"
+                    alt={t('image:preview')}
                     className="w-40 h-40 object-cover rounded-xl border-2 border-gray-300 shadow-md hover:scale-105 transition-transform cursor-pointer"
-                    onClick={() => openImageModal(imagePreview, 'Preview')}
+                    onClick={() => openImageModal(imagePreview, t('image:preview'))}
                   />
                 </div>
               )}
@@ -335,7 +345,7 @@ const AnnouncementManager = ({ token }: AnnouncementManagerProps) => {
                 type="url"
                 value={formData.link_url}
                 onChange={(e) => setFormData({ ...formData, link_url: e.target.value })}
-                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-all"
                 placeholder={t('announcement:link_placeholder')}
               />
             </div>
@@ -345,15 +355,18 @@ const AnnouncementManager = ({ token }: AnnouncementManagerProps) => {
               <input
                 type="number"
                 value={formData.display_order}
-                onChange={(e) => setFormData({ ...formData, display_order: parseInt(e.target.value) || 0 })}
-                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                onChange={(e) => {
+                  const value = parseInt(e.target.value);
+                  setFormData({ ...formData, display_order: value ? value : 0 });
+                }}
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-all"
                 min="0"
               />
             </div>
           </div>
 
           <div className="flex gap-3 mt-6">
-            <Button type="submit" className="flex-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-500 hover:from-blue-600 hover:via-indigo-600 hover:to-blue-600 font-semibold py-2.5 text-sm">
+            <Button type="submit" className="flex-1 bg-gradient-to-r from-pink-500 via-rose-500 to-pink-500 hover:from-pink-600 hover:via-rose-600 hover:to-pink-600 font-semibold py-2.5 text-sm">
               {editingId ? `💾 ${t('announcement:save')}` : `➕ ${t('announcement:add')}`}
             </Button>
             <Button type="button" onClick={resetForm} variant="outline" className="flex-1 border font-semibold py-2.5 text-sm">
@@ -375,13 +388,16 @@ const AnnouncementManager = ({ token }: AnnouncementManagerProps) => {
           announcements.map((announcement) => (
             <div
               key={announcement.id}
-              className="flex items-center gap-4 p-4 border border-gray-200 rounded-xl hover:shadow-md hover:border-blue-300 transition-all bg-white/50 mb-3">
+              className="flex items-center gap-4 p-4 border border-gray-200 rounded-xl hover:shadow-md hover:border-pink-300 transition-all bg-white/50 mb-3">
               <div className="relative group">
                 <img
                   src={announcement.image_url}
-                  alt={announcement.title || 'Announcement'}
+                  alt={announcement.title ? announcement.title : t('announcement:title_placeholder')}
                   className="w-28 h-28 object-cover rounded-lg cursor-pointer hover:scale-105 transition-transform shadow-md"
-                  onClick={() => openImageModal(announcement.image_url, announcement.title || `Announcement #${announcement.id}`)}
+                  onClick={() => {
+                    const title = announcement.title ? announcement.title : `Announcement #${announcement.id}`;
+                    openImageModal(announcement.image_url, title);
+                  }}
                   onError={(e) => {
                     const target = e.currentTarget as HTMLImageElement;
                     target.src =
@@ -395,14 +411,14 @@ const AnnouncementManager = ({ token }: AnnouncementManagerProps) => {
 
               <div className="flex-1">
                 <h4 className="font-bold text-gray-800 text-lg">
-                  {announcement.title || `Announcement #${announcement.id}`}
+                  {announcement.title ? announcement.title : `Announcement #${announcement.id}`}
                 </h4>
                 <p className="text-sm text-gray-600 mt-1">
                   📊 {t('announcement:order_placeholder')}: <span className="font-semibold">{announcement.display_order}</span>
                   {announcement.link_url && (
                     <>
                       {' | 🔗 '}
-                      <a href={announcement.link_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                      <a href={announcement.link_url} target="_blank" rel="noopener noreferrer" className="text-pink-600 hover:underline">
                         {announcement.link_url.substring(0, 40)}...
                       </a>
                     </>

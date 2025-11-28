@@ -14,8 +14,13 @@
   "next": "다음",
   "previous": "이전",
   "copyright": "© 2025 Pochi! Kawaii ne~ | Developed by Thammaphon Chittasuwanna (SDM)",
-  "items": "항목",
   "recommended": "권장",
   "optional": "선택사항",
-  "contextualSuggestions": "도움이 될 수 있는 질문"
+  "anonymous": "익명",
+  "contextualSuggestions": "도움이 될 수 있는 질문",
+  "connectionError": "연결 오류",
+  "feedback_from_users": "사용자 피드백",
+  "ai_fallback": "AI",
+  "title": "제목",
+  "waiting_feedback": "피드백을 기다리는 중..."
 }

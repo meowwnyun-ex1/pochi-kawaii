@@ -11,7 +11,7 @@ const App = () => {
 
   return (
     <>
-      <Toaster position="top-right" expand={true} richColors closeButton toastOptions={{ style: { marginTop: '60px' } }} />
+      <Toaster position="top-right" expand={true} closeButton toastOptions={{ style: { marginTop: '60px' } }} />
       <BrowserRouter basename={BASE_PATH}>
         <Routes>
           <Route path="/" element={<Index />} />

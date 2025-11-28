@@ -32,6 +32,11 @@
   "edit": "Editar",
   "delete": "Eliminar",
   "no_announcements": "Aún no hay anuncios",
-  "click_to_add": "Haga clic en el botón \"Agregar Nuevo Anuncio\" para crear un anuncio"
+  "click_to_add": "Haga clic en el botón \"Agregar Nuevo Anuncio\" para crear un anuncio",
+  "close": "Cerrar anuncio",
+  "previous": "Anuncio anterior",
+  "next": "Anuncio siguiente",
+  "go_to": "Ir al anuncio {number}",
+  "title": "Anuncio"
 }
 

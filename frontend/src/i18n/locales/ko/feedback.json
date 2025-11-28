@@ -1,0 +1,19 @@
+{
+  "title": "피드백",
+  "subtitle": "의견을 공유해주세요",
+  "nameLabel": "이름",
+  "namePlaceholder": "이름 (선택사항)",
+  "ratingLabel": "평점",
+  "commentLabel": "댓글",
+  "commentPlaceholder": "피드백을 입력하세요...",
+  "submit": "제출",
+  "submitting": "전송 중...",
+  "backToChat": "채팅으로 돌아가기",
+  "ratingRequired": "평점을 선택해주세요",
+  "commentRequired": "댓글을 입력해주세요",
+  "successTitle": "감사합니다!",
+  "successMessage": "피드백이 성공적으로 제출되었습니다",
+  "errorMessage": "피드백 제출 실패",
+  "commentHint": "피드백을 입력해주세요 (최대 1000자)"
+}
+

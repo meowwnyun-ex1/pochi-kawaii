@@ -32,6 +32,11 @@
   "edit": "Edit",
   "delete": "Hapus",
   "no_announcements": "Belum ada pengumuman",
-  "click_to_add": "Klik tombol \"Tambah Pengumuman Baru\" untuk membuat pengumuman"
+  "click_to_add": "Klik tombol \"Tambah Pengumuman Baru\" untuk membuat pengumuman",
+  "close": "Tutup pengumuman",
+  "previous": "Pengumuman sebelumnya",
+  "next": "Pengumuman berikutnya",
+  "go_to": "Pergi ke pengumuman {number}",
+  "title": "Pengumuman"
 }
 

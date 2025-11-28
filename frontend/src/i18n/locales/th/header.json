@@ -1,5 +1,6 @@
 {
   "appName": "Pochi! Kawaii ne~",
-  "appSubtitle": "AI สร้างภาพการ์ตูนจิบิ",
-  "feedbackButton": "ส่งความคิดเห็น"
+  "appSubtitle": "AI สร้างภาพการ์ตูน",
+  "feedbackButton": "ส่งความคิดเห็น",
+  "toggleMenu": "เปิด/ปิดเมนู"
 }

@@ -1,9 +1,9 @@
 {
-  "greeting": "안녕하세요! 🌸 저는 Pochi입니다. 여러분의 사진을 사랑스러운 치비 만화로 변환할 준비가 되어 있습니다! ✨\n\n이미지를 업로드하고 Generate를 클릭하기만 하면 사진이 즉시 귀여운 치비 캐릭터가 됩니다! 💕",
+  "greeting": "안녕하세요! 🌸 저는 Pochi입니다. 당신의 사진을 귀여운 치비 만화로 변환할 준비가 되어 있습니다! ✨\n\n이미지를 업로드하고 Generate를 클릭하기만 하면 사진이 즉시 귀여운 치비 캐릭터가 됩니다! 💕",
   "upload_image": "이미지 업로드",
   "generate": "Generate",
   "generating": "생성 중...",
-  "upload_prompt": "파일을 여기에 끌어다 놓거나 클릭하여 선택",
+  "upload_prompt": "파일을 여기로 끌어다 놓거나 클릭하여 선택",
   "supported_formats": "지원: JPG, PNG, WEBP (최대 10MB)",
   "connection_error": "❌ 연결할 수 없습니다\n\n인터넷 연결을 확인하세요",
   "error": {
@@ -12,7 +12,8 @@
     "timeout": "⏱️ 시간 초과 - AI가 너무 오래 걸렸습니다\n\n다시 시도하세요",
     "please_try_again": "다시 시도하세요",
     "no_image": "먼저 이미지를 업로드하세요",
-    "invalid_format": "잘못된 파일 형식입니다. JPG, PNG 또는 WEBP를 사용하세요"
+    "invalid_format": "잘못된 파일 형식입니다. JPG, PNG 또는 WEBP를 사용하세요",
+    "file_too_large": "파일이 너무 큽니다 (최대 10MB)"
   },
   "stage_analyzing": "이미지 분석 중",
   "stage_thinking": "이미지 처리 중",
@@ -22,6 +23,31 @@
   "time_sec": "초",
   "download": "이미지 다운로드",
   "generate_again": "다시 생성",
-  "warning_delete_on_close": "⚠️ 경고: 업로드한 이미지는 이 웹사이트를 닫은 후 즉시 삭제됩니다"
+  "warning_delete_on_close": "⚠️ 경고: 업로드한 이미지는 이 웹사이트를 닫은 후 즉시 삭제됩니다",
+  "care_message": "💕 참고: 업로드한 이미지는 웹사이트를 닫은 후 삭제되어 개인정보를 보호합니다",
+  "input_image": "이미지 업로드",
+  "result": "결과",
+  "result_placeholder": "생성된 이미지가 여기에 표시됩니다",
+  "success": "✨ 치비 이미지가 성공적으로 생성되었습니다!",
+  "no_image_url": "이미지 데이터를 찾을 수 없습니다",
+  "read_error": "서버에서 데이터 읽기 오류",
+  "download_success": "이미지 다운로드 성공! 🎉",
+  "download_error": "이미지 다운로드 오류",
+  "http_error_format": "오류 (HTTP {status})",
+  "filename_prefix": "image",
+  "upload_or": "또는",
+  "upload_click": "파일을 선택하려면 클릭",
+  "generated_chibi": "생성된 치비 이미지",
+  "clear_image": "이미지 지우기",
+  "preview": "미리보기",
+  "select_style": "스타일 선택",
+  "style_anime": "🌈 Anime Style",
+  "style_anime_desc": "Create a cartoon-style portrait: Keep the same outfit and pose as in the original image. Use a clean white background. The style should be semi-realistic or stylized cartoon, but the facial features and clothing must closely resemble the original photo.",
+  "style_watercolor": "🎨 Watercolor Style",
+  "style_watercolor_desc": "Paint a new portrait in a watercolor cartoon style, keeping the facial and outfits structure similar to the original. Use soft, gentle colors and a white background.",
+  "style_developing": "개발 중",
+  "style_locked": "🔒 개발 중",
+  "time_used": "사용 시간: {time} 초",
+  "elapsed_time": "⏱️ 경과 시간: {time} 초"
 }
 

@@ -13,7 +13,7 @@ const FeedbackForm = () => {
   const [comment, setComment] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const API_BASE_URL = import.meta.env.VITE_API_URL || '';
+  const API_BASE_URL = import.meta.env.VITE_API_URL;
 
   const handleSubmit = async () => {
     if (rating === 0) {
@@ -35,7 +35,7 @@ const FeedbackForm = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          name: name.trim() || 'Anonymous',
+          name: name.trim() ? name.trim() : t('common:anonymous'),
           rating,
           comment: comment.trim(),
         }),
@@ -61,28 +61,33 @@ const FeedbackForm = () => {
   };
 
   return (
-    <div className="w-full flex items-center justify-center p-4 relative min-h-full">
+    <div className="w-full flex items-center justify-center p-4 relative">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-20 w-64 h-64 bg-blue-200/5 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute top-20 left-20 w-64 h-64 bg-pink-200/5 rounded-full blur-3xl animate-pulse" />
         <div
-          className="absolute bottom-20 right-20 w-96 h-96 bg-indigo-200/5 rounded-full blur-3xl animate-pulse"
+          className="absolute bottom-20 right-20 w-96 h-96 bg-rose-200/5 rounded-full blur-3xl animate-pulse"
           style={{ animationDelay: '1s' }}
         />
         <div
-          className="absolute top-1/2 left-1/2 w-80 h-80 bg-slate-200/5 rounded-full blur-3xl animate-pulse"
+          className="absolute top-1/2 left-1/2 w-80 h-80 bg-pink-100/5 rounded-full blur-3xl animate-pulse"
           style={{ animationDelay: '2s' }}
         />
       </div>
 
-      <div className="relative w-full max-w-md my-auto -mt-8">
+      <div className="relative w-full max-w-lg mx-auto">
         <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-xl border border-gray-100/50 overflow-hidden">
-          <div className="relative bg-gradient-to-r from-blue-50 via-indigo-50 to-blue-50 p-5 text-gray-800 border-b border-gray-100">
+          <div className="relative bg-gradient-to-r from-pink-50 via-rose-50 to-pink-50 p-5 text-gray-800 border-b border-gray-100">
             <div className="relative flex items-center gap-3">
               <div className="p-2 bg-white rounded-xl shadow-sm">
-                <img src={`${import.meta.env.VITE_BASE_PATH || '/pochi-kawaii'}/ai-avatar.svg`} alt="Logo" className="h-7 w-7" onError={(e) => {
-                  const target = e.currentTarget as HTMLImageElement;
-                  target.style.display = 'none';
-                }} />
+                <img
+                  src={`${import.meta.env.VITE_BASE_PATH}/logo.svg`}
+                  alt={t('common:appName')}
+                  className="h-7 w-7"
+                  onError={(e) => {
+                    const target = e.currentTarget as HTMLImageElement;
+                    target.style.display = 'none';
+                  }}
+                />
               </div>
               <div>
                 <h1 className="text-xl font-bold mb-0.5">{t('feedback:title')}</h1>
@@ -94,7 +99,7 @@ const FeedbackForm = () => {
           <div className="p-5 space-y-4">
             <div>
               <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
-                <User className="h-4 w-4 text-blue-500" />
+                <User className="h-4 w-4 text-pink-500" />
                 {t('feedback:nameLabel')}
               </label>
               <input
@@ -102,7 +107,7 @@ const FeedbackForm = () => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder={t('feedback:namePlaceholder')}
-                className="w-full px-3 py-2.5 text-sm bg-white border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400/50 focus:border-blue-400 transition-all shadow-sm hover:border-gray-300"
+                className="w-full px-3 py-2.5 text-sm bg-white border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400/50 focus:border-pink-400 transition-all shadow-sm hover:border-gray-300"
               />
             </div>
 
@@ -146,25 +151,26 @@ const FeedbackForm = () => {
 
             <div>
               <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
-                <MessageSquare className="h-4 w-4 text-blue-500" />
+                <MessageSquare className="h-4 w-4 text-pink-500" />
                 {t('feedback:commentLabel')}
               </label>
               <Textarea
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 placeholder={t('feedback:commentPlaceholder')}
-                className="w-full min-h-[100px] px-3 py-2.5 text-sm bg-white border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400/50 focus:border-blue-400 transition-all resize-none shadow-sm hover:border-gray-300"
+                className="w-full min-h-[100px] px-3 py-2.5 text-sm bg-white border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400/50 focus:border-pink-400 transition-all resize-none shadow-sm hover:border-gray-300"
                 maxLength={1000}
               />
               <div className="flex justify-between items-center mt-1.5">
-                <p className="text-xs text-gray-400">
-                  {t('feedback:commentHint')}
-                </p>
-                <p className={`text-xs font-medium ${
-                  comment.length > 900 ? 'text-red-500' : 
-                  comment.length > 700 ? 'text-amber-500' : 
-                  'text-gray-400'
-                }`}>
+                <p className="text-xs text-gray-400">{t('feedback:commentHint')}</p>
+                <p
+                  className={`text-xs font-medium ${
+                    comment.length > 900
+                      ? 'text-red-500'
+                      : comment.length > 700
+                      ? 'text-amber-500'
+                      : 'text-gray-400'
+                  }`}>
                   {comment.length}/1000
                 </p>
               </div>
@@ -174,8 +180,8 @@ const FeedbackForm = () => {
               onClick={handleSubmit}
               disabled={isSubmitting || rating === 0 || !comment.trim()}
               className="relative w-full group overflow-hidden rounded-lg shadow-md hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-md">
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-500" />
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-400 via-indigo-400 to-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute inset-0 bg-gradient-to-r from-pink-500 via-rose-500 to-pink-500" />
+              <div className="absolute inset-0 bg-gradient-to-r from-pink-400 via-rose-400 to-pink-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <div className="relative px-5 py-3 flex items-center justify-center gap-2 text-white font-semibold text-sm">
                 {isSubmitting ? (
                   <>
@@ -205,4 +211,3 @@ const FeedbackForm = () => {
 };
 
 export default FeedbackForm;
-

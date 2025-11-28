@@ -1,0 +1,19 @@
+{
+  "title": "Feedback",
+  "subtitle": "Ibahagi ang inyong mga saloobin",
+  "nameLabel": "Pangalan",
+  "namePlaceholder": "Inyong pangalan (opsyonal)",
+  "ratingLabel": "Rating",
+  "commentLabel": "Komento",
+  "commentPlaceholder": "Ilagay ang inyong feedback...",
+  "submit": "Ipadala",
+  "submitting": "Nagpapadala...",
+  "backToChat": "Bumalik sa Chat",
+  "ratingRequired": "Pakipili ang rating",
+  "commentRequired": "Pakilagay ang komento",
+  "successTitle": "Salamat!",
+  "successMessage": "Matagumpay na naipadala ang inyong feedback",
+  "errorMessage": "Nabigo ang pagpapadala ng feedback",
+  "commentHint": "Pakilagay ang inyong feedback (max 1000 characters)"
+}
+

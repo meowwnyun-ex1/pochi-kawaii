@@ -14,8 +14,13 @@
   "next": "ถัดไป",
   "previous": "ก่อนหน้า",
   "copyright": "© 2025 Pochi! Kawaii ne~ | Developed by Thammaphon Chittasuwanna (SDM)",
-  "items": "รายการ",
   "recommended": "แนะนำ",
   "optional": "ไม่บังคับ",
-  "contextualSuggestions": "คำถามที่อาจช่วยได้"
+  "anonymous": "ไม่ระบุชื่อ",
+  "contextualSuggestions": "คำถามที่อาจช่วยได้",
+  "connectionError": "เกิดข้อผิดพลาดในการเชื่อมต่อ",
+  "feedback_from_users": "ความคิดเห็นจากผู้ใช้",
+  "ai_fallback": "AI",
+  "title": "ชื่อ",
+  "waiting_feedback": "รอความคิดเห็นจากผู้ใช้..."
 }

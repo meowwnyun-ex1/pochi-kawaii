@@ -32,6 +32,11 @@
   "edit": "Chỉnh sửa",
   "delete": "Xóa",
   "no_announcements": "Chưa có thông báo",
-  "click_to_add": "Nhấp nút \"Thêm thông báo mới\" để tạo thông báo"
+  "click_to_add": "Nhấp nút \"Thêm thông báo mới\" để tạo thông báo",
+  "close": "Đóng thông báo",
+  "previous": "Thông báo trước",
+  "next": "Thông báo tiếp theo",
+  "go_to": "Đi đến thông báo {number}",
+  "title": "Thông báo"
 }
 

@@ -32,6 +32,11 @@
   "edit": "编辑",
   "delete": "删除",
   "no_announcements": "还没有公告",
-  "click_to_add": "点击\"添加新公告\"按钮创建公告"
+  "click_to_add": "点击\"添加新公告\"按钮创建公告",
+  "close": "关闭公告",
+  "previous": "上一个公告",
+  "next": "下一个公告",
+  "go_to": "转到公告 {number}",
+  "title": "公告"
 }
 

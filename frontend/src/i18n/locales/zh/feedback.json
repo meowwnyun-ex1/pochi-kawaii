@@ -1,0 +1,19 @@
+{
+  "title": "反馈",
+  "subtitle": "分享您的想法",
+  "nameLabel": "姓名",
+  "namePlaceholder": "您的姓名（可选）",
+  "ratingLabel": "评分",
+  "commentLabel": "评论",
+  "commentPlaceholder": "输入您的反馈...",
+  "submit": "提交",
+  "submitting": "发送中...",
+  "backToChat": "返回聊天",
+  "ratingRequired": "请选择评分",
+  "commentRequired": "请输入评论",
+  "successTitle": "谢谢！",
+  "successMessage": "您的反馈已成功提交",
+  "errorMessage": "提交反馈失败",
+  "commentHint": "请输入您的反馈（最多 1000 个字符）"
+}
+

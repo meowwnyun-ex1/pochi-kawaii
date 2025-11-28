@@ -9,7 +9,7 @@
     "supported_languages": ["th", "en", "jp", "id", "zh", "ko", "vi", "es", "fil", "hi"]
   },
   "endpoints": {
-    "generate": "/generate/chibi",
+    "generate": "/generate/image",
     "feedback": "/api/feedback",
     "admin_login": "/api/admin/login",
     "admin_feedback": "/api/admin/feedback",
@@ -21,7 +21,9 @@
     "ok": "OK",
     "login_successful": "Login successful",
     "logout_successful": "Logout successful",
-    "feedback_deleted": "Feedback deleted successfully"
+    "feedback_deleted": "Feedback deleted successfully",
+    "image_generated": "Image generated successfully",
+    "image_ready": "Your image is ready! 🌸"
   },
   "error_messages": {
     "invalid_password": "Invalid password",
@@ -35,15 +37,48 @@
     "save_feedback_failed": "Failed to save feedback",
     "server_busy": "Server busy",
     "unknown_error": "Unknown error",
-    "generic_error": "An error occurred"
+    "generic_error": "An error occurred",
+    "validation_error": "Validation error",
+    "internal_server_error": "Internal server error",
+    "unexpected_error": "An unexpected error occurred",
+    "image_service_unavailable": "Image generation service is not available. Please try again later.",
+    "invalid_file_type": "Invalid file type: {type}. Please upload JPG, PNG, or WEBP",
+    "file_too_large": "File too large. Maximum size is 10MB",
+    "generation_failed": "Image generation failed - no output received",
+    "payment_required": "Payment required for HuggingFace API. Please check your account subscription.",
+    "generation_timeout": "Generation timeout - please try again",
+    "invalid_api_token": "Invalid API token",
+    "rate_limit_exceeded": "Rate limit exceeded, please try again later",
+    "model_loading": "Model is loading, please try again in a moment",
+    "no_image_returned": "No image returned from API",
+    "unsupported_format": "Unsupported format: {format}. Use JPG, PNG, or WEBP",
+    "image_too_large": "Image too large (max 10MB)",
+    "image_too_small": "Image too small (min 100x100px)",
+    "image_too_large_dimensions": "Image too large (max 4096x4096px)",
+    "invalid_image_file": "Invalid image file: {error}"
   },
   "startup_messages": {
-    "starting": "Starting Pochi! Kawaii ne~ - Chibi AI Generator",
+    "starting": "Starting Pochi! Kawaii ne~ - AI Image Generator",
     "db_init_success": "Database initialized successfully",
     "db_init_failed": "Running without database - features limited",
     "db_unavailable": "Database unavailable",
     "application_shutting_down": "Application shutting down...",
-    "cors_origins": "CORS origins"
+    "cors_origins": "CORS origins",
+    "server_ready": "Application ready on {protocol}://{host}:{port}",
+    "shutdown_complete": "Shutdown complete",
+    "closing_db": "Closing database connections...",
+    "db_closed": "Database connections closed",
+    "rate_limiter_initialized": "Rate limiter initialized: {min}/min, {hour}/hour",
+    "circuit_breaker_initialized": "HuggingFace API circuit breaker initialized",
+    "rate_limiter_failed": "Failed to initialize rate limiter",
+    "circuit_breaker_failed": "Failed to initialize circuit breaker",
+    "rate_limiting_enabled": "Rate limiting middleware enabled",
+    "rate_limiter_not_initialized": "Rate limiter not initialized, middleware not enabled",
+    "structured_logging_initialized": "Structured logging initialized",
+    "image_generation_ready": "Image generation service ready! 🎨",
+    "image_service_not_initialized": "Image generation service not initialized",
+    "huggingface_model_info": "HuggingFace AI: {model} - Image Generation",
+    "starting_server": "Starting server on {host}:{port}"
   },
   "log_messages": {
     "feedback_submitted_successfully": "Feedback submitted successfully: ID {}",

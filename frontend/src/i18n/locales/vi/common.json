@@ -14,8 +14,13 @@
   "next": "Tiếp theo",
   "previous": "Trước",
   "copyright": "© 2025 Pochi! Kawaii ne~ | Developed by Thammaphon Chittasuwanna (SDM)",
-  "items": "mục",
   "recommended": "được khuyến nghị",
   "optional": "tùy chọn",
-  "contextualSuggestions": "Câu hỏi có thể hữu ích"
+  "anonymous": "Ẩn danh",
+  "contextualSuggestions": "Câu hỏi có thể hữu ích",
+  "connectionError": "Lỗi kết nối",
+  "feedback_from_users": "Phản Hồi Từ Người Dùng",
+  "ai_fallback": "AI",
+  "title": "Tiêu đề",
+  "waiting_feedback": "Đang chờ phản hồi..."
 }

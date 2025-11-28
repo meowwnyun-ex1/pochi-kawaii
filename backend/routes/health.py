@@ -11,7 +11,7 @@ router = APIRouter()
 
 
 def setup_health_routes(
-    app, config, db_manager, chibi_service
+    app, config, db_manager, image_service
 ):
     config_dir_str = os.getenv("CONFIG_DIR", "config")
     config_dir = Path(config_dir_str) if config_dir_str else Path("config")
@@ -46,9 +46,9 @@ def setup_health_routes(
             "company": app_info.get("company", ""),
             "copyright": app_info.get("copyright", ""),
             "endpoints": endpoints,
-            "chibi_service": {
+            "image_service": {
                 "status": "enabled",
-                "model": chibi_service.model_name if chibi_service else None
+                "model": image_service.model_name if image_service else None
             },
             "environment": config.environment,
             "debug_mode": config.enable_debug,
@@ -90,7 +90,7 @@ def setup_health_routes(
             health_status["status"] = "degraded"
             logger.error(f"Health check error: {e}")
 
-        health_status["components"]["chibi_service"] = {
+        health_status["components"]["image_service"] = {
             "provider": "HuggingFace",
             "model": config.huggingface_model,
             "status": "configured"
@@ -167,14 +167,14 @@ def setup_health_routes(
 
     @router.get("/api/stats")
     async def get_stats():
-        chibi_usage = {
+        image_usage = {
             "provider": "HuggingFace",
             "model": config.huggingface_model,
             "status": "ready"
         }
 
         return {
-            "chibi_service": chibi_usage,
+            "image_service": image_usage,
             "timestamp": datetime.utcnow().isoformat(),
         }
 
@@ -211,11 +211,10 @@ def setup_health_routes(
         db_available = 1 if (db_manager.connection_available and db_manager.pool) else 0
         metrics.append(f'pochi_db_available {db_available}')
 
-        # Chibi service status
-        metrics.append('# HELP pochi_chibi_service_available Chibi image generation service availability')
-        metrics.append('# TYPE pochi_chibi_service_available gauge')
-        chibi_available = 1 if chibi_service else 0
-        metrics.append(f'pochi_chibi_service_available {chibi_available}')
+        metrics.append('# HELP pochi_image_service_available Image generation service availability')
+        metrics.append('# TYPE pochi_image_service_available gauge')
+        image_available = 1 if image_service else 0
+        metrics.append(f'pochi_image_service_available {image_available}')
 
         # Return as plain text
         from fastapi.responses import PlainTextResponse

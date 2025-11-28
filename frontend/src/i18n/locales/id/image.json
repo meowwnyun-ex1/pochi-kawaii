@@ -12,7 +12,8 @@
     "timeout": "⏱️ Waktu habis - AI memakan waktu terlalu lama\n\nSilakan coba lagi",
     "please_try_again": "Silakan coba lagi",
     "no_image": "Silakan unggah gambar terlebih dahulu",
-    "invalid_format": "Format file tidak valid. Silakan gunakan JPG, PNG atau WEBP"
+    "invalid_format": "Format file tidak valid. Silakan gunakan JPG, PNG atau WEBP",
+    "file_too_large": "File terlalu besar (maks 10MB)"
   },
   "stage_analyzing": "Menganalisis gambar Anda",
   "stage_thinking": "Memproses gambar",
@@ -22,6 +23,31 @@
   "time_sec": "detik",
   "download": "Unduh Gambar",
   "generate_again": "Buat Lagi",
-  "warning_delete_on_close": "⚠️ Peringatan: Gambar yang diunggah akan dihapus segera setelah menutup situs web ini"
+  "warning_delete_on_close": "⚠️ Peringatan: Gambar yang diunggah akan dihapus segera setelah menutup situs web ini",
+  "care_message": "💕 Catatan: Gambar yang diunggah akan dihapus setelah menutup situs web untuk melindungi privasi Anda",
+  "input_image": "Unggah Gambar",
+  "result": "Hasil",
+  "result_placeholder": "Gambar yang dibuat akan muncul di sini",
+  "success": "✨ Gambar chibi berhasil dibuat!",
+  "no_image_url": "Data gambar tidak ditemukan",
+  "read_error": "Kesalahan membaca data dari server",
+  "download_success": "Gambar berhasil diunduh! 🎉",
+  "download_error": "Kesalahan mengunduh gambar",
+  "http_error_format": "Kesalahan (HTTP {status})",
+  "filename_prefix": "image",
+  "upload_or": "atau",
+  "upload_click": "Klik untuk memilih file",
+  "generated_chibi": "Gambar Chibi yang Dibuat",
+  "clear_image": "Hapus gambar",
+  "preview": "Pratinjau",
+  "select_style": "Pilih Gaya",
+  "style_anime": "🌈 Anime Style",
+  "style_anime_desc": "Create a cartoon-style portrait: Keep the same outfit and pose as in the original image. Use a clean white background. The style should be semi-realistic or stylized cartoon, but the facial features and clothing must closely resemble the original photo.",
+  "style_watercolor": "🎨 Watercolor Style",
+  "style_watercolor_desc": "Paint a new portrait in a watercolor cartoon style, keeping the facial and outfits structure similar to the original. Use soft, gentle colors and a white background.",
+  "style_developing": "Dalam Pengembangan",
+  "style_locked": "🔒 Dalam Pengembangan",
+  "time_used": "Waktu yang digunakan: {time} detik",
+  "elapsed_time": "⏱️ Waktu berlalu: {time} detik"
 }
 

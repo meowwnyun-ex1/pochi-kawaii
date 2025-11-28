@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface Announcement {
   id: number;
@@ -10,13 +11,14 @@ interface Announcement {
 }
 
 const AnnouncementPopup = () => {
+  const { t } = useLanguage();
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    const apiBaseUrl = import.meta.env.VITE_API_URL || '';
-    const basePath = import.meta.env.VITE_BASE_PATH || '/pochi-kawaii';
+    const apiBaseUrl = import.meta.env.VITE_API_URL;
+    const basePath = import.meta.env.VITE_BASE_PATH;
     const controller = new AbortController();
     let autoCloseTimer: ReturnType<typeof setTimeout> | null = null;
     
@@ -47,7 +49,8 @@ const AnnouncementPopup = () => {
         if (data && data.announcements && Array.isArray(data.announcements) && data.announcements.length > 0) {
           const activeAnnouncements = data.announcements.filter((ann: Announcement) => ann.image_url);
           
-          const closedAnnouncements = JSON.parse(localStorage.getItem('closed_announcements') || '[]');
+          const closedAnnouncementsStr = localStorage.getItem('closed_announcements');
+          const closedAnnouncements = JSON.parse(closedAnnouncementsStr ? closedAnnouncementsStr : '[]');
           const visibleAnnouncements = activeAnnouncements.filter(
             (ann: Announcement) => !closedAnnouncements.includes(ann.id)
           );
@@ -125,19 +128,17 @@ const AnnouncementPopup = () => {
       className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm animate-in fade-in duration-300"
       onClick={handleBackdropClick}>
       <div className="relative bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl max-w-4xl w-full mx-4 overflow-hidden animate-in zoom-in-95 duration-300 border-2 border-gray-200/50">
-        {/* Close Button */}
         <button
           onClick={handleClose}
           className="absolute top-4 right-4 z-10 bg-white/90 backdrop-blur-sm rounded-full p-2.5 shadow-xl hover:bg-white hover:scale-110 transition-all duration-200"
-          aria-label="Close announcement">
+          aria-label={t('announcement:close')}>
           <X className="h-6 w-6 text-gray-700" />
         </button>
 
-        {/* Image Container */}
         <div className="relative">
           <img
             src={currentAnnouncement.image_url}
-            alt={currentAnnouncement.title || 'Announcement'}
+            alt={currentAnnouncement.title ? currentAnnouncement.title : t('announcement:title_placeholder')}
             className={`w-full h-auto max-h-[80vh] object-contain ${
               currentAnnouncement.link_url ? 'cursor-pointer' : ''
             }`}
@@ -148,13 +149,12 @@ const AnnouncementPopup = () => {
             }}
           />
 
-          {/* Navigation Arrows (if multiple announcements) */}
           {announcements.length > 1 && (
             <>
               <button
                 onClick={handlePrev}
                 className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-sm hover:bg-white rounded-full p-3 shadow-xl hover:scale-110 transition-all duration-200"
-                aria-label="Previous announcement">
+                aria-label={t('announcement:previous')}>
                 <svg
                   className="w-6 h-6 text-gray-700"
                   fill="none"
@@ -166,7 +166,7 @@ const AnnouncementPopup = () => {
               <button
                 onClick={handleNext}
                 className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-sm hover:bg-white rounded-full p-3 shadow-xl hover:scale-110 transition-all duration-200"
-                aria-label="Next announcement">
+                aria-label={t('announcement:next')}>
                 <svg
                   className="w-6 h-6 text-gray-700"
                   fill="none"
@@ -176,7 +176,6 @@ const AnnouncementPopup = () => {
                 </svg>
               </button>
 
-              {/* Dots Indicator */}
               <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 bg-white/80 backdrop-blur-sm px-3 py-2 rounded-full shadow-lg">
                 {announcements.map((_, index) => (
                   <button
@@ -184,10 +183,10 @@ const AnnouncementPopup = () => {
                     onClick={() => setCurrentIndex(index)}
                     className={`h-2 rounded-full transition-all duration-300 ${
                       index === currentIndex
-                        ? 'bg-blue-600 w-8'
+                        ? 'bg-pink-600 w-8'
                         : 'bg-gray-300 w-2 hover:bg-gray-400'
                     }`}
-                    aria-label={`Go to announcement ${index + 1}`}
+                    aria-label={t('announcement:go_to', { number: index + 1 })}
                   />
                 ))}
               </div>

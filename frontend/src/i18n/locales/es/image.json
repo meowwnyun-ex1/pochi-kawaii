@@ -12,7 +12,8 @@
     "timeout": "⏱️ Tiempo agotado - AI tardó demasiado\n\nPor favor intente de nuevo",
     "please_try_again": "Por favor intente de nuevo",
     "no_image": "Por favor suba una imagen primero",
-    "invalid_format": "Formato de archivo inválido. Por favor use JPG, PNG o WEBP"
+    "invalid_format": "Formato de archivo inválido. Por favor use JPG, PNG o WEBP",
+    "file_too_large": "Archivo demasiado grande (máx 10MB)"
   },
   "stage_analyzing": "Analizando su imagen",
   "stage_thinking": "Procesando imagen",
@@ -22,6 +23,31 @@
   "time_sec": "seg",
   "download": "Descargar imagen",
   "generate_again": "Generar de nuevo",
-  "warning_delete_on_close": "⚠️ Advertencia: Las imágenes subidas se eliminarán inmediatamente después de cerrar este sitio web"
+  "warning_delete_on_close": "⚠️ Advertencia: Las imágenes subidas se eliminarán inmediatamente después de cerrar este sitio web",
+  "care_message": "💕 Nota: Las imágenes subidas se eliminarán después de cerrar el sitio web para proteger su privacidad",
+  "input_image": "Subir imagen",
+  "result": "Resultado",
+  "result_placeholder": "La imagen generada aparecerá aquí",
+  "success": "✨ ¡Imagen chibi creada exitosamente!",
+  "no_image_url": "No se encontraron datos de imagen",
+  "read_error": "Error al leer datos del servidor",
+  "download_success": "¡Imagen descargada exitosamente! 🎉",
+  "download_error": "Error al descargar imagen",
+  "http_error_format": "Error (HTTP {status})",
+  "filename_prefix": "image",
+  "upload_or": "o",
+  "upload_click": "Haz clic para seleccionar archivo",
+  "generated_chibi": "Imagen Chibi Generada",
+  "clear_image": "Limpiar imagen",
+  "preview": "Vista previa",
+  "select_style": "Seleccionar Estilo",
+  "style_anime": "🌈 Anime Style",
+  "style_anime_desc": "Create a cartoon-style portrait: Keep the same outfit and pose as in the original image. Use a clean white background. The style should be semi-realistic or stylized cartoon, but the facial features and clothing must closely resemble the original photo.",
+  "style_watercolor": "🎨 Watercolor Style",
+  "style_watercolor_desc": "Paint a new portrait in a watercolor cartoon style, keeping the facial and outfits structure similar to the original. Use soft, gentle colors and a white background.",
+  "style_developing": "En Desarrollo",
+  "style_locked": "🔒 En Desarrollo",
+  "time_used": "Tiempo usado: {time} segundos",
+  "elapsed_time": "⏱️ Tiempo transcurrido: {time} segundos"
 }
 

@@ -40,6 +40,7 @@ export default defineConfig(({ mode }) => {
     envPrefix: 'VITE_',
     define: {
       'import.meta.env.VITE_API_URL': JSON.stringify(viteApiUrl),
+      'import.meta.env.VITE_BASE_PATH': JSON.stringify(viteBasePath),
     },
     resolve: {
       alias: {
@@ -55,10 +56,6 @@ export default defineConfig(({ mode }) => {
           changeOrigin: true,
         },
         '/health': {
-          target: backendUrl,
-          changeOrigin: true,
-        },
-        '/generate': {
           target: backendUrl,
           changeOrigin: true,
         },

@@ -32,6 +32,11 @@
   "edit": "I-edit",
   "delete": "Tanggalin",
   "no_announcements": "Wala pang anunsyo",
-  "click_to_add": "I-click ang button na \"Magdagdag ng Bagong Anunsyo\" upang lumikha ng anunsyo"
+  "click_to_add": "I-click ang button na \"Magdagdag ng Bagong Anunsyo\" upang lumikha ng anunsyo",
+  "close": "Isara ang anunsyo",
+  "previous": "Nakaraang anunsyo",
+  "next": "Susunod na anunsyo",
+  "go_to": "Pumunta sa anunsyo {number}",
+  "title": "Anunsyo"
 }
 

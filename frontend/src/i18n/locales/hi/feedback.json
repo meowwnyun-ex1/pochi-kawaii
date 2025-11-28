@@ -1,0 +1,19 @@
+{
+  "title": "फीडबैक",
+  "subtitle": "अपने विचार साझा करें",
+  "nameLabel": "नाम",
+  "namePlaceholder": "आपका नाम (वैकल्पिक)",
+  "ratingLabel": "रेटिंग",
+  "commentLabel": "टिप्पणी",
+  "commentPlaceholder": "अपना फीडबैक दर्ज करें...",
+  "submit": "सबमिट करें",
+  "submitting": "भेज रहे हैं...",
+  "backToChat": "चैट पर वापस जाएं",
+  "ratingRequired": "कृपया एक रेटिंग चुनें",
+  "commentRequired": "कृपया एक टिप्पणी दर्ज करें",
+  "successTitle": "धन्यवाद!",
+  "successMessage": "आपका फीडबैक सफलतापूर्वक सबमिट किया गया",
+  "errorMessage": "फीडबैक सबमिट करने में विफल",
+  "commentHint": "कृपया अपना फीडबैक दर्ज करें (अधिकतम 1000 वर्ण)"
+}
+

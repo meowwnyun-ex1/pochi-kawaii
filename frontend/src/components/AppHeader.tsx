@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { Menu } from 'lucide-react';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import AvatarImage from '@/components/AvatarImage';
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface AppHeaderProps {
   onMenuClick?: () => void;
@@ -10,7 +10,7 @@ interface AppHeaderProps {
 
 const AppHeader = ({ onMenuClick }: AppHeaderProps) => {
   const navigate = useNavigate();
-  const { t } = useTranslation(['header']);
+  const { t } = useLanguage();
 
   return (
     <header className="bg-white/90 backdrop-blur-xl border-b border-pink-200/50 shadow-lg flex-shrink-0 fixed top-0 left-0 right-0 z-30">
@@ -21,7 +21,7 @@ const AppHeader = ({ onMenuClick }: AppHeaderProps) => {
                 <button
                   onClick={onMenuClick}
                   className="p-2.5 hover:bg-pink-100 rounded-xl transition-all duration-200 hover:scale-105"
-                  aria-label="Toggle menu">
+                  aria-label={t('header:toggleMenu')}>
                   <Menu className="h-5 w-5 text-pink-600" />
                 </button>
               )}
@@ -35,7 +35,7 @@ const AppHeader = ({ onMenuClick }: AppHeaderProps) => {
                   {t('header:appName')}
                 </h1>
                 <div className="flex items-center gap-2 text-xs">
-                  <span className="text-pink-600">{t('header:appSubtitle')}</span>
+                  <span className="text-gray-400">{t('header:appSubtitle')}</span>
                 </div>
               </div>
               </button>
@@ -45,9 +45,9 @@ const AppHeader = ({ onMenuClick }: AppHeaderProps) => {
               <button
                 onClick={() => navigate('/feedback')}
                 className="relative group overflow-hidden rounded-xl px-4 py-2 font-semibold text-sm transition-all duration-300 hover:scale-105 shadow-md hover:shadow-lg">
-                <div className="absolute inset-0 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 animate-gradient-x" />
+                <div className="absolute inset-0 bg-gradient-to-r from-pink-500 via-rose-500 to-pink-500 animate-gradient-x" />
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <div className="absolute inset-0 bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 blur-sm" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-pink-400 via-rose-400 to-pink-400 blur-sm" />
                 </div>
                 <div className="absolute inset-0">
                   <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white to-transparent opacity-30 animate-shimmer" />

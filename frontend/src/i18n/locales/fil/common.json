@@ -14,8 +14,13 @@
   "next": "Susunod",
   "previous": "Nakaraan",
   "copyright": "© 2025 Pochi! Kawaii ne~ | Developed by Thammaphon Chittasuwanna (SDM)",
-  "items": "mga item",
   "recommended": "inirerekomenda",
   "optional": "opsyonal",
-  "contextualSuggestions": "Mga tanong na maaaring makatulong"
+  "anonymous": "Hindi kilala",
+  "contextualSuggestions": "Mga tanong na maaaring makatulong",
+  "connectionError": "Error sa koneksyon",
+  "feedback_from_users": "Feedback mula sa mga Gumagamit",
+  "ai_fallback": "AI",
+  "title": "Pamagat",
+  "waiting_feedback": "Naghihintay ng feedback..."
 }

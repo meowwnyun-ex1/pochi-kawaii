@@ -20,8 +20,15 @@ const DEFAULT_LANGUAGE = 'th';
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { t: i18nT, ready } = useTranslation();
   const [language, setLanguageState] = useState<string>(() => {
-    const savedLang = localStorage.getItem('pochi_language');
-    return (savedLang && SUPPORTED_LANGUAGES.includes(savedLang)) ? savedLang : DEFAULT_LANGUAGE;
+    const storageKey = import.meta.env.VITE_LANGUAGE_STORAGE_KEY;
+    if (!storageKey) {
+      return DEFAULT_LANGUAGE;
+    }
+    const savedLang = localStorage.getItem(storageKey);
+    if (savedLang && SUPPORTED_LANGUAGES.includes(savedLang)) {
+      return savedLang;
+    }
+    return DEFAULT_LANGUAGE;
   });
 
   useEffect(() => {
@@ -40,7 +47,10 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
 
     setLanguageState(lang);
-    localStorage.setItem('pochi_language', lang);
+    const storageKey = import.meta.env.VITE_LANGUAGE_STORAGE_KEY;
+    if (storageKey) {
+      localStorage.setItem(storageKey, lang);
+    }
     i18n.changeLanguage(lang);
 
     if (typeof document !== 'undefined') {
@@ -55,7 +65,10 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       if (typeof translation === 'string') {
         if (translation === key) {
           const fallbackTranslation = i18nT(key, { ...options, ns: 'common' });
-          return typeof fallbackTranslation === 'string' ? fallbackTranslation : key;
+          if (typeof fallbackTranslation === 'string') {
+            return fallbackTranslation;
+          }
+          return key;
         }
         return translation;
       }

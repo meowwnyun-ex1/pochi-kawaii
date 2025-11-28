@@ -12,7 +12,8 @@
     "timeout": "⏱️ Timeout - AI took too long\n\nPlease try again",
     "please_try_again": "Please try again",
     "no_image": "Please upload an image first",
-    "invalid_format": "Invalid file format. Please use JPG, PNG or WEBP"
+    "invalid_format": "Invalid file format. Please use JPG, PNG or WEBP",
+    "file_too_large": "File too large (max 10MB)"
   },
   "stage_analyzing": "Analyzing your image",
   "stage_thinking": "Processing image",
@@ -22,6 +23,31 @@
   "time_sec": "sec",
   "download": "Download Image",
   "generate_again": "Generate Again",
-  "warning_delete_on_close": "⚠️ Warning: Uploaded images will be deleted immediately after closing this website"
+  "warning_delete_on_close": "⚠️ Warning: Uploaded images will be deleted immediately after closing this website",
+  "care_message": "💕 Note: Uploaded images will be deleted after closing the website to protect your privacy",
+  "input_image": "Upload Image",
+  "result": "Result",
+  "result_placeholder": "Generated image will appear here",
+  "success": "✨ Chibi image created successfully!",
+  "no_image_url": "Image data not found",
+  "read_error": "Error reading data from server",
+  "download_success": "Image downloaded successfully! 🎉",
+  "download_error": "Error downloading image",
+  "http_error_format": "Error (HTTP {status})",
+  "filename_prefix": "image",
+  "upload_or": "or",
+  "upload_click": "Click to select file",
+  "generated_chibi": "Generated Chibi Image",
+  "clear_image": "Clear image",
+  "preview": "Preview",
+  "select_style": "Select Style",
+  "style_anime": "🌈 Anime Style",
+  "style_anime_desc": "Create a cartoon-style portrait: Keep the same outfit and pose as in the original image. Use a clean white background. The style should be semi-realistic or stylized cartoon, but the facial features and clothing must closely resemble the original photo.",
+  "style_watercolor": "🎨 Watercolor Style",
+  "style_watercolor_desc": "Paint a new portrait in a watercolor cartoon style, keeping the facial and outfits' structure similar to the original. Use soft, gentle colors and a white background.",
+  "style_developing": "In Development",
+  "style_locked": "🔒 In Development",
+  "time_used": "Time used: {time} seconds",
+  "elapsed_time": "⏱️ Elapsed time: {time} seconds"
 }
 

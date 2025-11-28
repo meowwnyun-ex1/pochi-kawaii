@@ -4,6 +4,7 @@ interface ImportMetaEnv {
   readonly VITE_API_URL?: string
   readonly VITE_BASE_PATH?: string
   readonly VITE_ADMIN_PATH?: string
+  readonly VITE_LANGUAGE_STORAGE_KEY?: string
   readonly DEV?: boolean
   readonly MODE?: string
   readonly PROD?: boolean

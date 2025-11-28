@@ -14,8 +14,13 @@
   "next": "अगला",
   "previous": "पिछला",
   "copyright": "© 2025 Pochi! Kawaii ne~ | Developed by Thammaphon Chittasuwanna (SDM)",
-  "items": "आइटम",
   "recommended": "अनुशंसित",
   "optional": "वैकल्पिक",
-  "contextualSuggestions": "मददगार हो सकने वाले प्रश्न"
+  "anonymous": "अनाम",
+  "contextualSuggestions": "मददगार हो सकने वाले प्रश्न",
+  "connectionError": "कनेक्शन त्रुटि",
+  "feedback_from_users": "उपयोगकर्ताओं से फीडबैक",
+  "ai_fallback": "AI",
+  "title": "शीर्षक",
+  "waiting_feedback": "फीडबैक की प्रतीक्षा कर रहे हैं..."
 }

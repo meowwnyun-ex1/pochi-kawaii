@@ -14,8 +14,13 @@
   "next": "Siguiente",
   "previous": "Anterior",
   "copyright": "© 2025 Pochi! Kawaii ne~ | Developed by Thammaphon Chittasuwanna (SDM)",
-  "items": "elementos",
   "recommended": "recomendado",
   "optional": "opcional",
-  "contextualSuggestions": "Preguntas que podrían ayudar"
+  "anonymous": "Anónimo",
+  "contextualSuggestions": "Preguntas que podrían ayudar",
+  "connectionError": "Error de conexión",
+  "feedback_from_users": "Comentarios de Usuarios",
+  "ai_fallback": "AI",
+  "title": "Título",
+  "waiting_feedback": "Esperando comentarios..."
 }

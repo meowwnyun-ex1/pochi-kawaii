@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { Upload, X, Image as ImageIcon } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { showToast } from '@/utils/toast';
 
 interface ImageUploadProps {
@@ -12,30 +12,28 @@ interface ImageUploadProps {
 }
 
 const ImageUpload = ({ onImageSelect, selectedImage, onClear, disabled = false, onPreviewUrlChange }: ImageUploadProps) => {
-  const { t } = useTranslation(['image']);
+  const { t } = useLanguage();
   const [isDragging, setIsDragging] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const previewUrlRef = useRef<string | null>(null);
 
-  const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+  const MAX_FILE_SIZE = 10 * 1024 * 1024;
   const ACCEPTED_FORMATS = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 
   const validateFile = (file: File): boolean => {
-    // Check if file type starts with 'image/'
     if (!file.type.startsWith('image/')) {
-      showToast.error(t('image:error.invalid_format') || 'กรุณาแนบเฉพาะไฟล์ภาพเท่านั้น');
+      showToast.error(t('image:error.invalid_format'));
       return false;
     }
 
-    // Check if file type is in accepted formats
     if (!ACCEPTED_FORMATS.includes(file.type.toLowerCase())) {
-      showToast.error(t('image:error.invalid_format') || 'รองรับเฉพาะไฟล์ JPG, PNG, WEBP เท่านั้น');
+      showToast.error(t('image:error.invalid_format'));
       return false;
     }
 
     if (file.size > MAX_FILE_SIZE) {
-      showToast.error('ไฟล์ใหญ่เกินไป (สูงสุด 10MB)');
+      showToast.error(t('image:error.file_too_large'));
       return false;
     }
 
@@ -45,12 +43,10 @@ const ImageUpload = ({ onImageSelect, selectedImage, onClear, disabled = false, 
   const handleFile = useCallback((file: File) => {
     if (!validateFile(file)) return;
 
-    // Cleanup previous preview URL
     if (previewUrlRef.current) {
       URL.revokeObjectURL(previewUrlRef.current);
     }
 
-    // Create preview using object URL for better memory management
     const objectUrl = URL.createObjectURL(file);
     setPreviewUrl(objectUrl);
     previewUrlRef.current = objectUrl;
@@ -100,7 +96,6 @@ const ImageUpload = ({ onImageSelect, selectedImage, onClear, disabled = false, 
   };
 
   const handleClear = () => {
-    // Cleanup preview URL
     if (previewUrlRef.current) {
       URL.revokeObjectURL(previewUrlRef.current);
       previewUrlRef.current = null;
@@ -115,7 +110,6 @@ const ImageUpload = ({ onImageSelect, selectedImage, onClear, disabled = false, 
     }
   };
 
-  // Cleanup on unmount
   useEffect(() => {
     return () => {
       if (previewUrlRef.current) {
@@ -143,8 +137,8 @@ const ImageUpload = ({ onImageSelect, selectedImage, onClear, disabled = false, 
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           className={`
-            relative border-2 border-dashed rounded-2xl p-12 text-center cursor-pointer
-            transition-all duration-300 ease-in-out
+            relative border-2 border-dashed rounded-xl p-6 text-center cursor-pointer
+            transition-all duration-300 ease-in-out min-h-[200px] max-h-[250px] flex items-center justify-center
             ${isDragging
               ? 'border-pink-500 bg-pink-50 scale-105'
               : 'border-pink-300 bg-gradient-to-br from-pink-50/50 to-white hover:border-pink-400 hover:bg-pink-50/70'
@@ -152,53 +146,53 @@ const ImageUpload = ({ onImageSelect, selectedImage, onClear, disabled = false, 
             ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
           `}
         >
-          <div className="flex flex-col items-center gap-4">
+          <div className="flex flex-col items-center gap-3">
             <div className={`
-              w-20 h-20 rounded-full flex items-center justify-center
+              w-12 h-12 rounded-full flex items-center justify-center
               bg-gradient-to-br from-pink-100 to-rose-100
               ${!disabled && 'group-hover:scale-110'}
               transition-transform duration-300
             `}>
-              <Upload className="w-10 h-10 text-pink-500" />
+              <Upload className="w-6 h-6 text-pink-500" />
             </div>
 
-            <div className="space-y-2">
-              <p className="text-lg font-semibold text-pink-700">
-                Drop Image Here
+            <div className="space-y-0.5">
+              <p className="text-sm font-semibold text-pink-700">
+                {t('image:upload_prompt')}
               </p>
-              <p className="text-sm text-pink-500">
-                - or -
+              <p className="text-xs text-pink-500">
+                {t('image:upload_or')}
               </p>
-              <p className="text-sm font-medium text-pink-600">
-                Click to Upload
+              <p className="text-xs font-medium text-pink-600">
+                {t('image:upload_click')}
               </p>
             </div>
           </div>
         </div>
       ) : (
-        <div className="relative group">
-          <div className="relative rounded-2xl overflow-hidden border-4 border-pink-200 shadow-xl">
+        <div className="relative group w-full">
+          <div className="relative rounded-xl overflow-hidden border-2 border-pink-200 shadow-lg bg-white min-h-[200px] max-h-[250px] flex items-center justify-center">
             {previewUrl && (
               <img
                 src={previewUrl}
-                alt="Preview"
-                className="w-full h-auto max-h-96 object-contain bg-white"
+                alt={t('image:preview')}
+                className="w-full h-full max-h-[250px] object-contain"
               />
             )}
 
             {!disabled && (
               <button
                 onClick={handleClear}
-                className="absolute top-4 right-4 p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors shadow-lg z-10"
-                aria-label="Clear image"
+                className="absolute top-4 right-4 p-2 bg-pink-500 text-white rounded-full hover:bg-pink-600 transition-colors shadow-lg z-10"
+                aria-label={t('image:clear_image')}
               >
                 <X className="w-5 h-5" />
               </button>
             )}
           </div>
 
-          <div className="mt-4 flex items-center gap-3 text-sm text-pink-600 bg-pink-50 px-4 py-3 rounded-xl">
-            <ImageIcon className="w-5 h-5" />
+          <div className="mt-2 flex items-center gap-2 text-xs text-pink-600 bg-pink-50 px-3 py-2 rounded-lg">
+            <ImageIcon className="w-4 h-4" />
             <span className="font-medium truncate">{selectedImage.name}</span>
             <span className="text-pink-400">
               ({(selectedImage.size / 1024 / 1024).toFixed(2)} MB)

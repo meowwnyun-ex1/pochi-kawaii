@@ -3,7 +3,7 @@ import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import logger from '@/utils/logger';
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface Props {
   children: ReactNode;
@@ -59,7 +59,8 @@ class ErrorBoundaryClass extends Component<Props, State> {
   };
 
   handleGoHome = () => {
-    window.location.href = import.meta.env.VITE_BASE_PATH || '/pochi-kawaii';
+    const basePath = import.meta.env.VITE_BASE_PATH;
+    window.location.href = basePath ? basePath : '/';
   };
 
   render() {
@@ -88,7 +89,7 @@ interface ErrorFallbackProps {
 }
 
 const ErrorFallback: React.FC<ErrorFallbackProps> = ({ error, onReset, onReload, onGoHome }) => {
-  const { t } = useTranslation(['error']);
+  const { t } = useLanguage();
 
   return (
     <div className="min-h-screen flex items-center justify-center gradient-background p-4">
@@ -97,15 +98,15 @@ const ErrorFallback: React.FC<ErrorFallbackProps> = ({ error, onReset, onReload,
           <div className="mx-auto mb-4 w-20 h-20 bg-gradient-to-br from-pink-100 to-rose-200 rounded-full flex items-center justify-center shadow-lg">
             <AlertTriangle className="h-10 w-10 text-pink-600" />
           </div>
-          <CardTitle className="text-2xl font-bold text-pink-700">{t('title', { ns: 'error' })}</CardTitle>
+          <CardTitle className="text-2xl font-bold text-pink-700">{t('error:title')}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          <p className="text-center text-gray-600">{t('description', { ns: 'error' })}</p>
+          <p className="text-center text-gray-600">{t('error:description')}</p>
 
           {error && (
             <details className="bg-gray-50 rounded-lg p-4 border border-gray-200">
               <summary className="cursor-pointer font-semibold text-gray-700 mb-2 hover:text-gray-900">
-                {t('details', { ns: 'error' })}
+                {t('error:details')}
               </summary>
               <div className="mt-2 text-sm text-pink-700 font-mono bg-pink-50 p-3 rounded-lg border border-pink-200 overflow-auto max-h-48">
                 <div className="font-bold text-pink-800 mb-2">{error.name}: {error.message}</div>
@@ -125,7 +126,7 @@ const ErrorFallback: React.FC<ErrorFallbackProps> = ({ error, onReset, onReload,
               className="bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 hover:from-pink-500 hover:via-rose-500 hover:to-pink-600 text-white shadow-lg hover:shadow-xl hover:scale-105 transition-all rounded-2xl"
             >
               <RefreshCw className="h-4 w-4 mr-2" />
-              {t('reset', { ns: 'error' })}
+              {t('error:reset')}
             </Button>
             <Button
               onClick={onReload}
@@ -133,7 +134,7 @@ const ErrorFallback: React.FC<ErrorFallbackProps> = ({ error, onReset, onReload,
               className="border-2 border-pink-300 text-pink-700 hover:bg-pink-50 hover:border-pink-400 transition-all rounded-xl"
             >
               <RefreshCw className="h-4 w-4 mr-2" />
-              {t('reload', { ns: 'error' })}
+              {t('error:reload')}
             </Button>
             <Button
               onClick={onGoHome}
@@ -141,18 +142,17 @@ const ErrorFallback: React.FC<ErrorFallbackProps> = ({ error, onReset, onReload,
               className="border-2 border-pink-200 text-pink-700 hover:bg-pink-50 hover:border-pink-300 transition-all rounded-xl"
             >
               <Home className="h-4 w-4 mr-2" />
-              {t('goHome', { ns: 'error' })}
+              {t('error:goHome')}
             </Button>
           </div>
 
-          <p className="text-center text-xs text-gray-500 mt-4">{t('report', { ns: 'error' })}</p>
+          <p className="text-center text-xs text-gray-500 mt-4">{t('error:report')}</p>
         </CardContent>
       </Card>
     </div>
   );
 };
 
-// HOC wrapper for functional components
 export const ErrorBoundary: React.FC<Props> = (props) => {
   return <ErrorBoundaryClass {...props} />;
 };

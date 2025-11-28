@@ -1,5 +1,6 @@
 {
   "appName": "Pochi! Kawaii ne~",
   "appSubtitle": "AI Chibi Cartoon Generator",
-  "feedbackButton": "Feedback"
+  "feedbackButton": "Feedback",
+  "toggleMenu": "Toggle menu"
 }

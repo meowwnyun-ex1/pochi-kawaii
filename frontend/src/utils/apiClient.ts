@@ -55,7 +55,7 @@ export async function fetchWithRetry(
     try {
       const response = await fetch(url, {
         ...options,
-        signal: options.signal || (attempt > 0 ? undefined : options.signal), // Don't retry if aborted
+        signal: options.signal ? options.signal : (attempt > 0 ? undefined : options.signal), // Don't retry if aborted
       });
 
       // Success or non-retryable error

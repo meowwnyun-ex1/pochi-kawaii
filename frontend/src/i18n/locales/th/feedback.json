@@ -6,6 +6,7 @@
   "ratingLabel": "คะแนน",
   "commentLabel": "ความคิดเห็น",
   "commentPlaceholder": "กรอกความคิดเห็นของคุณ...",
+  "commentHint": "กรุณากรอกความคิดเห็นของคุณ (สูงสุด 1000 ตัวอักษร)",
   "submit": "ส่ง",
   "submitting": "กำลังส่ง...",
   "backToChat": "กลับไปแชท",

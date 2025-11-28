@@ -6,6 +6,7 @@
   "ratingLabel": "Rating",
   "commentLabel": "Comment",
   "commentPlaceholder": "Enter your feedback...",
+  "commentHint": "Please enter your feedback (max 1000 characters)",
   "submit": "Submit",
   "submitting": "Sending...",
   "backToChat": "Back to Chat",

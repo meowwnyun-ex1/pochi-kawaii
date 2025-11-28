@@ -1,15 +1,13 @@
 import {
   Home,
   Plus,
-  Sparkles,
-  Palette,
-  Heart,
-  Wand2,
   Menu,
   User,
+  Info,
+  BookOpen,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '@/contexts/LanguageContext';
 import AvatarImage from '@/components/AvatarImage';
 
 interface SidebarProps {
@@ -19,37 +17,7 @@ interface SidebarProps {
 
 const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
   const navigate = useNavigate();
-  const { t } = useTranslation(['sidebar']);
-
-  const styleItems = [
-    {
-      icon: Sparkles,
-      label: t('sidebar:styleClassic'),
-      action: 'developing',
-    },
-    {
-      icon: Palette,
-      label: t('sidebar:styleAnime'),
-      action: 'developing',
-    },
-    {
-      icon: Heart,
-      label: t('sidebar:styleCute'),
-      action: 'developing',
-    },
-    {
-      icon: Wand2,
-      label: t('sidebar:styleFantasy'),
-      action: 'developing',
-    },
-  ];
-
-  const handleMenuClick = (item: (typeof styleItems)[0]) => {
-    if (item.action === 'developing') {
-      navigate('/developing');
-      onClose();
-    }
-  };
+  const { t } = useLanguage();
 
   const handleNewChat = () => {
     window.location.reload();
@@ -70,13 +38,13 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}>
         <div className="flex flex-col h-full">
-          <div className="px-4 py-2 border-b border-pink-200/50 bg-gradient-to-r from-pink-50/50 to-rose-50/50">
+          <div className="px-4 py-2 border-b border-pink-200/50 bg-gradient-to-r from-pink-50/50 to-rose-50/50 h-[60px] flex items-center">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <button
                   onClick={onClose}
                   className="p-2.5 hover:bg-pink-100 rounded-xl transition-all duration-200 hover:scale-105 flex-shrink-0"
-                  aria-label="Close sidebar">
+                  aria-label={t('sidebar:close')}>
                   <Menu className="h-5 w-5 text-pink-600" />
                 </button>
                 <button
@@ -91,7 +59,7 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
                       {t('sidebar:appName')}
                     </h1>
                     <div className="flex items-center gap-2 text-xs">
-                      <span className="text-pink-600">{t('sidebar:appSubtitle')}</span>
+                      <span className="text-gray-400">{t('sidebar:appSubtitle')}</span>
                     </div>
                   </div>
                 </button>
@@ -120,26 +88,33 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
 
             <div className="pt-4 pb-2">
               <h3 className="px-4 text-xs font-bold text-pink-600 uppercase tracking-wider">
-                {t('sidebar:newStyle')}
+                {t('sidebar:discover')}
               </h3>
             </div>
 
-            {styleItems.map((item, index) => {
-              const Icon = item.icon;
-              return (
-                <button
-                  key={index}
-                  onClick={() => handleMenuClick(item)}
-                  className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-pink-50 hover:to-rose-50 transition-all duration-200 group border border-transparent hover:border-pink-200">
-                  <Icon className="h-5 w-5 text-pink-400 group-hover:text-pink-600 flex-shrink-0 transition-colors" />
-                  <div className="flex items-center justify-between flex-1 min-w-0">
-                    <span className="text-sm text-gray-700 group-hover:text-pink-700 font-semibold truncate">
-                      {item.label}
-                    </span>
-                  </div>
-                </button>
-              );
-            })}
+            <button
+              onClick={() => {
+                navigate('/developing');
+                onClose();
+              }}
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-pink-50 hover:to-rose-50 transition-all duration-200 group border border-transparent hover:border-pink-200">
+              <Info className="h-5 w-5 text-pink-400 group-hover:text-pink-600 flex-shrink-0 transition-colors" />
+              <span className="text-sm text-gray-700 group-hover:text-pink-700 font-semibold">
+                {t('sidebar:aboutUs')}
+              </span>
+            </button>
+
+            <button
+              onClick={() => {
+                navigate('/developing');
+                onClose();
+              }}
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-pink-50 hover:to-rose-50 transition-all duration-200 group border border-transparent hover:border-pink-200">
+              <BookOpen className="h-5 w-5 text-pink-400 group-hover:text-pink-600 flex-shrink-0 transition-colors" />
+              <span className="text-sm text-gray-700 group-hover:text-pink-700 font-semibold">
+                {t('sidebar:manual')}
+              </span>
+            </button>
           </nav>
 
           <div className="border-t border-pink-200/50 p-4 bg-gradient-to-r from-pink-50/50 to-rose-50/30">

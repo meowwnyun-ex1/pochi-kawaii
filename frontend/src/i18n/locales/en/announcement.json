@@ -32,6 +32,11 @@
   "edit": "Edit",
   "delete": "Delete",
   "no_announcements": "No announcements yet",
-  "click_to_add": "Click \"Add New Announcement\" button to create an announcement"
+  "click_to_add": "Click \"Add New Announcement\" button to create an announcement",
+  "close": "Close announcement",
+  "previous": "Previous announcement",
+  "next": "Next announcement",
+  "go_to": "Go to announcement {number}",
+  "title": "Announcement"
 }
 

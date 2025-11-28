@@ -1,0 +1,19 @@
+{
+  "title": "Phản Hồi",
+  "subtitle": "Chia sẻ suy nghĩ của bạn",
+  "nameLabel": "Tên",
+  "namePlaceholder": "Tên của bạn (tùy chọn)",
+  "ratingLabel": "Đánh Giá",
+  "commentLabel": "Bình Luận",
+  "commentPlaceholder": "Nhập phản hồi của bạn...",
+  "submit": "Gửi",
+  "submitting": "Đang gửi...",
+  "backToChat": "Quay Lại Chat",
+  "ratingRequired": "Vui lòng chọn đánh giá",
+  "commentRequired": "Vui lòng nhập bình luận",
+  "successTitle": "Cảm ơn bạn!",
+  "successMessage": "Phản hồi của bạn đã được gửi thành công",
+  "errorMessage": "Gửi phản hồi thất bại",
+  "commentHint": "Vui lòng nhập phản hồi của bạn (tối đa 1000 ký tự)"
+}
+

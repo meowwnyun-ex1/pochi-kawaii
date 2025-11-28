@@ -14,8 +14,13 @@
   "next": "下一步",
   "previous": "上一步",
   "copyright": "© 2025 Pochi! Kawaii ne~ | Developed by Thammaphon Chittasuwanna (SDM)",
-  "items": "项",
   "recommended": "推荐",
   "optional": "可选",
-  "contextualSuggestions": "可能有帮助的问题"
+  "anonymous": "匿名",
+  "contextualSuggestions": "可能有帮助的问题",
+  "connectionError": "连接错误",
+  "feedback_from_users": "用户反馈",
+  "ai_fallback": "AI",
+  "title": "标题",
+  "waiting_feedback": "等待反馈..."
 }

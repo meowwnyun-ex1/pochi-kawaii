@@ -12,7 +12,8 @@
     "timeout": "⏱️ Hết thời gian - AI mất quá nhiều thời gian\n\nVui lòng thử lại",
     "please_try_again": "Vui lòng thử lại",
     "no_image": "Vui lòng tải lên hình ảnh trước",
-    "invalid_format": "Định dạng tệp không hợp lệ. Vui lòng sử dụng JPG, PNG hoặc WEBP"
+    "invalid_format": "Định dạng tệp không hợp lệ. Vui lòng sử dụng JPG, PNG hoặc WEBP",
+    "file_too_large": "Tệp quá lớn (tối đa 10MB)"
   },
   "stage_analyzing": "Đang phân tích hình ảnh của bạn",
   "stage_thinking": "Đang xử lý hình ảnh",
@@ -22,6 +23,31 @@
   "time_sec": "giây",
   "download": "Tải xuống hình ảnh",
   "generate_again": "Tạo lại",
-  "warning_delete_on_close": "⚠️ Cảnh báo: Hình ảnh đã tải lên sẽ bị xóa ngay sau khi đóng trang web này"
+  "warning_delete_on_close": "⚠️ Cảnh báo: Hình ảnh đã tải lên sẽ bị xóa ngay sau khi đóng trang web này",
+  "care_message": "💕 Lưu ý: Hình ảnh đã tải lên sẽ bị xóa sau khi đóng trang web để bảo vệ quyền riêng tư của bạn",
+  "input_image": "Tải lên hình ảnh",
+  "result": "Kết quả",
+  "result_placeholder": "Hình ảnh được tạo sẽ hiển thị ở đây",
+  "success": "✨ Hình ảnh chibi đã được tạo thành công!",
+  "no_image_url": "Không tìm thấy dữ liệu hình ảnh",
+  "read_error": "Lỗi đọc dữ liệu từ máy chủ",
+  "download_success": "Tải xuống hình ảnh thành công! 🎉",
+  "download_error": "Lỗi tải xuống hình ảnh",
+  "http_error_format": "Lỗi (HTTP {status})",
+  "filename_prefix": "image",
+  "upload_or": "hoặc",
+  "upload_click": "Nhấp để chọn tệp",
+  "generated_chibi": "Hình ảnh Chibi đã tạo",
+  "clear_image": "Xóa hình ảnh",
+  "preview": "Xem trước",
+  "select_style": "Chọn Phong Cách",
+  "style_anime": "🌈 Anime Style",
+  "style_anime_desc": "Create a cartoon-style portrait: Keep the same outfit and pose as in the original image. Use a clean white background. The style should be semi-realistic or stylized cartoon, but the facial features and clothing must closely resemble the original photo.",
+  "style_watercolor": "🎨 Watercolor Style",
+  "style_watercolor_desc": "Paint a new portrait in a watercolor cartoon style, keeping the facial and outfits structure similar to the original. Use soft, gentle colors and a white background.",
+  "style_developing": "Đang Phát Triển",
+  "style_locked": "🔒 Đang Phát Triển",
+  "time_used": "Thời gian sử dụng: {time} giây",
+  "elapsed_time": "⏱️ Thời gian đã trôi qua: {time} giây"
 }
 

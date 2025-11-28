@@ -5,7 +5,15 @@ import logger from '@/utils/logger';
 import ImageUpload from '@/components/ImageUpload';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { apiClient } from '@/utils/apiClient';
-import { Download, Sparkles, RefreshCw, Image as ImageIcon, AlertCircle } from 'lucide-react';
+import { Download, Sparkles, RefreshCw, Image as ImageIcon, Lock } from 'lucide-react';
+
+type StyleType = 'anime' | 'watercolor' | 'classic' | 'cute' | 'fantasy';
+
+interface StyleOption {
+  id: StyleType;
+  name: string;
+  available: boolean;
+}
 
 const ImageGenerator = () => {
   const { t } = useLanguage();
@@ -15,20 +23,48 @@ const ImageGenerator = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [sessionId] = useState(() => uuidv4());
   const [processingMessage, setProcessingMessage] = useState<string>('');
+  const [elapsedTime, setElapsedTime] = useState<number>(0);
+  const [selectedStyle, setSelectedStyle] = useState<StyleType>('anime');
   const previewUrlRef = useRef<string | null>(null);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Cleanup function to revoke object URLs and clear state
+  const styles: StyleOption[] = [
+    {
+      id: 'anime',
+      name: t('image:style_anime'),
+      available: true,
+    },
+    {
+      id: 'watercolor',
+      name: t('image:style_watercolor'),
+      available: true,
+    },
+    {
+      id: 'classic',
+      name: t('sidebar:styleClassic'),
+      available: false,
+    },
+    {
+      id: 'cute',
+      name: t('sidebar:styleCute'),
+      available: false,
+    },
+    {
+      id: 'fantasy',
+      name: t('sidebar:styleFantasy'),
+      available: false,
+    },
+  ];
+
   const cleanupUrls = () => {
     if (previewUrlRef.current) {
       URL.revokeObjectURL(previewUrlRef.current);
       previewUrlRef.current = null;
     }
-    // Clear generated image URL (it's from server, not object URL, so no need to revoke)
     setGeneratedImageUrl(null);
     setSelectedImage(null);
   };
 
-  // Cleanup on unmount and before page unload
   useEffect(() => {
     const handleBeforeUnload = () => {
       cleanupUrls();
@@ -36,8 +72,6 @@ const ImageGenerator = () => {
 
     const handleVisibilityChange = () => {
       if (document.hidden) {
-        // Page is being hidden (tab switch, minimize, etc.)
-        // Don't cleanup here, only on actual unload
       }
     };
 
@@ -48,30 +82,50 @@ const ImageGenerator = () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       cleanupUrls();
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
     };
   }, []);
 
   const handleGenerate = async () => {
     if (!selectedImage) {
-      showToast.error(t('image:error.no_image') || 'Please upload an image first');
+      showToast.error(t('image:error.no_image'));
       return;
     }
 
     setIsGenerating(true);
     setGeneratedImageUrl(null);
-    setProcessingMessage('Generating your cartoon avatar...');
+    setProcessingMessage(t('image:generating'));
+    setElapsedTime(0);
+
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+    }
+
+    const startTime = Date.now();
+    timerRef.current = setInterval(() => {
+      setElapsedTime(Math.floor((Date.now() - startTime) / 1000));
+    }, 1000);
 
     try {
       const formData = new FormData();
       formData.append('file', selectedImage);
       formData.append('session_id', sessionId);
+      formData.append('style', selectedStyle);
 
       const response = await apiClient.postFormData(
-        '/generate/chibi',
+        '/api/generate/image',
         formData,
         {},
         { maxRetries: 2 }
       );
+
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
 
       if (response.ok) {
         try {
@@ -79,32 +133,40 @@ const ImageGenerator = () => {
 
           if (data?.image_url) {
             setGeneratedImageUrl(data.image_url);
-            showToast.success('✨ สร้างภาพจิบิสำเร็จแล้วค่ะ!');
+            showToast.success(t('image:success'));
           } else {
             logger.warn('No image_url in response', 'ImageGenerator.handleGenerate', data);
-            showToast.error('ไม่พบข้อมูลภาพที่สร้าง');
+            showToast.error(t('image:no_image_url'));
           }
         } catch (jsonError) {
           logger.error('Failed to parse response JSON', 'ImageGenerator.handleGenerate', jsonError);
-          showToast.error('เกิดข้อผิดพลาดในการอ่านข้อมูลจากเซิร์ฟเวอร์');
+          showToast.error(t('image:read_error'));
         }
       } else {
         try {
           const errorData = await response.json();
-          const errorMsg = errorData?.detail || 'เกิดข้อผิดพลาดในการสร้างภาพ';
-          showToast.error(errorMsg);
+          const errorMsg = errorData?.detail;
+          if (!errorMsg) {
+            showToast.error(t('image:error.http_error'));
+          } else {
+            showToast.error(errorMsg);
+          }
         } catch (jsonError) {
           logger.error('Failed to parse error response', 'ImageGenerator.handleGenerate', jsonError);
-          showToast.error(`เกิดข้อผิดพลาด (HTTP ${response.status})`);
+          showToast.error(t('image:http_error_format', { status: response.status }));
         }
       }
     } catch (error) {
       logger.error('Generation error', 'ImageGenerator.handleGenerate', error);
       showToast.error(
-        t('image:error.network_error') || 'Cannot connect to server'
+        t('image:error.network_error')
       );
     } finally {
       setIsGenerating(false);
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
     }
   };
 
@@ -117,15 +179,15 @@ const ImageGenerator = () => {
     try {
       const link = document.createElement('a');
       link.href = generatedImageUrl;
-      link.download = `pochi-chibi-${Date.now()}.png`;
+      link.download = `${t('image:filename_prefix')}-${Date.now()}.png`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
 
-      showToast.success('ดาวน์โหลดภาพสำเร็จ! 🎉');
+      showToast.success(t('image:download_success'));
     } catch (error) {
       logger.error('Download failed', 'ImageGenerator.handleDownload', error);
-      showToast.error('เกิดข้อผิดพลาดในการดาวน์โหลด');
+      showToast.error(t('image:download_error'));
     }
   };
 
@@ -133,10 +195,14 @@ const ImageGenerator = () => {
     cleanupUrls();
     setSelectedImage(null);
     setProcessingMessage('');
+    setElapsedTime(0);
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
   };
 
   const handleImageSelect = (file: File) => {
-    // Cleanup previous image
     if (selectedImage) {
       cleanupUrls();
     }
@@ -149,17 +215,58 @@ const ImageGenerator = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 py-8">
-      {/* Main Content - Side by Side Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
-        {/* Input Image Panel */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl p-6 border-2 border-pink-100 flex flex-col">
-          <div className="flex items-center gap-2 mb-4">
-            <ImageIcon className="w-5 h-5 text-pink-600" />
-            <h2 className="text-xl font-bold text-pink-700">Input Image</h2>
+    <div className="w-full flex items-center justify-center p-4 py-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 max-w-7xl w-full">
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-4 border-2 border-pink-100 flex flex-col">
+          <div className="flex items-center gap-2 mb-3">
+            <ImageIcon className="w-4 h-4 text-pink-600" />
+            <h2 className="text-lg font-bold text-pink-700">{t('image:select_style')}</h2>
           </div>
           
-          <div className="flex-1 flex flex-col">
+          <div className="flex flex-col gap-2">
+            {styles.map((style) => (
+              <button
+                key={style.id}
+                type="button"
+                onClick={() => {
+                  if (style.available) {
+                    setSelectedStyle(style.id);
+                  }
+                }}
+                disabled={!style.available || isGenerating}
+                className={`w-full px-4 py-3 rounded-lg text-left transition-all border-2 ${
+                  selectedStyle === style.id
+                    ? 'bg-pink-100 border-pink-400 shadow-md'
+                    : 'bg-white border-pink-200 hover:border-pink-300'
+                } ${
+                  !style.available ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer hover:bg-pink-50'
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <span className="font-semibold text-pink-700 flex items-center gap-2">
+                    {style.name}
+                    {!style.available && (
+                      <Lock className="w-4 h-4 text-pink-400" />
+                    )}
+                  </span>
+                  {!style.available && (
+                    <span className="text-xs text-pink-400 font-normal">
+                      {t('image:style_locked')}
+                    </span>
+                  )}
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-4 border-2 border-pink-100 flex flex-col">
+          <div className="flex items-center gap-2 mb-3">
+            <ImageIcon className="w-4 h-4 text-pink-600" />
+            <h2 className="text-lg font-bold text-pink-700">{t('image:input_image')}</h2>
+          </div>
+          
+          <div className="flex flex-col w-full">
             <ImageUpload
               onImageSelect={handleImageSelect}
               selectedImage={selectedImage}
@@ -173,81 +280,93 @@ const ImageGenerator = () => {
               }}
             />
 
-            {/* Warning message */}
             {selectedImage && (
-              <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-xl flex items-start gap-2">
-                <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-                <p className="text-xs text-amber-800">
-                  {t('image:warning_delete_on_close') || '⚠️ คำเตือน: ภาพที่แนบมาจะถูกลบทิ้งทันทีหลังจากปิดเว็บนี้'}
+              <div className="mt-2 p-2 bg-pink-50 border border-pink-200 rounded-lg">
+                <p className="text-xs text-pink-700">
+                  {t('image:care_message')}
                 </p>
               </div>
             )}
 
             {selectedImage && !isGenerating && (
-              <div className="mt-4">
+              <div className="mt-3">
                 <button
                   onClick={handleGenerate}
-                  className="w-full py-3 px-6 bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 text-white rounded-xl font-bold hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2"
+                  className="w-full py-2.5 px-4 bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 text-white rounded-lg font-bold hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 text-sm"
                 >
-                  <Sparkles className="w-5 h-5" />
-                  {t('image:generate') || 'Generate'}
-                  <Sparkles className="w-5 h-5" />
+                  <Sparkles className="w-4 h-4" />
+                  {t('image:generate')}
                 </button>
               </div>
             )}
 
             {isGenerating && (
-              <div className="mt-4 flex items-center justify-center gap-3 text-pink-600">
-                <div className="w-5 h-5 border-2 border-pink-500 border-t-transparent rounded-full animate-spin" />
-                <span className="font-medium">{processingMessage || 'Generating...'}</span>
+              <div className="mt-3 flex items-center justify-center gap-2 text-pink-600">
+                <div className="w-4 h-4 border-2 border-pink-500 border-t-transparent rounded-full animate-spin" />
+                <span className="font-medium text-sm">{processingMessage ? processingMessage : t('image:generating')}</span>
               </div>
             )}
           </div>
         </div>
 
         {/* Result Panel */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl p-6 border-2 border-pink-100 flex flex-col">
-          <div className="flex items-center gap-2 mb-4">
-            <ImageIcon className="w-5 h-5 text-pink-600" />
-            <h2 className="text-xl font-bold text-pink-700">Result</h2>
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-4 border-2 border-pink-100 flex flex-col">
+          <div className="flex items-center gap-2 mb-3">
+            <ImageIcon className="w-4 h-4 text-pink-600" />
+            <h2 className="text-lg font-bold text-pink-700">{t('image:result')}</h2>
           </div>
           
-          <div className="flex-1 flex items-center justify-center min-h-[400px]">
+          <div className="flex items-center justify-center min-h-[250px] max-h-[400px] overflow-auto">
             {isGenerating ? (
               <div className="text-center">
-                <div className="w-16 h-16 border-4 border-pink-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-                <p className="text-pink-600 font-medium">{processingMessage || 'Generating your cartoon...'}</p>
+                <div className="w-12 h-12 border-3 border-pink-500 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+                <p className="text-pink-600 font-medium text-sm mb-2">{processingMessage ? processingMessage : t('image:generating')}</p>
+                <div className="flex items-center justify-center gap-2 text-xs text-pink-500">
+                  <RefreshCw className="w-3 h-3 animate-spin" />
+                  <span>{t('image:time_used', { time: elapsedTime })}</span>
+                </div>
               </div>
             ) : generatedImageUrl ? (
-              <div className="w-full space-y-4">
-                <div className="relative rounded-2xl overflow-hidden border-4 border-pink-200 shadow-2xl bg-white">
+              <div className="w-full space-y-3">
+                <div className="relative rounded-xl overflow-hidden border-2 border-pink-200 shadow-lg bg-white max-h-[300px] overflow-auto">
                   <img
                     src={generatedImageUrl}
-                    alt="Generated Chibi"
+                    alt={t('image:generated_chibi')}
                     className="w-full h-auto object-contain"
+                    onLoad={() => {
+                      if (timerRef.current) {
+                        clearInterval(timerRef.current);
+                        timerRef.current = null;
+                      }
+                    }}
                   />
                 </div>
-                <div className="flex flex-col sm:flex-row gap-3">
+                {elapsedTime > 0 && (
+                  <div className="text-center text-xs text-pink-600 bg-pink-50 px-3 py-1.5 rounded-lg">
+                    {t('image:elapsed_time', { time: elapsedTime })}
+                  </div>
+                )}
+                <div className="flex flex-col sm:flex-row gap-2">
                   <button
                     onClick={handleDownload}
-                    className="flex-1 py-3 px-6 bg-gradient-to-r from-green-400 to-emerald-500 text-white rounded-xl font-bold hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2"
+                    className="flex-1 py-2.5 px-4 bg-gradient-to-r from-green-400 to-emerald-500 text-white rounded-lg font-bold hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 text-sm"
                   >
-                    <Download className="w-5 h-5" />
-                    {t('image:download') || 'Download'}
+                    <Download className="w-4 h-4" />
+                    {t('image:download')}
                   </button>
                   <button
                     onClick={handleGenerateAgain}
-                    className="flex-1 py-3 px-6 bg-gradient-to-r from-pink-400 to-rose-500 text-white rounded-xl font-bold hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2"
+                    className="flex-1 py-2.5 px-6 bg-gradient-to-r from-pink-400 to-rose-500 text-white rounded-lg font-bold hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 text-sm"
                   >
-                    <RefreshCw className="w-5 h-5" />
-                    {t('image:generate_again') || 'Generate Again'}
+                    <RefreshCw className="w-4 h-4" />
+                    {t('image:generate_again')}
                   </button>
                 </div>
               </div>
             ) : (
               <div className="text-center text-gray-400">
-                <ImageIcon className="w-24 h-24 mx-auto mb-4 opacity-30" />
-                <p className="text-lg">Generated image will appear here</p>
+                <ImageIcon className="w-16 h-16 mx-auto mb-2 opacity-30" />
+                <p className="text-sm">{t('image:result_placeholder')}</p>
               </div>
             )}
           </div>

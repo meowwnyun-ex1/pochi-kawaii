@@ -1,10 +1,8 @@
+import { useLanguage } from '@/contexts/LanguageContext';
+
 const getAvatarSrc = () => {
   const basePath = import.meta.env.VITE_BASE_PATH;
-  return `${basePath}/ai-avatar.svg`;
-};
-
-const getAvatarAlt = () => {
-  return 'Pochi! Kawaii ne~';
+  return `${basePath}/logo.svg`;
 };
 
 const AvatarImage = ({
@@ -14,6 +12,7 @@ const AvatarImage = ({
   className?: string;
   size?: 'small' | 'default' | 'medium' | 'large';
 }) => {
+  const { t } = useLanguage();
   const sizeClasses = {
     small: 'w-8 h-8',
     default: 'w-10 h-10',
@@ -23,19 +22,19 @@ const AvatarImage = ({
 
   return (
     <div
-      className={`${className || ''} ${
+      className={`${className ? className : ''} ${
         sizeClasses[size]
-      } bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-semibold text-sm`}>
+      } bg-pink-100 rounded-full flex items-center justify-center text-pink-600 font-semibold text-sm`}>
       <img
         src={getAvatarSrc()}
-        alt={getAvatarAlt()}
+        alt={t('common:appName')}
         className={`${sizeClasses[size]} rounded-full`}
         onError={(e) => {
           const target = e.currentTarget as HTMLImageElement;
           const parent = target.parentElement;
           if (parent) {
             target.style.display = 'none';
-            parent.textContent = 'AI';
+            parent.textContent = t('common:ai_fallback');
           }
         }}
       />
